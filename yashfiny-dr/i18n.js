@@ -94,7 +94,16 @@ const translations = {
         signout: 'Sign Out',
         yashfiny: 'Yashfiny',
         edit_profile: 'Edit Profile',
-        search_home: 'Patient Name or Unique patient ID'
+        search_home: 'Patient Name or Unique patient ID',
+        create_new_patient: 'Create New Patient',
+        recents: 'Recents',
+        promotion: 'Promotion',
+        assistants: 'Assistants',
+        availability: 'Availability',
+        monthly_earnings: 'Monthly Earnings',
+        more_than_l_month: 'More than last month',
+        upcoming_apts: 'Upcoming Appointments',
+        view_all: 'View All'
   
       },
       ar: {

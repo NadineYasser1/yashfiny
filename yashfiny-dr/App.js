@@ -41,6 +41,7 @@ import LoadingScreen from "./components/LoadingScreen";
 import EditProfileDrawer from "./components/EditProfileDrawer";
 import { useFonts } from "expo-font";
 import CustomDrawerHeader from "./components/CustomDrawerHeader";
+import LoadingContextProvider, { LoadingContext } from "./store/LoadingContext";
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -91,19 +92,19 @@ function CustomDrawerContent(props) {
     <DrawerContentScrollView {...props}>
       <EditProfileDrawer />
       <DrawerItemList {...props} />
-      <DrawerItem 
-      label={i18n.t('other_lang')} 
-      activeTintColor="white" 
-      inactiveTintColor="white" 
-      onPress={() => langCtx.changeLang(langCtx.locale === "ar" ? "en" : "ar")} 
-      icon={({color, size}) => <MaterialCommunityIcons name='earth' color={color} size={size} />}/>
-      <View style={{marginTop: 10}}>
-      <DrawerItem 
-      label={i18n.t('signout')} 
-      activeTintColor="white" 
-      inactiveTintColor="white" 
-      onPress={() => authCtx.logout()} 
-      icon={({color, size}) => <MaterialCommunityIcons name='logout' color={color} size={size} />}/>
+      <DrawerItem
+        label={i18n.t('other_lang')}
+        activeTintColor="white"
+        inactiveTintColor="white"
+        onPress={() => langCtx.changeLang(langCtx.locale === "ar" ? "en" : "ar")}
+        icon={({ color, size }) => <MaterialCommunityIcons name='earth' color={color} size={size} />} />
+      <View style={{ marginTop: 10 }}>
+        <DrawerItem
+          label={i18n.t('signout')}
+          activeTintColor="white"
+          inactiveTintColor="white"
+          onPress={() => authCtx.logout()}
+          icon={({ color, size }) => <MaterialCommunityIcons name='logout' color={color} size={size} />} />
       </View>
     </DrawerContentScrollView>
   );
@@ -124,9 +125,9 @@ const DrawerNav = () => {
       }}
     >
       <Drawer.Screen name="Home" component={HomeScreen} options={{
-        header: ({navigation}) => <CustomDrawerHeader navigation={navigation}/>,
- 
-        headerStyle: {height: 200},
+        header: ({ navigation }) => <CustomDrawerHeader navigation={navigation} />,
+
+        headerStyle: { height: 200 },
         drawerLabel: i18n.t('home'),
         drawerIcon: ({ color, size }) => (<MaterialCommunityIcons name="home" color={color} size={size} />),
 
@@ -446,14 +447,18 @@ export default function App() {
     "boahmed-alharf-bold": require("./assets/fonts/boahmed-alharf-bold.ttf"),
     "boulder-regular": require("./assets/fonts/boulder-regular.ttf"),
   });
-  if(!isLoaded) {
+  const loadingCtx = useContext(LoadingContext)
+  
+  if (!isLoaded || loadingCtx.isLoading) {
     return <LoadingScreen />
   }
   return (
-    <AuthContextProvider>
-      <LangContextProvider>
-        <Root />
-      </LangContextProvider>
-    </AuthContextProvider>
+    <LoadingContextProvider>
+      <AuthContextProvider>
+        <LangContextProvider>
+          <Root />
+        </LangContextProvider>
+      </AuthContextProvider>
+      </LoadingContextProvider>
   );
 }

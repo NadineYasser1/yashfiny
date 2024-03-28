@@ -1,7 +1,6 @@
 import "react-native-gesture-handler";
 import {
   Image,
-  SafeAreaView,
   StyleSheet,
   View,
   TextInput,
@@ -10,22 +9,46 @@ import {
   KeyboardAvoidingView,
   Platform,
 } from "react-native";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { LanguageContext } from "../../store/LanguageContext";
 import i18n from "../../i18n";
 import { Colors } from "../../constants/colors";
 import { LinearGradient } from "expo-linear-gradient";
 import { AuthContext } from "../../store/AuthContext";
+import axios from "axios";
+import { API } from "../../utils/config";
+import { LoadingContext } from "../../store/LoadingContext";
+import { ActivityIndicator } from "react-native-paper";
 
 const LoginScreen = ({ navigation }) => {
   const langCtx = useContext(LanguageContext);
-  const authCtx = useContext(AuthContext)
+  const authCtx = useContext(AuthContext);
+  const [loginData, setLoginData] = useState()
+  const [loading, setLoading] = useState(false)
+
+  const handleInputChange = (key,val) => {
+    setLoginData((prev) => ({
+      ...prev,
+      [key]: val
+    }
+    ))
+  }
+  const handleLogin = () => {
+    setLoading(true)
+    axios.post(API.login, loginData
+      ).then(({data}) => { 
+         authCtx.authenticate(data.token)
+        }).catch((err) => { 
+      console.log(err)
+    }).finally(()=> setLoading(false))
+  }
+
   return (
     <LinearGradient
-    colors={[Colors.primary800, "white"]}
-    locations={[0.4, 1]}
-    style={{ flex: 1 }}
-  >
+      colors={[Colors.primary800, "white"]}
+      locations={[0.4, 1]}
+      style={{ flex: 1 }}
+    >
       <KeyboardAvoidingView
         behavior={Platform.OS == "ios" ? "padding" : "height"}
         style={styles.container}
@@ -50,6 +73,9 @@ const LoginScreen = ({ navigation }) => {
             />
           )}
         </View>
+        <View>
+
+        </View>
         <View style={styles.loginContainer}>
           <TextInput
             placeholder={i18n.t("phone_numb_or_email")}
@@ -58,17 +84,20 @@ const LoginScreen = ({ navigation }) => {
             autoCompleteType="email"
             keyboardType="email-address"
             textContentType="emailAddress"
+            onChangeText={(val) => handleInputChange('name', val)}
           />
+          
           <TextInput
             placeholder={i18n.t("password")}
             style={styles.input}
             placeholderTextColor="#aaa"
             textContentType="password"
             secureTextEntry={true}
+            onChangeText={(val) => handleInputChange('password', val)}
           />
           <TouchableOpacity
             style={styles.loginButton}
-            onPress={() => authCtx.authenticate('1234')}
+            onPress={handleLogin}
           >
             <Text style={styles.loginButtonText}>{i18n.t("login")}</Text>
           </TouchableOpacity>
@@ -80,6 +109,12 @@ const LoginScreen = ({ navigation }) => {
               {i18n.t("forgot_pass_ques")}
             </Text>
           </TouchableOpacity>
+        </View>
+        <View style={{marginTop: 50}}>
+        <ActivityIndicator 
+        animating={loading}
+        size='large'
+        color={Colors.primary800}/>
         </View>
         <View style={styles.signupTextContainer}>
           <Text style={styles.signupText}>
@@ -96,6 +131,7 @@ const LoginScreen = ({ navigation }) => {
         </View>
       </KeyboardAvoidingView>
     </LinearGradient>
+
   );
 };
 const styles = StyleSheet.create({
@@ -158,7 +194,7 @@ const styles = StyleSheet.create({
     alignSelf: "center",
   },
   signupTextContainer: {
-    marginTop: 180,
+    marginTop: 100,
     display: "flex",
     flexDirection: "row",
     justifyContent: "center",

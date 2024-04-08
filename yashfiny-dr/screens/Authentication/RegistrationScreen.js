@@ -27,7 +27,7 @@ const RegistrationScreen = ({ route, navigation }) => {
   const [showPicker, setShowPicker] = useState(false)
   const [circleCheckBoxValue, setCircleCheckBoxValue] = useState()
   const [selection, setSelection] = useState(null);
-  const [gender, setGender ] = useState('male')
+  const [gender, setGender] = useState('male')
   const [choices, setChoices] = useState([]);
 
   const tempDiseases = [
@@ -112,17 +112,18 @@ const RegistrationScreen = ({ route, navigation }) => {
                   <TextInput
                     value={dayjs(date).format("YYYY-MM-DD")}
                     editable={false}
-                    style={styles.smallInput}
+                    style={[styles.smallInput, dayjs(date).format('YYYY-MM-DD') == dayjs(new Date()).format('YYYY-MM-DD') ? { color: '#aaa' } : { color: 'black' }]}
+                    placeholderTextColor="#aaa"
                     onPressIn={toggleDatePicker}
                   />
                   <Icon name="calendar" size={23} color={Colors.accent800} style={{ marginHorizontal: 10, marginTop: 10 }} />
                   <View style={styles.genderContainer}>
                     <View style={styles.genderButtons}>
-                      <TouchableOpacity onPress={() => {setGender('male')}} style={[styles.genderButton, gender == 'male' && styles.genderButtonPressed]}>
-                        <Text style={[styles.genderText, gender == 'male' && {color: 'white'}]}>{i18n.t('male')}</Text>
+                      <TouchableOpacity onPress={() => { setGender('male') }} style={[styles.genderButton, gender == 'male' && styles.genderButtonPressed]}>
+                        <Text style={[styles.genderText, gender == 'male' && { color: 'white' }]}>{i18n.t('male')}</Text>
                       </TouchableOpacity>
-                      <TouchableOpacity onPress={() => {setGender('female') }} style={[styles.genderButton, gender == 'female' && styles.genderButtonPressed]} >
-                        <Text style={[styles.genderText, gender == 'female' && { color: 'white'}]}>{i18n.t('female')}</Text>
+                      <TouchableOpacity onPress={() => { setGender('female') }} style={[styles.genderButton, gender == 'female' && styles.genderButtonPressed]} >
+                        <Text style={[styles.genderText, gender == 'female' && { color: 'white' }]}>{i18n.t('female')}</Text>
                       </TouchableOpacity>
                     </View>
                   </View>
@@ -178,7 +179,7 @@ const RegistrationScreen = ({ route, navigation }) => {
               </View>
             </View>
             <View style={styles.inputContainer}>
-              <Text style={styles.label}>{i18n.t("phone")}</Text>
+              <Text style={styles.label}>{i18n.t("phone_number")}</Text>
               <View style={{ flexDirection: 'row', alignContent: 'space-between' }}>
                 <TextInput
                   defaultValue='+20'
@@ -464,19 +465,19 @@ const styles = StyleSheet.create({
     borderRadius: 20,
   },
   deleteButton: {
-    fontWeight: 'bold',
+    fontWeight: "700",
     fontSize: 18,
     color: Colors.primary800,
     marginStart: 10,
     marginEnd: 5
   },
   pickerContainer: {
-    borderRadius: 15, 
-    borderWidth: 1, 
-    borderColor: Colors.primary800, 
-    overflow: 'hidden', 
-    marginTop: 5, 
-    marginRight: 5, 
+    borderRadius: 15,
+    borderWidth: 1,
+    borderColor: Colors.primary800,
+    overflow: 'hidden',
+    marginTop: 5,
+    marginRight: 5,
     backgroundColor: 'white',
     shadowColor: 'black',
     shadowOffset: 4,

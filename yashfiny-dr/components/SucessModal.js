@@ -32,7 +32,7 @@ const SuccessModal = ({ title, text, screenName }) => {
         <Text style={styles.title}>{title}</Text>
         <Text style={styles.text}>{text}</Text>
         <View style={styles.bottomContainer}>
-          <MaterialCommunityIcons name='chevron-double-left' size={60} color='white'/>
+          <MaterialCommunityIcons name='chevron-double-left' size={60} color='white' />
           <Text style={styles.swipeUpTitle}>{i18n.t('home')}</Text>
         </View>
       </GestureRecognizer>
@@ -60,7 +60,7 @@ const styles = StyleSheet.create({
   title: {
     color: 'white',
     fontSize: 20,
-    fontWeight: 'bold',
+    fontWeight: "700",
     marginBottom: 30,
   },
   text: {

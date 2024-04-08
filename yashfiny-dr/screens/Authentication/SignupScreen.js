@@ -9,7 +9,7 @@ import {
   KeyboardAvoidingView,
   Platform,
 } from "react-native";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { LanguageContext } from "../../store/LanguageContext";
 import i18n from "../../i18n";
 import { Colors } from "../../constants/colors";
@@ -17,11 +17,12 @@ import { LinearGradient } from "expo-linear-gradient";
 
 const SignupScreen = ({ navigation }) => {
   const langCtx = useContext(LanguageContext);
-  const data = {
-    email: 'test@gmail.com',
-    fname: 'test1',
-    lname: 'test2',
-    password: 'pass'
+  const [data, setData] = useState()
+  const handleChange = (key, val) => {
+    setData((prev) => ({
+      ...prev,
+      [key]: val
+    }))
   }
   return (
     <LinearGradient
@@ -62,16 +63,19 @@ const SignupScreen = ({ navigation }) => {
             autoCompleteType="email"
             keyboardType="email-address"
             textContentType="emailAddress"
+            onChangeText={(val) => handleChange('email', val)}
           />
           <TextInput
             placeholder={i18n.t("fname")}
             style={styles.input}
             placeholderTextColor="#aaa"
+            onChangeText={(val) => handleChange('fname', val)}
           />
           <TextInput
             placeholder={i18n.t("lname")}
             style={styles.input}
             placeholderTextColor="#aaa"
+            onChangeText={(val) => handleChange('lname', val)}
           />
           <TextInput
             placeholder={i18n.t("password")}
@@ -79,6 +83,7 @@ const SignupScreen = ({ navigation }) => {
             placeholderTextColor="#aaa"
             textContentType="password"
             secureTextEntry={true}
+            onChangeText={(val) => handleChange('password', val)}
           />
           <TouchableOpacity
             style={styles.loginButton}
@@ -126,7 +131,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     marginLeft: 20,
     marginHorizontal: 20,
-    marginTop: 50,
+    marginTop: Platform.OS == 'ios' ? 50 : 10,
     paddingTop: 20,
   },
   input: {
@@ -143,7 +148,7 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     color: Colors.grey100,
     fontSize: 16,
-    fontWeight: 600,
+    fontWeight: "600",
     marginTop: 4,
     marginBottom: 30,
     textAlign: "center",

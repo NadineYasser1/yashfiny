@@ -6,17 +6,16 @@ import { Colors } from '../constants/colors';
 const LoadingScreen = () => {
     return (
         <View style={styles.container}>
-            
-                <Image
-                    source={require('../assets/fullLogo.png')}
-                    style={styles.image}
-                    resizeMode="contain"
-                />
+            <Image
+                source={require('../assets/fullLogo.png')}
+                style={styles.image}
+                resizeMode="contain"
+            />
             <View style={styles.progressBarContainer}>
                 <ProgressBar
                     indeterminate
                     color={Colors.accent800}
-                    styleAttr='Horizontal'
+                    styleAttr="Horizontal"
                 />
             </View>
         </View>

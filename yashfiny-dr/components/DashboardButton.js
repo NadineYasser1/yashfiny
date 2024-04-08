@@ -3,15 +3,15 @@ import { Text, View } from "react-native";
 import { Colors } from "../constants/colors";
 import { IconButton } from "react-native-paper";
 
-const DashboardButton = ({icon, iconColor, iconSize, label}) => {
-return (
-    <View style={{alignItems: 'center', justifyContent: 'center', marginHorizontal: 10}}>
-    <View style={styles.buttonContainer}>
-    <IconButton icon={icon} iconColor={iconColor} size={iconSize} style={styles.buttonContainer} onPress={() => console.log({label})}/>
-    </View>
-    <Text style={styles.label}>{label}</Text>
-    </View>
-)
+const DashboardButton = ({ icon, iconColor, iconSize, label }) => {
+    return (
+        <View style={{ alignItems: 'center', justifyContent: 'center', marginHorizontal: 10 }}>
+            <View style={styles.buttonContainer}>
+                <IconButton icon={icon} iconColor={iconColor} size={iconSize} style={styles.buttonContainer} onPress={() => console.log({ label })} />
+            </View>
+            <Text style={styles.label}>{label}</Text>
+        </View>
+    )
 }
 export default DashboardButton;
 const styles = StyleSheet.create({

@@ -7,5 +7,6 @@ export const Colors = {
     white100: '#f1f1f1',
     grey100: '#d2d2db',
     grey200: '#e9eaf6',
-    grey300: '#8e99a2'
+    grey300: '#8e99a2',
+    link: '#0000ff'
 }

@@ -9,7 +9,8 @@ import {
   Platform, Modal,
   Pressable,
   Alert,
-  Switch
+  Switch,
+  Dimensions
 } from 'react-native';
 import CalendarStrip from 'react-native-calendar-strip';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
@@ -17,14 +18,16 @@ import { Colors } from '../../constants/colors';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import i18n from '../../i18n';
 import CustomDropdown from '../../components/CustomDropDown';
-// use ctx to set availability
+
+const windowWidth = Dimensions.get('window').width;
+const windowHeight = Dimensions.get('window').height;
+
 const AvailabilityScreen = () => {
   const currentDate = new Date();
 
-// Get year, month, and day from the current date
-const year = currentDate.getFullYear();
-const month = String(currentDate.getMonth() + 1).padStart(2, '0'); // Months are zero-based, so add 1
-const day = String(currentDate.getDate()).padStart(2, '0');
+  const year = currentDate.getFullYear();
+  const month = String(currentDate.getMonth() + 1).padStart(2, '0');
+  const day = String(currentDate.getDate()).padStart(2, '0');
 
   const [selectedFlag, setSelectedFlag] = useState(1);
   const [selectedDay, setSelectedDay] = useState(`${year}-${month}-${day}`);
@@ -110,9 +113,9 @@ const day = String(currentDate.getDate()).padStart(2, '0');
 
   const handleChange = (event, selectedTime) => {
     if (isEditingModalVisible) {
-      setShowModalPicker(Platform.OS === 'ios')
+      setShowModalPicker(Platform.OS == 'ios')
     } else {
-      setShowPicker(Platform.OS === 'ios');
+      setShowPicker(Platform.OS == 'ios');
     }
     if (pickerFor == 'start') {
       setStartTime(selectedTime);
@@ -150,6 +153,8 @@ const day = String(currentDate.getDate()).padStart(2, '0');
   };
 
   const renderModalTimePicker = () => {
+
+    console.log(showModalPicker)
     if (showModalPicker && isEditingModalVisible) {
       return (
         <View>
@@ -174,8 +179,9 @@ const day = String(currentDate.getDate()).padStart(2, '0');
           date: new Date(date),
           dots: [
             {
-              color: 'grey',
-              selectedColor: Colors.accent700
+              // color: 'grey',
+              // selectedColor: Colors.primary800
+              color: selectedDay == date ? Colors.primary800 : 'grey'
             }
           ]
         };
@@ -194,9 +200,9 @@ const day = String(currentDate.getDate()).padStart(2, '0');
           return (
             <View style={{ flexDirection: 'row', justifyContent: 'space-around' }} key={index}>
               <View style={styles.slotContainer} key={index}>
-                <Text style={{ color: Colors.primary800, fontWeight: '600' }}>{formatTime(slot.startTime)}</Text>
-                <Text style={{ color: Colors.grey100, fontWeight: 'bold', marginHorizontal: 20 }}>{i18n.t('to')}</Text>
-                <Text style={{ color: Colors.primary800, fontWeight: '600' }}>{formatTime(slot.endTime)}</Text>
+                <Text style={{ color: Colors.primary800, fontWeight: "600" }}>{formatTime(slot.startTime)}</Text>
+                <Text style={{ color: Colors.grey100, fontWeight: "700", marginHorizontal: 20 }}>{i18n.t('to')}</Text>
+                <Text style={{ color: Colors.primary800, fontWeight: "600" }}>{formatTime(slot.endTime)}</Text>
                 <TouchableOpacity onPress={() => editSlot(index)} style={{ marginHorizontal: 20 }}>
                   <MaterialCommunityIcons name="pencil" size={24} color={Colors.primary800} />
                 </TouchableOpacity>
@@ -240,15 +246,17 @@ const day = String(currentDate.getDate()).padStart(2, '0');
                 style={styles.timeInput}
                 placeholder='hh:mm A'
                 value={startTime ? formatTime(startTime) : ''}
-                editable={false}
-                onPressIn={() => toggleModalTimePicker('start')}
+                editable={Platform.OS == 'android'}
+                onPressIn={() => {
+                  toggleModalTimePicker('start')
+                }}
               />
               <Text style={styles.label}>{i18n.t('to')}</Text>
               <TextInput
                 style={styles.timeInput}
                 placeholder='hh:mm A'
                 value={endTime ? formatTime(endTime) : ''}
-                editable={false}
+                editable={Platform.OS == 'android'}
                 onPressIn={() => toggleModalTimePicker('end')}
               />
             </View>
@@ -298,22 +306,22 @@ const day = String(currentDate.getDate()).padStart(2, '0');
           </TouchableOpacity>
         </View>
         <CalendarStrip
-          style={{ height: 100, marginHorizontal: 10 }}
+          style={{ height: windowHeight * 0.13, marginHorizontal: 10 }}
           selectedDate={selectedDay}
           onDateSelected={(date) => setSelectedDay(date.format('YYYY-MM-DD'))}
           dateNumberStyle={{ color: 'grey' }}
           dateNameStyle={{ color: 'grey' }}
           iconContainer={{ flex: 0.1 }}
           daySelectionAnimation={{
-            type: 'border',
-            duration: 200,
-            borderWidth: 1,
-            borderHighlightColor: Colors.primary800,
+            type: 'background',
+            // duration: 200,
+            // borderWidth: 2,
+            // borderHighlightColor: Colors.primary800,
             backgroundColor: Colors.primary800,
           }}
           // calendarAnimation={{ type: 'parallel', duration: 10 }}
-          highlightDateNumberStyle={{ color: 'white' }}
-          highlightDateNameStyle={{ color: 'white' }}
+          highlightDateNumberStyle={{ color: Colors.primary800 }}
+          highlightDateNameStyle={{ color: Colors.primary800 }}
           highlightDateContainerStyle={{ backgroundColor: Colors.primary800 }}
           markedDates={markedDatesArray}
         />
@@ -321,17 +329,17 @@ const day = String(currentDate.getDate()).padStart(2, '0');
       <View style={styles.rowContainer}>
         <View style={styles.switchContainer}>
           <Text
-            style={[{ width: 50, color: Colors.primary800, fontWeight: 'bold' }, !isSwitchOn && { fontWeight: 'normal' }]}
+            style={[{ width: 50, color: Colors.primary800, fontWeight: "700" }, !isSwitchOn && { fontWeight: 'normal' }]}
           >
             {isSwitchOn ? i18n.t('group') : i18n.t('single')}
-            </Text>
+          </Text>
           <Switch
             trackColor={{ false: '#767577', true: Colors.primary800 }}
             thumbColor='white'
             ios_backgroundColor="#3e3e3e"
             onValueChange={() => setIsSwitchOn(!isSwitchOn)}
             value={isSwitchOn}
-  
+
           />
 
         </View>
@@ -348,33 +356,35 @@ const day = String(currentDate.getDate()).padStart(2, '0');
         </View>
       </View>
       <View contentContainerStyle={styles.content}>
-        <View style={{ backgroundColor: 'white', borderRadius: 20, marginHorizontal: 8, padding: 8, height: 400 }}>
+        <View style={{ backgroundColor: 'white', borderRadius: 20, marginHorizontal: 8, padding: 8, height: windowHeight * 0.5 }}>
           <View style={styles.timePicker}>
-            <View style={{flexDirection: 'column'}}>
-            <Text style={{marginHorizontal: 10, color: Colors.grey100}}>{i18n.t('from')}</Text>
-            <Pressable onPress={() => toggleTimePicker('start')}>
-              <TextInput
-                name="startTime"
-                style={styles.input}
-                placeholder={i18n.t('select_start_time')}
-                value={startTime ? formatTime(startTime) : ''}
-                editable={false}
-                onPressIn={() => toggleTimePicker('start')}
-              />
-            </Pressable>
+            <View style={{ flexDirection: 'column' }}>
+              <Text style={{ marginHorizontal: 10, color: Colors.grey100 }}>{i18n.t('from')}</Text>
+              <Pressable onPress={() => toggleTimePicker('start')}>
+                <TextInput
+                  name="startTime"
+                  style={styles.input}
+                  placeholder={i18n.t('select_start_time')}
+                  placeholderTextColor='#aaa'
+                  value={startTime ? formatTime(startTime) : ''}
+                  editable={false}
+                  onPressIn={() => toggleTimePicker('start')}
+                />
+              </Pressable>
             </View>
-            <View style={{flexDirection: 'column'}}>
-            <Text  style={{marginHorizontal: 10, color: Colors.grey100}}>{i18n.t('to')}</Text>
-            <Pressable onPress={() => toggleTimePicker('end')}>
-              <TextInput
-                name="endTime"
-                style={styles.input}
-                placeholder={i18n.t('select_end_time')}
-                value={endTime ? formatTime(endTime) : ''}
-                editable={false}
-                onPressIn={() => toggleTimePicker('end')}
-              />
-            </Pressable>
+            <View style={{ flexDirection: 'column' }}>
+              <Text style={{ marginHorizontal: 10, color: Colors.grey100 }}>{i18n.t('to')}</Text>
+              <Pressable onPress={() => toggleTimePicker('end')}>
+                <TextInput
+                  name="endTime"
+                  style={styles.input}
+                  placeholder={i18n.t('select_end_time')}
+                  placeholderTextColor='#aaa'
+                  value={endTime ? formatTime(endTime) : ''}
+                  editable={false}
+                  onPressIn={() => toggleTimePicker('end')}
+                />
+              </Pressable>
             </View>
             <TouchableOpacity
               onPress={() =>
@@ -404,8 +414,8 @@ const styles = StyleSheet.create({
   },
   topContainer: {
     backgroundColor: 'white',
-    marginBottom: 20,
-    paddingBottom: 20,
+    marginBottom: Platform.OS == 'ios' ? 20 : 5,
+    paddingBottom: windowHeight * 0.005,
     borderBottomColor: Colors.grey100,
     borderBottomWidth: 1,
   },
@@ -418,37 +428,48 @@ const styles = StyleSheet.create({
   bar: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: 10,
+    // marginBottom: 10,
     backgroundColor: Colors.grey100,
     borderRadius: 20,
     paddingHorizontal: 10,
-    paddingVertical: 10,
+    paddingVertical: windowHeight * 0.01,
     margin: 10,
-    marginBottom: 20,
+    marginBottom: Platform.OS == 'ios' ? 20 : 10,
   },
   variantButton: {
     paddingHorizontal: 30,
-    paddingVertical: 10,
-    borderRadius: 20,
+    paddingVertical: Platform.OS == 'ios' ? 10 : 3,
+    borderRadius: 50,
   },
   variantButtonSelected: {
     backgroundColor: 'white',
+    borderRadius: 20,
+    borderColor: 'transparent'
   },
   timePicker: {
+    // flexDirection: 'row',
+    // marginBottom: 30,
+    // marginTop: 20,
+    // justifyContent: 'space-around',
+    // alignItems: 'center'
     flexDirection: 'row',
     marginBottom: 30,
-    marginTop: 20,
+    marginTop: windowHeight * 0.02,
     justifyContent: 'space-around',
-    alignItems: 'center'
+    alignItems: 'center',
+    width: windowWidth * 0.9, // Adjust width based on window width
+    marginLeft: windowWidth * 0.01,
+    height: windowHeight * 0.06,
 
   },
   input: {
     width: 130,
-    height: 40,
+    height: windowHeight * 0.048,
     backgroundColor: Colors.white100,
     marginRight: 10,
     paddingHorizontal: 10,
     borderRadius: 10,
+    color: 'black'
   },
   addButton: {
     backgroundColor: Colors.grey100,
@@ -484,10 +505,11 @@ const styles = StyleSheet.create({
   },
   timeInput: {
     flex: 1,
-    backgroundColor: Colors.grey100,
+    backgroundColor: Colors.white100,
     marginRight: 10,
     padding: 10,
     borderRadius: 10,
+    color: 'black'
   },
   modalContainer: {
     marginTop: 'auto',
@@ -500,8 +522,9 @@ const styles = StyleSheet.create({
   },
   modalTitle: {
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: "700",
     marginBottom: 20,
+    color: Colors.primary800
   },
   modalButtons: {
     flexDirection: 'row',

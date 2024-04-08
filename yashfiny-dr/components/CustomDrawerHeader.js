@@ -1,13 +1,13 @@
 import React, { useContext } from 'react';
-import { View, Image, Pressable } from 'react-native';
+import { View, Image, Pressable, Dimensions } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { LanguageContext } from '../store/LanguageContext';
 import { Colors } from '../constants/colors';
 
-
+const windowHeight = Dimensions.get('window').height
 const CustomDrawerHeader = ({ navigation }) => {
   const langCtx = useContext(LanguageContext)
-  const notification = true; 
+  const notification = true;
 
   return (
     <View style={styles.container}>
@@ -44,8 +44,8 @@ const CustomDrawerHeader = ({ navigation }) => {
 
 const styles = {
   container: {
-    paddingTop: 70,
-    paddingBottom: 30,
+    paddingTop: windowHeight * 0.06,
+    paddingBottom: windowHeight * 0.02,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',

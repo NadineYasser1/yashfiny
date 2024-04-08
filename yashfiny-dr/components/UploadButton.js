@@ -1,7 +1,6 @@
-import { LinearGradient } from "expo-linear-gradient";
-import React, { useMemo, useState } from "react";
-import { KeyboardAvoidingView, Platform, StyleSheet, View, Text, TextInput, Pressable, ScrollView, Alert } from "react-native";
-import { IconButton, Snackbar } from "react-native-paper";
+import React, { useState } from "react";
+import { StyleSheet, View, Text, Pressable, Alert } from "react-native";
+import { IconButton } from "react-native-paper";
 import { Colors } from "../constants/colors";
 import * as DocumentPicker from 'expo-document-picker';
 
@@ -25,50 +24,52 @@ const UploadButton = ({ label, buttonText, handleSelection }) => {
                             uri: res.uri
                         }
                     ]);
-                }); 
+                });
             }
         } catch (error) {
             Alert.alert(
                 "Error",
                 "An error occurred while selecting document. Please try again later.",
                 [
-                    { text: "OK", onPress: () => {} }
+                    { text: "OK", onPress: () => { } }
                 ],
                 { cancelable: true }
             );
-        } finally {() => {
-           selectedDocuments?.map((document) => {
-            handleSelection(document.name, document)
-           })
+        } finally {
+            () => {
+                selectedDocuments?.map((document) => {
+                    handleSelection(document.name, document)
+                })
 
-        }}
+            }
+        }
     };
     const deleteDocument = (index) => {
         setSelectedDocuments((prev) => prev.filter((_, i) => i !== index));
     };
 
-const getIconName = (type) => {
-    switch(type) {
-        case 'application/pdf': {
-            return 'file-pdf-box'
-        }
-        case 'text/plain': {
-            return 'text-box'
-        }
-        case 'application/msword': {
-            return 'file-word'
-        }
-        case 'image/jpeg' : {
-            return 'image'
-        }
-        case 'image/png' : {
-            return 'image'
-        }
-        default: {
-            return 'text-box'
+    const getIconName = (type) => {
+        switch (type) {
+            case 'application/pdf': {
+                return 'file-pdf-box'
+            }
+            case 'text/plain': {
+                return 'text-box'
+            }
+            case 'application/msword': {
+                return 'file-word'
+            }
+            case 'image/jpeg': {
+                return 'image'
+            }
+            case 'image/png': {
+                return 'image'
+            }
+            default: {
+                return 'text-box'
+            }
         }
     }
-}
     return (
         <View style={styles.container}>
             <View style={styles.inputContainer}>

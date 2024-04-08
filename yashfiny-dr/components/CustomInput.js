@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
 import { Colors } from '../constants/colors';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 const CustomInput = ({ placeholder, onAdd }) => {
     const [price, setPrice] = useState('');
@@ -23,7 +24,7 @@ const CustomInput = ({ placeholder, onAdd }) => {
                 placeholderTextColor='#aaa'
             />
             <TouchableOpacity style={styles.addButton} onPress={handleAdd}>
-                <Text style={styles.addButtonText}>+</Text>
+                <MaterialCommunityIcons name='plus-thick' size={20} color={Colors.accent800} />
             </TouchableOpacity>
         </View>
     );
@@ -59,7 +60,8 @@ const styles = StyleSheet.create({
     addButtonText: {
         color: Colors.accent800,
         fontSize: 22,
-        fontWeight: 'bold',
-        textAlignVertical: 'center'
+        fontWeight: "700",
+        textAlignVertical: 'center',
+        textAlign: 'center'
     },
 });

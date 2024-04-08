@@ -8,8 +8,6 @@ import { IconButton } from "react-native-paper";
 import UploadButton from "../../components/UploadButton";
 import SuccessModal from "../../components/SucessModal";
 
-
-
 const UploadScreen = ({ route, navigation }) => {
 
     const [updatedData, setUpdatedData] = useState(route.params)
@@ -43,18 +41,18 @@ const UploadScreen = ({ route, navigation }) => {
         } else {
             return i18n.t('select_payment_method')
         }
-    }, [updatedData]) 
+    }, [updatedData])
 
     useEffect(() => {
         navigation.setOptions({
-            headerShown: !Success 
+            headerShown: !Success
         });
     }, [Success]);
 
     const renderScreen = () => {
-        if(Success) {
+        if (Success) {
             return (
-                <SuccessModal title={i18n.t('account_created')} text={i18n.t('awaiting_approval_signup_text')} screenName='Login'/>
+                <SuccessModal title={i18n.t('account_created')} text={i18n.t('awaiting_approval_signup_text')} screenName='Login' />
             )
         }
         return (
@@ -84,7 +82,7 @@ const UploadScreen = ({ route, navigation }) => {
                                     placeholder={paymentPlaceHolder}
                                     placeholderTextColor="#aaa"
                                     style={styles.input} />
-    
+
                             </View>
                         </View>
                         <UploadButton label={i18n.t('medical_license')} buttonText={i18n.t('upload_medical_license')} handleSelection={handleSelection} />
@@ -92,20 +90,20 @@ const UploadScreen = ({ route, navigation }) => {
                         <UploadButton label={i18n.t('certificates')} buttonText={i18n.t('upload_certificates')} handleSelection={handleSelection} />
                         <View style={styles.workinghrsContainer}>
                             <Text style={styles.label}>{i18n.t('working_hours')}</Text>
-                            <Pressable style={styles.hoursButton} onPress={()=> navigation.navigate('Availability')}>
+                            <Pressable style={styles.hoursButton} onPress={() => navigation.navigate('Availability')}>
                                 <IconButton icon='calendar-clock' iconColor={Colors.primary800} size={25} />
                                 <Text style={{ color: Colors.primary800 }}>{i18n.t('add_working_hours')}</Text>
                             </Pressable>
                             <Text style={styles.text}>{i18n.t('you_can_edit_workinghrs_txt')}</Text>
                         </View>
-    
+
                         <TouchableOpacity
                             style={styles.continueButton}
                             onPress={() => setSuccess(true)}
                         >
                             <Text style={styles.continueButtonText}>{i18n.t("done")}</Text>
                         </TouchableOpacity>
-    
+
                     </ScrollView>
                 </KeyboardAvoidingView>
             </LinearGradient>
@@ -114,7 +112,7 @@ const UploadScreen = ({ route, navigation }) => {
 
     return (<>
         {renderScreen()}
-        </>
+    </>
     )
 }
 export default UploadScreen;
@@ -129,7 +127,7 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         color: Colors.grey100,
         fontSize: 18,
-        fontWeight: 600,
+        fontWeight: "600",
         marginTop: 30,
         paddingBottom: 5,
         paddingRight: 10,
@@ -202,7 +200,7 @@ const styles = StyleSheet.create({
         textAlign: 'left',
         color: 'grey',
         fontSize: 13,
-        fontWeight: 600,
+        fontWeight: "600",
         marginTop: 5,
         paddingBottom: 5,
         paddingRight: 10,

@@ -8,6 +8,8 @@ import {
   Text,
   KeyboardAvoidingView,
   Platform,
+  Alert,
+  Dimensions
 } from "react-native";
 import { useContext, useState } from "react";
 import { LanguageContext } from "../../store/LanguageContext";
@@ -17,7 +19,6 @@ import { LinearGradient } from "expo-linear-gradient";
 import { AuthContext } from "../../store/AuthContext";
 import axios from "axios";
 import { API } from "../../utils/config";
-import { LoadingContext } from "../../store/LoadingContext";
 import { ActivityIndicator } from "react-native-paper";
 
 const LoginScreen = ({ navigation }) => {
@@ -26,7 +27,7 @@ const LoginScreen = ({ navigation }) => {
   const [loginData, setLoginData] = useState()
   const [loading, setLoading] = useState(false)
 
-  const handleInputChange = (key,val) => {
+  const handleInputChange = (key, val) => {
     setLoginData((prev) => ({
       ...prev,
       [key]: val
@@ -36,11 +37,18 @@ const LoginScreen = ({ navigation }) => {
   const handleLogin = () => {
     setLoading(true)
     axios.post(API.login, loginData
-      ).then(({data}) => { 
-         authCtx.authenticate(data.token)
-        }).catch((err) => { 
-      console.log(err)
-    }).finally(()=> setLoading(false))
+    ).then(({ data }) => {
+      authCtx.authenticate(data.token)
+    }).catch((err) => {
+      Alert.alert(
+        "Error",
+        err.response.data.message,
+        [
+          { text: "OK", onPress: () => { } }
+        ],
+        { cancelable: true }
+      );
+    }).finally(() => setLoading(false))
   }
 
   return (
@@ -86,7 +94,7 @@ const LoginScreen = ({ navigation }) => {
             textContentType="emailAddress"
             onChangeText={(val) => handleInputChange('name', val)}
           />
-          
+
           <TextInput
             placeholder={i18n.t("password")}
             style={styles.input}
@@ -110,11 +118,11 @@ const LoginScreen = ({ navigation }) => {
             </Text>
           </TouchableOpacity>
         </View>
-        <View style={{marginTop: 50}}>
-        <ActivityIndicator 
-        animating={loading}
-        size='large'
-        color={Colors.primary800}/>
+        <View style={{ marginTop: 3 }}>
+          <ActivityIndicator
+            animating={loading}
+            size='large'
+            color={Colors.primary800} />
         </View>
         <View style={styles.signupTextContainer}>
           <Text style={styles.signupText}>
@@ -134,6 +142,8 @@ const LoginScreen = ({ navigation }) => {
 
   );
 };
+const deviceWidth = Dimensions.get('window').width
+const deviceHeight = Dimensions.get('window').height
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -173,7 +183,7 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     color: "white",
     fontSize: 16,
-    fontWeight: 600,
+    fontWeight: "600",
     marginTop: 15,
   },
   loginButton: {
@@ -194,7 +204,7 @@ const styles = StyleSheet.create({
     alignSelf: "center",
   },
   signupTextContainer: {
-    marginTop: 100,
+    marginTop: Platform.OS == 'ios' ? 150 : 0,
     display: "flex",
     flexDirection: "row",
     justifyContent: "center",

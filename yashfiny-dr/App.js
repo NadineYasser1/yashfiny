@@ -1,8 +1,8 @@
 import "react-native-gesture-handler";
 import { StatusBar } from "expo-status-bar";
-import { NavigationContainer, DefaultTheme } from "@react-navigation/native";
+import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
-import { Alert, StyleSheet, Text, Pressable, View } from "react-native";
+import { Dimensions, Platform, StyleSheet, View } from "react-native";
 import {
   Menu,
   IconButton,
@@ -41,11 +41,12 @@ import LoadingScreen from "./components/LoadingScreen";
 import EditProfileDrawer from "./components/EditProfileDrawer";
 import { useFonts } from "expo-font";
 import CustomDrawerHeader from "./components/CustomDrawerHeader";
-import LoadingContextProvider, { LoadingContext } from "./store/LoadingContext";
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 const Drawer = createDrawerNavigator();
+const windowHeight = Dimensions.get('window').height
+const windowWidth = Dimensions.get('window').width
 
 const MenuView = ({ tintColor }) => {
   const [menuVisible, setMenuVisible] = useState(false);
@@ -85,9 +86,10 @@ const MenuView = ({ tintColor }) => {
     </PaperProvider>
   );
 };
-function CustomDrawerContent(props) {
+const CustomDrawerContent = (props) => {
   const authCtx = useContext(AuthContext)
   const langCtx = useContext(LanguageContext)
+
   return (
     <DrawerContentScrollView {...props}>
       <EditProfileDrawer />
@@ -96,6 +98,7 @@ function CustomDrawerContent(props) {
         label={i18n.t('other_lang')}
         activeTintColor="white"
         inactiveTintColor="white"
+        labelStyle={{ textAlign: 'left' }}
         onPress={() => langCtx.changeLang(langCtx.locale === "ar" ? "en" : "ar")}
         icon={({ color, size }) => <MaterialCommunityIcons name='earth' color={color} size={size} />} />
       <View style={{ marginTop: 10 }}>
@@ -109,8 +112,9 @@ function CustomDrawerContent(props) {
     </DrawerContentScrollView>
   );
 }
+
 const DrawerNav = () => {
-  const notification = false
+
   return (
     <Drawer.Navigator
       drawerContent={(props) => <CustomDrawerContent {...props} />}
@@ -176,7 +180,7 @@ const TabsNavigator = () => {
       <Tab.Navigator screenOptions={{
         tabBarActiveTintColor: Colors.primary800,
         tabBarInactiveTintColor: Colors.grey300,
-        headerStyle: { backgroundColor: Colors.primary800, height: 120 },
+        headerStyle: { backgroundColor: Colors.primary800, height: windowHeight > 650 ? 120 : 80 },
         headerTintColor: 'white'
       }}>
         <Tab.Screen name="Dashboard" component={DrawerNav} options={{
@@ -352,7 +356,7 @@ const AuthenticatedStack = () => {
   return <TabsNavigator />
 };
 
-function Navigation() {
+const Navigation = () => {
   const authCtx = useContext(AuthContext);
   return (
     <>
@@ -442,23 +446,22 @@ const styles = StyleSheet.create({
 });
 
 
-export default function App() {
+export default App = () => {
+
   const [isLoaded] = useFonts({
     "boahmed-alharf-bold": require("./assets/fonts/boahmed-alharf-bold.ttf"),
     "boulder-regular": require("./assets/fonts/boulder-regular.ttf"),
   });
-  const loadingCtx = useContext(LoadingContext)
-  
-  if (!isLoaded || loadingCtx.isLoading) {
+
+  if (!isLoaded) {
     return <LoadingScreen />
   }
+
   return (
-    <LoadingContextProvider>
-      <AuthContextProvider>
-        <LangContextProvider>
-          <Root />
-        </LangContextProvider>
-      </AuthContextProvider>
-      </LoadingContextProvider>
+    <AuthContextProvider>
+      <LangContextProvider>
+        <Root />
+      </LangContextProvider>
+    </AuthContextProvider>
   );
 }

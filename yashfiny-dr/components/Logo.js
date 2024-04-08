@@ -31,21 +31,21 @@ const Logo = () => {
 
 const styles = StyleSheet.create({
   logoContainer: {
-    marginRight: '220', 
-    width: 150, 
-    height: 60, 
-    flexDirection: 'column', 
-    justifyContent: "right", 
+    marginRight: '220',
+    width: 150,
+    height: 60,
+    flexDirection: 'column',
+    justifyContent: "right",
     alignItems: "center",
   },
   logo: {
-    width: 50, 
-    height: 60, 
-    marginRight: 0, 
+    width: 50,
+    height: 60,
+    marginRight: 0,
   },
   brandName: {
-    width: 70, 
-    height: 30, 
+    width: 70,
+    height: 30,
   },
 });
 

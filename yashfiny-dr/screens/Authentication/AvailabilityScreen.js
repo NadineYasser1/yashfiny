@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useContext, useEffect, useMemo, useState } from 'react';
 import {
   View,
   Text,
@@ -18,11 +18,16 @@ import { Colors } from '../../constants/colors';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import i18n from '../../i18n';
 import CustomDropdown from '../../components/CustomDropDown';
+import { HideTabContext } from '../../store/HideTabContext';
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
-const AvailabilityScreen = () => {
+const AvailabilityScreen = ({ navigation }) => {
+  const hideTabCtx = useContext(HideTabContext)
+  useEffect(() => {
+    hideTabCtx.hideTab(true)
+  }, [])
   const currentDate = new Date();
 
   const year = currentDate.getFullYear();
@@ -40,6 +45,7 @@ const AvailabilityScreen = () => {
   const [editingIndex, setEditingIndex] = useState(null);
   const [isEditingModalVisible, setIsEditingModalVisible] = useState(false);
   const [isSwitchOn, setIsSwitchOn] = useState(false)
+  const [newChanges, setNewChanges] = useState(false)
 
   const addSlot = () => {
     if (startTime && endTime) {
@@ -54,6 +60,7 @@ const AvailabilityScreen = () => {
       }));
       setStartTime('')
       setEndTime('')
+      setNewChanges(true)
     } else {
       Alert.alert(i18n.t('time_slot_alert'))
     }
@@ -71,6 +78,7 @@ const AvailabilityScreen = () => {
         [selectedDay]: updatedSlots,
       }));
     }
+    setNewChanges(true)
   };
 
   const editSlot = (index) => {
@@ -95,6 +103,7 @@ const AvailabilityScreen = () => {
     setStartTime('');
     setEndTime('');
     setIsEditingModalVisible(false);
+    setNewChanges(true)
   };
 
   const toggleTimePicker = (type) => {
@@ -153,8 +162,6 @@ const AvailabilityScreen = () => {
   };
 
   const renderModalTimePicker = () => {
-
-    console.log(showModalPicker)
     if (showModalPicker && isEditingModalVisible) {
       return (
         <View>
@@ -228,7 +235,10 @@ const AvailabilityScreen = () => {
   const formatTime = (time) => {
     return time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
   };
-
+  const handleSave = () => {
+    hideTabCtx.hideTab(false)
+    navigation.goBack()
+  }
   return (
     <View style={styles.container}>
       <Modal
@@ -356,7 +366,7 @@ const AvailabilityScreen = () => {
         </View>
       </View>
       <View contentContainerStyle={styles.content}>
-        <View style={{ backgroundColor: 'white', borderRadius: 20, marginHorizontal: 8, padding: 8, height: windowHeight * 0.5 }}>
+        <View style={{ backgroundColor: 'white', borderRadius: 20, marginHorizontal: 8, padding: 8, height: windowHeight > 800 ? windowHeight * 0.43 : windowHeight * 0.45 }}>
           <View style={styles.timePicker}>
             <View style={{ flexDirection: 'column' }}>
               <Text style={{ marginHorizontal: 10, color: Colors.grey100 }}>{i18n.t('from')}</Text>
@@ -402,6 +412,11 @@ const AvailabilityScreen = () => {
             {renderSelectedSlots()}
           </ScrollView>
         </View>
+        {newChanges && <View style={styles.saveButton}>
+          <TouchableOpacity style={styles.button} onPress={handleSave}>
+            <Text style={styles.saveButtonText}>{i18n.t("save")}</Text>
+          </TouchableOpacity>
+        </View>}
       </View>
     </View>
   );
@@ -543,29 +558,29 @@ const styles = StyleSheet.create({
   iosPickerButtons: {
     flexDirection: "row",
     justifyContent: "center",
-    padding: 20,
+    padding: 4,
   },
   confirmButton: {
     borderRadius: 20,
-    padding: 12,
+    padding: 5,
     backgroundColor: Colors.primary600,
-    paddingHorizontal: 20,
+    paddingHorizontal: 10,
     marginHorizontal: 20,
   },
   cancelButton: {
     borderRadius: 20,
-    padding: 12,
-    paddingHorizontal: 20,
+    padding: 5,
+    paddingHorizontal: 10,
     backgroundColor: 'white',
     marginHorizontal: 20
   },
   confirmText: {
-    fontSize: 16,
+    fontSize: 14,
     color: 'white'
 
   },
   cancelText: {
-    fontSize: 16,
+    fontSize: 14,
     color: Colors.primary700
   },
   updateButtonContainer: {
@@ -600,6 +615,22 @@ const styles = StyleSheet.create({
     alignContent: 'center',
     justifyContent: 'center',
     alignItems: 'center'
+  },
+  saveButton: {
+    marginTop: 20,
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  button: {
+    backgroundColor: Colors.primary800,
+    borderRadius: 20
+  },
+  saveButtonText: {
+    paddingHorizontal: 40,
+    paddingVertical: 8,
+    color: 'white',
+    fontSize: 15,
+    fontWeight: "600"
   }
 
 });

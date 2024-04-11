@@ -41,6 +41,23 @@ import LoadingScreen from "./components/LoadingScreen";
 import EditProfileDrawer from "./components/EditProfileDrawer";
 import { useFonts } from "expo-font";
 import CustomDrawerHeader from "./components/CustomDrawerHeader";
+import AssistantsScreen from "./screens/HomeStack/Assistant/AssistantsScreen";
+import AssistantDetailsScreen from "./screens/HomeStack/Assistant/AssistantDetailsScreen";
+import EditAssitantProfileScreen from "./screens/HomeStack/Assistant/EditAssistantProfileScreen";
+import NewAssistantScreen from "./screens/HomeStack/Assistant/NewAssistantScreen";
+import PromotionsScreen from "./screens/HomeStack/PromotionsScreen";
+import ActivitiesScreen from "./screens/HomeStack/ActivitiesScreen";
+import IncomeScreen from "./screens/HomeStack/Income/IncomeScreen";
+import IncomeDetailsScreen from "./screens/HomeStack/Income/IncomeDetailsScreen";
+import NewPatientScreen from "./screens/HomeStack/NewPatientScreen";
+import NewArticleScreen from "./screens/Drawer/NewArticleScreen";
+import PatientDetails from "./screens/PatientsStack/PatientDetails";
+import VisitResults from "./screens/PatientsStack/VisitResults";
+import AddDrug from "./screens/PatientsStack/AddDrug";
+import ClinicRequestsScreen from "./screens/Tabs/ClinicRequestsScreen";
+import VideoRequestsScreen from "./screens/Tabs/VideoRequestsScreen";
+import SpecialRequestsScreen from "./screens/Tabs/SpecialRequestsScreen";
+import HideTabContextProvider, { HideTabContext } from "./store/HideTabContext";
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -112,13 +129,169 @@ const CustomDrawerContent = (props) => {
     </DrawerContentScrollView>
   );
 }
+const AssistantStack = () => {
+  return (
+    <Stack.Navigator
+      initialRouteName="Assistants Screen"
+      screenOptions={{
+        headerStyle: { backgroundColor: Colors.primary800 },
+        headerTintColor: "white",
+        // headerTitleStyle: { color: "transparent" },
+        headerBackTitleVisible: false,
+        // headerShadowVisible: false,
+      }}
+    >
+      <Stack.Screen name="Assistants Screen" component={AssistantsScreen} options={{ headerShown: false }} />
+      <Stack.Screen name="Assistant Details" component={AssistantDetailsScreen} />
+      <Stack.Screen name="Edit Assistant" component={EditAssitantProfileScreen} />
+      <Stack.Screen name="New Assistant" component={NewAssistantScreen} />
+    </Stack.Navigator>
+  )
+}
 
+const IncomeStack = () => {
+  return (
+    <Stack.Navigator
+      initialRouteName="Income Screen"
+      screenOptions={{
+        headerStyle: { backgroundColor: Colors.primary800 },
+        headerTintColor: "white",
+        // headerTitleStyle: { color: "transparent" },
+        headerBackTitleVisible: false,
+        // headerShadowVisible: false,
+      }}
+    >
+      <Stack.Screen name="Income Screen" component={IncomeScreen} options={{ headerShown: false }} />
+      <Stack.Screen name="Income Details" component={IncomeDetailsScreen} />
+    </Stack.Navigator>
+  )
+}
+const ArticlesStack = () => {
+  return (
+    <Stack.Navigator
+      initialRouteName="Articles Screen"
+      screenOptions={{
+        headerStyle: { backgroundColor: Colors.primary800 },
+        headerTintColor: "white",
+        // headerTitleStyle: { color: "transparent" },
+        headerBackTitleVisible: false,
+        // headerShadowVisible: false,
+      }}
+    >
+      <Stack.Screen name="Articles Screen" component={ArticlesScreen} options={{ headerShown: false }} />
+      <Stack.Screen name="New Article" component={NewArticleScreen} />
+    </Stack.Navigator>
+  )
+}
+const DashboardStack = () => {
+  return (
+    <Stack.Navigator
+      initialRouteName="Home"
+      screenOptions={{
+        headerStyle: { backgroundColor: Colors.primary800 },
+        headerTintColor: "white",
+        // headerTitleStyle: { color: "transparent" },
+        headerBackTitleVisible: false,
+        // headerShadowVisible: false,
+      }}
+    >
+      <Stack.Screen
+        name="Home"
+        component={HomeScreen}
+        options={{
+          header: ({ navigation }) => <CustomDrawerHeader navigation={navigation} />,
+
+          headerStyle: { height: 200 },
+          headerTitleStyle: { color: 'transparent' },
+          // headerShown: false
+
+        }}
+      />
+      <Stack.Screen name="Availability" component={AvailabilityScreen} options={{
+        animationTypeForReplace: 'pop',
+        presentation: 'modal',
+        tabBarVisible: false,
+        headerStyle: { height: 100 },
+        header: ({ navigation, route, options, back }) => {
+          const title = getHeaderTitle(options, route.name)
+          return (
+            <CustomHeader
+              title={title}
+              navigation={navigation}
+              style={options.headerStyle} />
+          )
+        }
+
+      }} />
+      <Stack.Screen name="Assistants" component={AssistantStack} />
+      <Stack.Screen name="Promotions" component={PromotionsScreen} />
+      <Stack.Screen name="Activities" component={ActivitiesScreen} />
+      <Stack.Screen name="Income" component={IncomeStack} />
+      <Stack.Screen name="NewPatient" component={NewPatientScreen} options={{
+        animationTypeForReplace: 'pop',
+        presentation: 'modal',
+        tabBar: { visible: false },
+        headerStyle: { height: 100 },
+        header: ({ navigation, route, options, back }) => {
+          const title = getHeaderTitle(options, route.name)
+          return (
+            <CustomHeader
+              title={title}
+              navigation={navigation}
+              style={options.headerStyle} />
+          )
+        }
+
+      }} />
+    </Stack.Navigator>
+  )
+}
+const PatientsStack = () => {
+  return (
+    <Stack.Navigator
+      initialRouteName="PatientsScreen"
+      screenOptions={{
+        headerStyle: { backgroundColor: Colors.primary800 },
+        headerTintColor: "white",
+        // headerTitleStyle: { color: "transparent" },
+        headerBackTitleVisible: false,
+        // headerShadowVisible: false,
+      }}
+    >
+      <Stack.Screen name="PatientsScreen" component={PatientsScreen} options={{ headerShown: false }} />
+      <Stack.Screen name="PatientDetails " component={PatientDetails} />
+      <Stack.Screen name="VisitResults" component={VisitResults} />
+      <Stack.Screen name="AddDrug" component={AddDrug} />
+    </Stack.Navigator>
+  )
+}
+const RequestsStack = () => {
+
+  return (
+    <Stack.Navigator
+      initialRouteName="RequestsScreen"
+      screenOptions={{
+        headerStyle: { backgroundColor: Colors.primary800 },
+        headerTintColor: "white",
+        // headerTitleStyle: { color: "transparent" },
+        headerBackTitleVisible: false,
+        // headerShadowVisible: false,
+      }}
+    >
+      <Stack.Screen name="RequestsScreen" component={RequestsScreen} options={{ headerShown: false }} />
+      <Stack.Screen name="ClinicRequests" component={ClinicRequestsScreen} />
+      <Stack.Screen name="VideoRequests" component={VideoRequestsScreen} />
+      <Stack.Screen name="SpecialRequests" component={SpecialRequestsScreen} />
+    </Stack.Navigator>
+  )
+
+}
 const DrawerNav = () => {
 
   return (
     <Drawer.Navigator
       drawerContent={(props) => <CustomDrawerContent {...props} />}
-      initialRouteName="Home"
+      initialRouteName="HomeStack"
       screenOptions={{
         headerStyle: { backgroundColor: Colors.primary800, height: 120 },
         headerTintColor: 'white',
@@ -128,13 +301,10 @@ const DrawerNav = () => {
         drawerItemStyle: { marginVertical: 10 },
       }}
     >
-      <Drawer.Screen name="Home" component={HomeScreen} options={{
-        header: ({ navigation }) => <CustomDrawerHeader navigation={navigation} />,
-
-        headerStyle: { height: 200 },
+      <Drawer.Screen name="HomeStack" component={DashboardStack} options={{
         drawerLabel: i18n.t('home'),
+        headerShown: false,
         drawerIcon: ({ color, size }) => (<MaterialCommunityIcons name="home" color={color} size={size} />),
-
       }} />
       <Drawer.Screen name="Messages" component={MessagesScreen} options={{
         drawerLabel: i18n.t('messages'),
@@ -142,7 +312,7 @@ const DrawerNav = () => {
       }} />
       <Drawer.Screen
         name="Articles"
-        component={ArticlesScreen}
+        component={ArticlesStack}
         options={{
           drawerLabel: i18n.t('articles'),
           drawerIcon: ({ color, size }) => (
@@ -175,14 +345,18 @@ const DrawerNav = () => {
 }
 
 const TabsNavigator = () => {
+  const hideTabCtx = useContext(HideTabContext)
   return (
     <NavigationContainer>
       <Tab.Navigator screenOptions={{
         tabBarActiveTintColor: Colors.primary800,
         tabBarInactiveTintColor: Colors.grey300,
         headerStyle: { backgroundColor: Colors.primary800, height: windowHeight > 650 ? 120 : 80 },
-        headerTintColor: 'white'
-      }}>
+        headerTintColor: 'white',
+        tabBarStyle: hideTabCtx.hidden && { display: 'none' },
+        tabBarBadgeStyle: hideTabCtx.hidden && { display: 'none' },
+      }}
+      >
         <Tab.Screen name="Dashboard" component={DrawerNav} options={{
           tabBarIcon: ({ color, size }) => <MaterialCommunityIcons name="home" color={color} size={size} />,
           headerTitleStyle: { color: 'transparent' },
@@ -193,11 +367,11 @@ const TabsNavigator = () => {
           tabBarIcon: ({ color, size }) => <MaterialCommunityIcons name="calendar-blank" color={color} size={size} />,
           tabBarLabel: i18n.t('appointments')
         }} />
-        <Tab.Screen name="Patients" component={PatientsScreen} options={{
+        <Tab.Screen name="Patients" component={PatientsStack} options={{
           tabBarIcon: ({ color, size }) => <MaterialCommunityIcons name="account-group" color={color} size={size} />,
           tabBarLabel: i18n.t('patients')
         }} />
-        <Tab.Screen name="Requests" component={RequestsScreen} options={{
+        <Tab.Screen name="Requests" component={RequestsStack} options={{
           tabBarIcon: ({ color, size }) => <MaterialCommunityIcons name="link" color={color} size={size} />,
           tabBarLabel: i18n.t('requests')
         }} />
@@ -353,7 +527,10 @@ const AuthStack = () => {
 };
 
 const AuthenticatedStack = () => {
-  return <TabsNavigator />
+  return (<HideTabContextProvider>
+    <TabsNavigator />
+  </HideTabContextProvider>
+  )
 };
 
 const Navigation = () => {

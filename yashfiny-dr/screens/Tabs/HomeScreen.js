@@ -13,7 +13,7 @@ import { Link } from '@react-navigation/native';
 import { DummyPatients } from '../../constants/DummyPatientsData';
 import ListItem from '../../components/ListItem';
 const windowHeight = Dimensions.get('window').height
-const HomeScreen = () => {
+const HomeScreen = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
@@ -43,6 +43,7 @@ const HomeScreen = () => {
                 style={{
                   flexDirection: 'row',
                 }}
+                onPress={() => navigation.navigate("NewPatient")}
               >
                 <View style={styles.addButton}>
                   <MaterialCommunityIcons
@@ -67,12 +68,14 @@ const HomeScreen = () => {
               iconColor="white"
               iconSize={26}
               label={i18n.t('recents')}
+              onPress={() => navigation.navigate('Activities')}
             />
             <DashboardButton
               icon="sale"
               iconColor="white"
               iconSize={26}
               label={i18n.t('promotion')}
+              onPress={() => navigation.navigate("Promotions")}
             />
           </View>
           <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
@@ -81,16 +84,18 @@ const HomeScreen = () => {
               iconColor="white"
               iconSize={26}
               label={i18n.t('assistants')}
+              onPress={() => navigation.navigate("Assistants")}
             />
             <DashboardButton
               icon="clock-edit"
               iconColor="white"
               iconSize={26}
               label={i18n.t('availability')}
+              onPress={() => navigation.navigate("Availability")}
             />
           </View>
         </View>
-        <Pressable style={{ width: '46%', height: '100%', marginRight: 20 }}>
+        <Pressable style={{ width: '46%', height: '100%', marginRight: 20 }} onPress={() => navigation.navigate("Income")}>
           <MonthlyEarningsCard />
         </Pressable>
       </View>

@@ -8,9 +8,9 @@ import { Avatar } from "react-native-elements";
 import DiseasePatch from './DiseasePatch';
 import AptTypePatch from './AptTypePatch';
 
-const windowWidth = Dimensions.get('window').width
-const ListItem = ({ avatarUri, fname, lname, aptDate, gender, age, id, phone, diseases, aptType }) => {
+const windowWidth = Dimensions.get('window').width;
 
+const ListItem = ({ avatarUri, fname, lname, aptDate, gender, age, id, phone, diseases, aptType }) => {
     return (
         <Pressable>
             <Card style={styles.card}>
@@ -20,16 +20,16 @@ const ListItem = ({ avatarUri, fname, lname, aptDate, gender, age, id, phone, di
                         source={{ uri: avatarUri }}
                         size={45}
                     />
-                    <View style={styles.mainContainer}>
+                    <View style={styles.infoContainer}>
                         <View style={styles.headerCont}>
                             <Text style={styles.nameLabel}>{`${fname} ${lname}`}</Text>
                             <Text style={styles.dateLabel}>{dayjs(aptDate).format('DD MMMM, hh:mm A')}</Text>
                         </View>
-                        <View style={styles.infoContainer}>
+                        <View style={styles.infoRow}>
                             <Text style={styles.genderLabel}>{gender + ' .'}</Text>
                             <Text style={styles.ageLabel}>{age + i18n.t('yrs')}</Text>
                         </View>
-                        <View style={styles.infoContainer}>
+                        <View style={styles.infoRow}>
                             <Text style={styles.infoLabel}>{i18n.t('id') + ':' + id}</Text>
                             <Text style={styles.phoneLabel}>{i18n.t('phone') + ':' + phone}</Text>
                         </View>
@@ -37,9 +37,7 @@ const ListItem = ({ avatarUri, fname, lname, aptDate, gender, age, id, phone, di
                 </View>
                 <View style={styles.patchesContainer}>
                     <View style={styles.diseasesContainer}>
-                        {
-                            diseases.map((disease, index) => <DiseasePatch disease={disease} key={index} />)
-                        }
+                        {diseases.map((disease, index) => <DiseasePatch disease={disease} key={index} />)}
                     </View>
                     <AptTypePatch type={aptType} />
                 </View>
@@ -53,8 +51,9 @@ export default ListItem;
 const styles = StyleSheet.create({
     container: {
         flexDirection: 'row',
-        alignItems: 'center',
-        paddingLeft: 2
+        alignItems: 'flex-start',
+        // paddingHorizontal: 1,
+        // paddingVertical: 4,
     },
     card: {
         elevation: 3, //shadow for android
@@ -63,61 +62,60 @@ const styles = StyleSheet.create({
         shadowOffset: { width: 0, height: 0.1 },
         shadowRadius: 2,
         shadowOpacity: 0.2,
-        marginHorizontal: 12
+        marginHorizontal: 12,
+        marginVertical: 1,
+        padding: 10
     },
-    mainContainer: {
-        marginLeft: 10
+    infoContainer: {
+        marginLeft: 10,
+        flex: 1,
     },
     headerCont: {
         flexDirection: 'row',
-        justifyContent: 'space-between'
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginBottom: 4,
     },
     nameLabel: {
         fontWeight: "700",
         fontSize: 15,
         color: 'black',
         marginBottom: 1,
-        marginRight: windowWidth > 400 ? windowWidth * 0.15 : windowWidth * 0.07
     },
     dateLabel: {
         fontWeight: "500",
         fontSize: 13,
-        color: Colors.grey300
+        color: Colors.grey300,
     },
-    infoContainer: {
+    infoRow: {
         flexDirection: 'row',
         alignItems: 'center',
-        marginLeft: 4,
-        marginBottom: 2
+        marginBottom: 2,
     },
     genderLabel: {
         fontSize: 11,
-        marginRight: 2
+        marginRight: 2,
     },
     ageLabel: {
-        fontSize: 11
+        fontSize: 11,
     },
     infoLabel: {
         fontSize: 11,
-        marginRight: 25
+        marginRight: 25,
     },
     phoneLabel: {
-        fontSize: 11
+        fontSize: 11,
     },
     patchesContainer: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        marginTop: 5
+        marginTop: 5,
+        paddingHorizontal: 10,
     },
     diseasesContainer: {
         flexDirection: 'row',
         alignItems: 'center',
         flex: 1,
-        marginLeft: windowWidth * 0.12
-    }
-
-
-
-
-
+        marginLeft: 35
+    },
 });

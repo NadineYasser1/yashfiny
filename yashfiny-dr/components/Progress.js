@@ -6,7 +6,7 @@ const Progress = ({ month, progress }) => {
     <View style={{ alignItems: 'center', flex: 1 }}>
       <View style={{ transform: [{ rotate: '270deg' }] }}>
         <ProgressBar progress={progress}
-          width={80}
+          width={50}
           height={10}
           borderRadius={10}
           borderWidth={0}
@@ -25,7 +25,7 @@ const Progress = ({ month, progress }) => {
 const styles = StyleSheet.create({
   monthLabel: {
     color: 'white',
-    marginTop: 40,
+    marginTop: 23,
     fontSize: 10
   }
 })

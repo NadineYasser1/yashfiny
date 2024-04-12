@@ -13,9 +13,9 @@ const CustomHeader = ({ title, navigation }) => {
   return (
     <View style={{ backgroundColor: Colors.primary800, flexDirection: 'row-reverse', justifyContent: 'space-between', alignItems: 'center', padding: 16, height: 80 }}>
       <TouchableOpacity onPress={handleCancel}>
-        <Text style={{ color: Colors.grey100, fontSize: 15, paddingRight: 10 }}>{i18n.t('cancel')}</Text>
+        <Text style={{ color: Colors.grey100, fontSize: 15, paddingRight: 10, paddingTop: 25 }}>{i18n.t('cancel')}</Text>
       </TouchableOpacity>
-      <Text style={{ color: 'white', fontSize: 18 }} >{title}</Text>
+      <Text style={{ color: 'white', fontSize: 18, paddingTop: 25 }} >{title}</Text>
       <View style={{ width: 60 }}></View>
     </View>
   );

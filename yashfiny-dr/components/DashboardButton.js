@@ -33,5 +33,6 @@ const styles = StyleSheet.create({
     },
     label: {
         color: Colors.primary800,
+        fontSize: 11
     }
 })

@@ -105,9 +105,9 @@ const translations = {
     upcoming_apts: 'Upcoming Appointments',
     view_all: 'View All',
     yrs: 'Yrs',
-    id: 'ID'
-
-
+    id: 'ID',
+    error: 'Error',
+    new_patient: 'New Patient'
   },
   ar: {
     login_assistant: 'تسجيل الدخول كمساعد ',

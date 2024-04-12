@@ -45,7 +45,7 @@ const CustomDrawerHeader = ({ navigation }) => {
 const styles = {
   container: {
     paddingTop: windowHeight * 0.06,
-    paddingBottom: windowHeight * 0.02,
+    paddingBottom: windowHeight * 0.012,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',

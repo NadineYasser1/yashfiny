@@ -13,7 +13,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     padding: 16,
     marginHorizontal: 24,
-    marginTop: deviceWidth < 380 ? 12 : 24,
+    marginTop: deviceWidth < 380 ? 6 : 12,
     backgroundColor: 'white',
     borderRadius: 8,
     elevation: 4, //shadow for android

@@ -58,6 +58,7 @@ import ClinicRequestsScreen from "./screens/Tabs/ClinicRequestsScreen";
 import VideoRequestsScreen from "./screens/Tabs/VideoRequestsScreen";
 import SpecialRequestsScreen from "./screens/Tabs/SpecialRequestsScreen";
 import HideTabContextProvider, { HideTabContext } from "./store/HideTabContext";
+import SearchScreen from "./screens/HomeStack/SearchScreen";
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -201,7 +202,7 @@ const DashboardStack = () => {
         options={{
           header: ({ navigation }) => <CustomDrawerHeader navigation={navigation} />,
 
-          headerStyle: { height: 200 },
+          headerStyle: { height: 150 },
           headerTitleStyle: { color: 'transparent' },
           // headerShown: false
 
@@ -233,16 +234,32 @@ const DashboardStack = () => {
         tabBar: { visible: false },
         headerStyle: { height: 100 },
         header: ({ navigation, route, options, back }) => {
-          const title = getHeaderTitle(options, route.name)
           return (
             <CustomHeader
-              title={title}
+              title={i18n.t('new_patient')}
               navigation={navigation}
               style={options.headerStyle} />
           )
         }
 
       }} />
+      <Stack.Screen name="SearchScreen" component={SearchScreen} options={{
+        animationTypeForReplace: 'pop',
+        presentation: 'modal',
+        tabBar: { visible: false },
+        headerStyle: { height: 100 },
+
+        header: ({ navigation, route, options, back }) => {
+          return (
+            <CustomHeader
+              navigation={navigation}
+              style={options.headerStyle} />
+          )
+        }
+
+
+      }}
+      />
     </Stack.Navigator>
   )
 }

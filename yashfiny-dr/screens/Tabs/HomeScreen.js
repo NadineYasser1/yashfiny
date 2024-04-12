@@ -1,30 +1,32 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { StyleSheet, View, Text, Pressable, Dimensions, FlatList } from 'react-native';
 import { Colors } from '../../constants/colors';
-import { ScrollView } from 'react-native-gesture-handler';
 import Card from '../../components/Card';
-import { Button, SearchBar } from 'react-native-elements';
+import { SearchBar } from 'react-native-elements';
 import i18n from '../../i18n';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import DashboardButton from '../../components/DashboardButton';
-import Progress from '../../components/Progress';
 import MonthlyEarningsCard from '../../components/MonthlyEarningsCard';
-import { Link } from '@react-navigation/native';
 import { DummyPatients } from '../../constants/DummyPatientsData';
 import ListItem from '../../components/ListItem';
 const windowHeight = Dimensions.get('window').height
 const HomeScreen = ({ navigation }) => {
 
+  const handleSearchClick = (data) => {
+    navigation.navigate('SearchScreen')
+  }
+
   return (
     <View style={styles.container}>
       <View style={styles.topContainer}>
-        <View style={{ justifyContent: 'center', paddingTop: 10 }}>
+        <View style={{ justifyContent: 'center', paddingTop: 2 }}>
           <Card>
             <View style={{ paddingTop: 10, width: '100%' }}>
               <SearchBar
                 placeholder={i18n.t('search_home')}
                 lightTheme
                 round
+                onPressIn={handleSearchClick}
                 containerStyle={{
                   backgroundColor: 'white',
                   width: '100%',
@@ -37,8 +39,10 @@ const HomeScreen = ({ navigation }) => {
                 }}
                 inputStyle={{ color: Colors.grey100, fontSize: 13 }}
               />
+
             </View>
-            <View style={{ flexDirection: 'row', marginStart: 18, marginBottom: 20, width: '100%' }}>
+
+            <View style={{ flexDirection: 'row', marginStart: 18, marginBottom: 10, width: '100%' }}>
               <Pressable
                 style={{
                   flexDirection: 'row',
@@ -48,7 +52,7 @@ const HomeScreen = ({ navigation }) => {
                 <View style={styles.addButton}>
                   <MaterialCommunityIcons
                     name="plus-thick"
-                    size={30}
+                    size={20}
                     color={Colors.primary800}
                   />
                 </View>
@@ -60,20 +64,20 @@ const HomeScreen = ({ navigation }) => {
           </Card>
         </View>
       </View>
-      <View style={{ flexDirection: 'row', marginTop: 60 }}>
+      <View style={{ flexDirection: 'row', marginTop: windowHeight * 0.06 }}>
         <View style={styles.dashboardContainer}>
-          <View style={{ flexDirection: 'row', justifyContent: 'center', marginBottom: 15 }}>
+          <View style={{ flexDirection: 'row', justifyContent: 'center', marginBottom: 8 }}>
             <DashboardButton
               icon="history"
               iconColor="white"
-              iconSize={26}
+              iconSize={windowHeight > 900 ? 28 : 20}
               label={i18n.t('recents')}
               onPress={() => navigation.navigate('Activities')}
             />
             <DashboardButton
               icon="sale"
               iconColor="white"
-              iconSize={26}
+              iconSize={windowHeight > 900 ? 28 : 20}
               label={i18n.t('promotion')}
               onPress={() => navigation.navigate("Promotions")}
             />
@@ -82,27 +86,27 @@ const HomeScreen = ({ navigation }) => {
             <DashboardButton
               icon="account-multiple-outline"
               iconColor="white"
-              iconSize={26}
+              iconSize={windowHeight > 900 ? 28 : 20}
               label={i18n.t('assistants')}
               onPress={() => navigation.navigate("Assistants")}
             />
             <DashboardButton
               icon="clock-edit"
               iconColor="white"
-              iconSize={26}
+              iconSize={windowHeight > 900 ? 28 : 20}
               label={i18n.t('availability')}
               onPress={() => navigation.navigate("Availability")}
             />
           </View>
         </View>
-        <Pressable style={{ width: '46%', height: '100%', marginRight: 20 }} onPress={() => navigation.navigate("Income")}>
+        <Pressable style={{ width: '50%', height: '100%', marginRight: 10 }} onPress={() => navigation.navigate("Income")}>
           <MonthlyEarningsCard />
         </Pressable>
       </View>
       <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-        <Text style={{ color: Colors.primary800, marginHorizontal: 20, marginTop: 30, fontWeight: "700", fontSize: 15, paddingBottom: 3 }}>{i18n.t('upcoming_apts')}</Text>
+        <Text style={{ color: Colors.primary800, marginHorizontal: 20, marginTop: 25, fontWeight: "700", fontSize: 15, paddingBottom: 3 }}>{i18n.t('upcoming_apts')}</Text>
         <Pressable>
-          <Text style={{ marginHorizontal: 30, marginTop: 32, fontWeight: "400", fontSize: 12, color: Colors.link }}>{i18n.t('view_all')}</Text>
+          <Text style={{ marginHorizontal: 30, marginTop: 30, fontWeight: "400", fontSize: 12, color: Colors.link }}>{i18n.t('view_all')}</Text>
         </Pressable>
       </View>
       <FlatList
@@ -131,7 +135,7 @@ const styles = StyleSheet.create({
   },
   topContainer: {
     backgroundColor: Colors.primary800,
-    height: windowHeight * 0.15,
+    height: windowHeight > 750 ? windowHeight * 0.13 : windowHeight * 0.16,
     borderBottomLeftRadius: 50,
     borderBottomRightRadius: 50,
   },
@@ -139,16 +143,16 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.white100,
     justifyContent: 'center',
     alignItems: 'center',
-    width: 40,
-    height: 40,
+    width: 35,
+    height: 35,
     borderRadius: 25,
-    marginTop: 14,
+    marginTop: 12,
   },
   createButtonText: {
-    marginTop: 25,
+    marginTop: 20,
     color: Colors.primary800,
     fontWeight: "700",
-    fontSize: 15,
+    fontSize: 14,
     marginLeft: 20,
   },
   dashboardContainer: {

@@ -131,9 +131,9 @@ export const DummyPatients = [
         }
     },
     {
-        id: 2,
-        fname: 'Ahmed',
-        lname: 'Mohamed',
+        id: 245789,
+        fname: 'Adel',
+        lname: 'Mall',
         avatar: 'https://www.gravatar.com/avatar/2c7d99fe281ecd3bcd65ab915bac6dd5?s=250',
         phoneNum: '0123456789',
         gender: 'Female',
@@ -261,7 +261,7 @@ export const DummyPatients = [
     },
     {
         id: 127656,
-        fname: 'Ahmed',
+        fname: 'Ingy',
         lname: 'Mohamed',
         avatar: 'https://www.gravatar.com/avatar/2c7d99fe281ecd3bcd65ab915bac6dd5?s=250',
         phoneNum: '0123456789',
@@ -390,8 +390,8 @@ export const DummyPatients = [
     },
     {
         id: 223456,
-        fname: 'Ahmed',
-        lname: 'Mohamed',
+        fname: 'Ashraf',
+        lname: 'Lo',
         avatar: 'https://www.gravatar.com/avatar/2c7d99fe281ecd3bcd65ab915bac6dd5?s=250',
         phoneNum: '0123456789',
         gender: 'Female',
@@ -520,7 +520,7 @@ export const DummyPatients = [
     {
         id: 123556,
         fname: 'Ahmed',
-        lname: 'Mohamed',
+        lname: 'Aly',
         avatar: 'https://www.gravatar.com/avatar/2c7d99fe281ecd3bcd65ab915bac6dd5?s=250',
         phoneNum: '0123456789',
         gender: 'Female',

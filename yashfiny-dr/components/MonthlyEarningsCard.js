@@ -27,7 +27,7 @@ const MonthlyEarningsCard = () => {
       >
         <View style={styles.header}>
           <Text style={styles.title}>{i18n.t('monthly_earnings')}</Text>
-          <MaterialCommunityIcons name="wallet" size={20} color="white" style={{ marginBottom: 26 }} />
+          <MaterialCommunityIcons name="wallet" size={20} color="white" style={{ marginBottom: 20 }} />
         </View>
         <View style={styles.progressContainer}>
           {incomes.map((inc, index) => (
@@ -36,8 +36,8 @@ const MonthlyEarningsCard = () => {
         </View>
         <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
           <Text style={styles.currentIncome}>{`${incomes[incomes.length - 1].inc} ${curr}`}</Text>
-          <View style={{ borderRadius: 3, backgroundColor: 'green', marginLeft: 10, marginTop: 3 }}>
-            <Text style={{ fontSize: 12, padding: 3, color: 'white' }}>{`+${perThanLastMonth}%`}</Text>
+          <View style={{ borderRadius: 3, backgroundColor: 'green', marginLeft: 10, marginTop: 10 }}>
+            <Text style={{ fontSize: 10, padding: 3, color: 'white' }}>{`+${perThanLastMonth}%`}</Text>
           </View>
         </View>
       </LinearGradient>
@@ -50,7 +50,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     overflow: 'hidden',
     width: '100%',
-    height: windowHeight > 750 ? windowHeight * 0.21 : windowHeight * 0.25,
+    height: windowHeight > 750 ? windowHeight * 0.17 : windowHeight * 0.21,
   },
   gradient: {
     padding: 8,
@@ -59,7 +59,7 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 20,
+    marginBottom: 12,
   },
   title: {
     fontSize: 13,
@@ -67,11 +67,11 @@ const styles = StyleSheet.create({
     color: 'white',
     marginRight: 15,
     marginLeft: 5,
-    marginBottom: 25
+    marginBottom: 22
   },
   progressContainer: {
     flexDirection: 'row',
-    marginBottom: 6,
+    marginBottom: 5,
     justifyContent: 'space-between',
   },
   progressWrapper: {
@@ -82,10 +82,10 @@ const styles = StyleSheet.create({
     marginTop: 40,
   },
   currentIncome: {
-    fontSize: 14,
+    fontSize: 13,
     color: 'white',
     fontWeight: "700",
-    marginTop: 3
+    marginTop: 10
   },
 });
 

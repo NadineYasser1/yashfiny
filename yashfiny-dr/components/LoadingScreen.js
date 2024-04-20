@@ -1,9 +1,16 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { View, Image, StyleSheet } from 'react-native';
 import { ProgressBar } from 'react-native-paper';
 import { Colors } from '../constants/colors';
+import { useNavigation } from '@react-navigation/native';
 
 const LoadingScreen = () => {
+    // const navigation = useNavigation()
+    // useEffect(() => {
+    //     navigation.setOptions({
+    //         headerShown: false
+    //     })
+    // }, [])
     return (
         <View style={styles.container}>
             <Image

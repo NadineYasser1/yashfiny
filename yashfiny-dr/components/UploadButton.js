@@ -1,11 +1,17 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { StyleSheet, View, Text, Pressable, Alert } from "react-native";
 import { IconButton } from "react-native-paper";
 import { Colors } from "../constants/colors";
 import * as DocumentPicker from 'expo-document-picker';
 
-const UploadButton = ({ label, buttonText, handleSelection }) => {
+const UploadButton = ({ label, buttonText, handleSelection, fnKey }) => {
+
     const [selectedDocuments, setSelectedDocuments] = useState([]);
+
+    useEffect(() => {
+        handleSelection(fnKey, selectedDocuments);
+
+    }, [selectedDocuments]);
 
     const onPress = async () => {
         try {
@@ -35,15 +41,10 @@ const UploadButton = ({ label, buttonText, handleSelection }) => {
                 ],
                 { cancelable: true }
             );
-        } finally {
-            () => {
-                selectedDocuments?.map((document) => {
-                    handleSelection(document.name, document)
-                })
-
-            }
         }
+
     };
+
     const deleteDocument = (index) => {
         setSelectedDocuments((prev) => prev.filter((_, i) => i !== index));
     };

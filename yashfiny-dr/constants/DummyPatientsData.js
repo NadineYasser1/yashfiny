@@ -21,7 +21,7 @@ export const DummyPatients = [
         history: {
             chronicDis: ['disease1', 'disease2'],
             surgeries: ['surg1', 'surg2'],
-            familyDis: [{ name: 'diseaseX', familyMember: 'Father' }, { name: 'diseaseY', name: 'Sibling' }]
+            familyDis: [{ name: 'diseaseX', familyMember: 'Father' }, { name: 'diseaseY', familyMember: 'Sibling' }]
         },
         appointments: [
             {

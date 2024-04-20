@@ -107,7 +107,15 @@ const translations = {
     yrs: 'Yrs',
     id: 'ID',
     error: 'Error',
-    new_patient: 'New Patient'
+    new_patient: 'New Patient',
+    full_name: 'Full Name',
+    addr_placeholder: 'Home Address',
+    disease: 'Disease',
+    patient_history: 'Patient History',
+    add: 'Add',
+    disease_missing_alert: 'Please choose a disease first!',
+    specialization: 'Specialization',
+    subspecialities: 'Subspecialities'
   },
   ar: {
     login_assistant: 'تسجيل الدخول كمساعد ',

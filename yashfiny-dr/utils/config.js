@@ -1,4 +1,5 @@
-const baseUrl = 'http://192.168.1.4:3000'
+const baseUrl = 'http://192.168.1.5:3000'
 export const API = {
-    login: `${baseUrl}/doctor/login`
+    login: `${baseUrl}/doctor/login`,
+    register: `${baseUrl}/doctor/register`
 }

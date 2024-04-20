@@ -38,6 +38,7 @@ const LoginScreen = ({ navigation }) => {
     setLoading(true)
     axios.post(API.login, loginData
     ).then(({ data }) => {
+      console.log('logged in!')
       authCtx.authenticate(data.token)
     }).catch((err) => {
       Alert.alert(
@@ -92,7 +93,7 @@ const LoginScreen = ({ navigation }) => {
             autoCompleteType="email"
             keyboardType="email-address"
             textContentType="emailAddress"
-            onChangeText={(val) => handleInputChange('name', val)}
+            onChangeText={(val) => handleInputChange('email', val)}
           />
 
           <TextInput

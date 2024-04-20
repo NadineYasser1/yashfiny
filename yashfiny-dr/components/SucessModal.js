@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { Colors } from '../constants/colors';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
@@ -8,6 +8,12 @@ import i18n from '../i18n';
 
 const SuccessModal = ({ title, text, screenName }) => {
   const navigation = useNavigation();
+
+  useEffect(() => {
+    navigation.setOptions({
+      headerShown: false
+    })
+  }, [])
 
   const handleSwipe = () => {
     navigation.navigate(screenName);

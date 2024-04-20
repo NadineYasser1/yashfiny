@@ -29,34 +29,54 @@ const RegistrationScreen = ({ route, navigation }) => {
   const [selection, setSelection] = useState(null);
   const [gender, setGender] = useState('male')
   const [choices, setChoices] = useState([]);
+  const [price, setPrice] = useState([])
+  const [newData, setNewData] = useState()
 
   const tempDiseases = [
     { value: 'disease 1', id: 1 },
     { value: 'disease 2', id: 2 },
     { value: 'disease 3', id: 3 },
   ]
+
   const data = useMemo(() => {
     return {
       ...route.params,
-      date: dayjs(date).format('YYYY-MM-DD'),
-      selection,
-      circleCheckBoxValue
+      ...newData,
+      dob: dayjs(date).format('YYYY-MM-DD'),
+      gender,
+      price,
+      handlesApts: circleCheckBoxValue,
     }
-  }, [selection, circleCheckBoxValue])
+  }, [selection, circleCheckBoxValue, gender, price, newData])
 
-
+  const handleDataChange = (key, option) => {
+    setNewData((prev) => ({
+      ...prev,
+      [key]: option
+    }))
+  }
   const handleSelection = (key, option) => {
     setSelection((prev) => ({
       ...prev,
       [key]: option
     }))
+
   };
+
 
   const handleAddChoice = (price) => {
     setChoices(prevChoices => [
       ...prevChoices,
       `${selection.type} - ${selection.method}: EGP ${price}`
     ]);
+    setPrice(prevPrices => [
+      ...prevPrices,
+      {
+        type: selection.type,
+        method: selection.method,
+        price
+      }
+    ])
     setSelection(null)
   };
 
@@ -100,6 +120,7 @@ const RegistrationScreen = ({ route, navigation }) => {
                 placeholder={i18n.t("national_id_or_passport")}
                 placeholderTextColor="#aaa"
                 style={styles.input}
+                onChangeText={(val) => handleDataChange('identification', val)}
               />
             </View>
             <View style={styles.inputContainer}>
@@ -162,6 +183,7 @@ const RegistrationScreen = ({ route, navigation }) => {
                   placeholder={i18n.t("address_placeholder")}
                   placeholderTextColor="#aaa"
                   style={styles.input}
+                  onChangeText={(val) => handleDataChange('address', val)}
                 />
                 <Icon name="map-marker" color={Colors.accent800} size={30} style={{ marginLeft: 5, marginTop: 9 }} />
               </View>
@@ -170,11 +192,13 @@ const RegistrationScreen = ({ route, navigation }) => {
                   placeholder={i18n.t('city')}
                   style={styles.addressInput}
                   placeholderTextColor="#aaa"
+                  onChangeText={(val) => handleDataChange('city', val)}
                 />
                 <TextInput
                   placeholder={i18n.t('country')}
                   style={styles.addressInput}
                   placeholderTextColor="#aaa"
+                  onChangeText={(val) => handleDataChange('country', val)}
                 />
               </View>
             </View>
@@ -186,12 +210,32 @@ const RegistrationScreen = ({ route, navigation }) => {
                   style={styles.codeInput}
                   placeholderTextColor="black"
                   inputMode="numeric"
+                  onChangeText={(val) => handleDataChange('country_code', val)}
                 />
                 <TextInput
                   style={styles.phoneInput}
                   inputMode="numeric"
                   placeholder="e.g: 12345678"
+                  onChangeText={(val) => handleDataChange('phone', val)}
                 />
+              </View>
+            </View>
+            <View style={{ flexDirection: 'row' }}>
+              <View style={[styles.inputContainer, { marginRight: 10 }]}>
+                <Text style={styles.label}>{i18n.t("specialization")}</Text>
+                <View style={{ width: 160 }}>
+                  <CustomMultipleSelect
+                    options={tempDiseases}
+                    onSelect={(arr) => handleDataChange('specialization', arr)} label={i18n.t('specialization')} />
+                </View>
+              </View>
+              <View style={styles.inputContainer}>
+                <Text style={styles.label}>{i18n.t("subspecialities")}</Text>
+                <View style={{ width: 160 }}>
+                  <CustomMultipleSelect
+                    options={tempDiseases}
+                    onSelect={(arr) => handleDataChange('subspecialities', arr)} label={i18n.t('subspecialities')} />
+                </View>
               </View>
             </View>
             <View style={styles.inputContainer}>
@@ -236,7 +280,7 @@ const RegistrationScreen = ({ route, navigation }) => {
               <View style={{ width: 290 }}>
                 <CustomMultipleSelect
                   options={tempDiseases}
-                  onSelect={(val) => console.log(val)} label={i18n.t('diseases')} />
+                  onSelect={(arr) => handleDataChange('diseases_treated', arr)} label={i18n.t('diseases')} />
               </View>
             </View>
             <View style={styles.inputContainer}>
@@ -281,7 +325,7 @@ const RegistrationScreen = ({ route, navigation }) => {
         </ScrollView>
       </KeyboardAvoidingView>
 
-    </LinearGradient>
+    </LinearGradient >
   );
 };
 

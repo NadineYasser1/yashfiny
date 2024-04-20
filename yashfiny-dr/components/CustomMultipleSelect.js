@@ -5,11 +5,13 @@ import i18n from '../i18n';
 import { Colors } from '../constants/colors';
 
 const CustomMultipleSelect = ({ options, onSelect, label, ...otherProps }) => {
+  const [selected, setSelected] = useState([]);
 
   return (
     <View style={styles.dropdownContainer}>
       <MultipleSelectList
-        setSelected={(val) => onSelect(val)}
+        setSelected={(val) => setSelected(val)}
+        onSelect={() => onSelect(selected)}
         data={options}
         save="value"
         boxStyles={{ marginTop: 10, backgroundColor: 'white' }}

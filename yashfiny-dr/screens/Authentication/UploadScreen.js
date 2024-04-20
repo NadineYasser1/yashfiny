@@ -1,23 +1,37 @@
 import { LinearGradient } from "expo-linear-gradient";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { KeyboardAvoidingView, Platform, StyleSheet, View, Text, TextInput, Pressable, ScrollView, TouchableOpacity } from "react-native";
+import { KeyboardAvoidingView, Platform, StyleSheet, View, Text, TextInput, Pressable, ScrollView, TouchableOpacity, Alert } from "react-native";
 import i18n from "../../i18n";
 import { Colors } from "../../constants/colors";
 import CustomDropdown from "../../components/CustomDropDown";
 import { IconButton } from "react-native-paper";
 import UploadButton from "../../components/UploadButton";
 import SuccessModal from "../../components/SucessModal";
+import axios from "axios";
+import { API } from "../../utils/config";
+import LoadingScreen from "../../components/LoadingScreen";
 
 const UploadScreen = ({ route, navigation }) => {
 
     const [updatedData, setUpdatedData] = useState(route.params)
+    const [documents, setDocuments] = useState([])
     const [Success, setSuccess] = useState(false)
+    const [loading, setLoading] = useState(false)
+
+    const availability = useMemo(() => {
+        if (route.params.availability) {
+            return route.params.availability
+        }
+        return null
+
+    }, [route.params])
 
     const tempOpts = [
         { value: i18n.t('bank_account'), key: 1 },
         { value: i18n.t('instapay'), key: 2 },
         { value: i18n.t('phone_wallet'), key: 3 }
     ]
+
     const handleSelection = (key, opt) => {
         setUpdatedData((prev) => ({
             ...prev,
@@ -25,6 +39,39 @@ const UploadScreen = ({ route, navigation }) => {
         }))
 
     }
+    const handleAddDoc = (key, doc) => {
+        setDocuments((prev) => ({
+            ...prev,
+            [key]: doc
+        }))
+    }
+    const body = useMemo(() => {
+        return {
+            ...updatedData,
+            documents,
+            availability
+        }
+    }, [updatedData, documents, availability])
+    const handleContinue = () => {
+        setLoading(true)
+        axios.post(API.register, { ...body }
+        ).then(({ data }) => {
+            setLoading(false)
+            console.log(data.message)
+            setSuccess(true)
+        }).catch((err) => {
+            Alert.alert(
+                "Error",
+                err.response.data.message,
+                [
+                    { text: "OK", onPress: () => { } }
+                ],
+                { cancelable: true }
+            );
+        }).finally(() => setLoading(false))
+
+    }
+
     const paymentPlaceHolder = useMemo(() => {
         if (updatedData?.payment_method) {
             switch (updatedData.payment_method) {
@@ -45,7 +92,7 @@ const UploadScreen = ({ route, navigation }) => {
 
     useEffect(() => {
         navigation.setOptions({
-            headerShown: !Success
+            headerShown: !loading
         });
     }, [Success]);
 
@@ -54,60 +101,65 @@ const UploadScreen = ({ route, navigation }) => {
             return (
                 <SuccessModal title={i18n.t('account_created')} text={i18n.t('awaiting_approval_signup_text')} screenName='Login' />
             )
-        }
-        return (
-            <LinearGradient
-                colors={[Colors.primary800, 'white']}
-                locations={[0.6, 1]}
-                style={{ flex: 1 }}
-            >
-                <KeyboardAvoidingView
+        } else if (loading) {
+            return <LoadingScreen />
+
+        } else {
+            return (
+                <LinearGradient
+                    colors={[Colors.primary800, 'white']}
+                    locations={[0.6, 1]}
                     style={{ flex: 1 }}
-                    behavior={Platform.OS == "ios" ? "padding" : "height"}
-                    keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : -500}
                 >
-                    <ScrollView style={styles.container}>
-                        <View style={styles.textContainer}>
-                            <Text style={styles.fpText}>{i18n.t('one_last_step')}</Text>
-                        </View>
-                        <View style={styles.inputContainer}>
-                            <Text style={styles.label}>{i18n.t('payment_method')}</Text>
-                            <View style={{ flexDirection: 'row', alignContent: 'space-between' }}>
-                                <CustomDropdown
-                                    options={tempOpts}
-                                    onSelect={(opt) => handleSelection('payment_method', opt)}
-                                    style={{ width: 150 }}
-                                />
-                                <TextInput
-                                    placeholder={paymentPlaceHolder}
-                                    placeholderTextColor="#aaa"
-                                    style={styles.input} />
-
+                    <KeyboardAvoidingView
+                        style={{ flex: 1 }}
+                        behavior={Platform.OS == "ios" ? "padding" : "height"}
+                        keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : -500}
+                    >
+                        <ScrollView style={styles.container}>
+                            <View style={styles.textContainer}>
+                                <Text style={styles.fpText}>{i18n.t('one_last_step')}</Text>
                             </View>
-                        </View>
-                        <UploadButton label={i18n.t('medical_license')} buttonText={i18n.t('upload_medical_license')} handleSelection={handleSelection} />
-                        <UploadButton label={i18n.t('academic_deg')} buttonText={i18n.t('upload_academic_deg')} handleSelection={handleSelection} />
-                        <UploadButton label={i18n.t('certificates')} buttonText={i18n.t('upload_certificates')} handleSelection={handleSelection} />
-                        <View style={styles.workinghrsContainer}>
-                            <Text style={styles.label}>{i18n.t('working_hours')}</Text>
-                            <Pressable style={styles.hoursButton} onPress={() => navigation.navigate('Availability')}>
-                                <IconButton icon='calendar-clock' iconColor={Colors.primary800} size={25} />
-                                <Text style={{ color: Colors.primary800 }}>{i18n.t('add_working_hours')}</Text>
-                            </Pressable>
-                            <Text style={styles.text}>{i18n.t('you_can_edit_workinghrs_txt')}</Text>
-                        </View>
+                            <View style={styles.inputContainer}>
+                                <Text style={styles.label}>{i18n.t('payment_method')}</Text>
+                                <View style={{ flexDirection: 'row', alignContent: 'space-between' }}>
+                                    <CustomDropdown
+                                        options={tempOpts}
+                                        onSelect={(opt) => handleSelection('payment_method', opt)}
+                                        style={{ width: 150 }}
+                                    />
+                                    <TextInput
+                                        placeholder={paymentPlaceHolder}
+                                        placeholderTextColor="#aaa"
+                                        style={styles.input}
+                                        onChangeText={(val) => handleSelection('payment', val)} />
 
-                        <TouchableOpacity
-                            style={styles.continueButton}
-                            onPress={() => setSuccess(true)}
-                        >
-                            <Text style={styles.continueButtonText}>{i18n.t("done")}</Text>
-                        </TouchableOpacity>
+                                </View>
+                            </View>
+                            <UploadButton label={i18n.t('medical_license')} buttonText={i18n.t('upload_medical_license')} handleSelection={handleAddDoc} fnKey={'medical_license'} />
+                            <UploadButton label={i18n.t('academic_deg')} buttonText={i18n.t('upload_academic_deg')} handleSelection={handleAddDoc} fnKey={'academic_degree'} />
+                            <UploadButton label={i18n.t('certificates')} buttonText={i18n.t('upload_certificates')} handleSelection={handleAddDoc} fnKey={'certificates'} />
+                            <View style={styles.workinghrsContainer}>
+                                <Text style={styles.label}>{i18n.t('working_hours')}</Text>
+                                <Pressable style={styles.hoursButton} onPress={() => navigation.navigate('Availability', { ...updatedData, documents })}>
+                                    <IconButton icon='calendar-clock' iconColor={Colors.primary800} size={25} />
+                                    <Text style={{ color: Colors.primary800 }}>{i18n.t('add_working_hours')}</Text>
+                                </Pressable>
+                                <Text style={styles.text}>{i18n.t('you_can_edit_workinghrs_txt')}</Text>
+                            </View>
 
-                    </ScrollView>
-                </KeyboardAvoidingView>
-            </LinearGradient>
-        )
+                            <TouchableOpacity
+                                style={styles.continueButton}
+                                onPress={handleContinue}
+                            >
+                                <Text style={styles.continueButtonText}>{i18n.t("done")}</Text>
+                            </TouchableOpacity>
+
+                        </ScrollView>
+                    </KeyboardAvoidingView>
+                </LinearGradient>
+            )
+        }
     }
 
     return (<>

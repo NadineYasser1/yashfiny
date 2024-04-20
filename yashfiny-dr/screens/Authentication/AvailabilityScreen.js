@@ -19,15 +19,18 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import i18n from '../../i18n';
 import CustomDropdown from '../../components/CustomDropDown';
 import { HideTabContext } from '../../store/HideTabContext';
+import dayjs from 'dayjs';
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
-const AvailabilityScreen = ({ navigation }) => {
+const AvailabilityScreen = ({ navigation, route }) => {
+
   const hideTabCtx = useContext(HideTabContext)
   useEffect(() => {
     hideTabCtx.hideTab(true)
   }, [])
+
   const currentDate = new Date();
 
   const year = currentDate.getFullYear();
@@ -46,6 +49,29 @@ const AvailabilityScreen = ({ navigation }) => {
   const [isEditingModalVisible, setIsEditingModalVisible] = useState(false);
   const [isSwitchOn, setIsSwitchOn] = useState(false)
   const [newChanges, setNewChanges] = useState(false)
+  const [chosenLoc, setChosenLoc] = useState()
+
+  const formatTime = (time) => {
+    return time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  };
+
+  const slots = useMemo(() => {
+    const formattedData = {}
+    if (selectedSlot) {
+      for (const date in selectedSlot) {
+        const obj = selectedSlot[date].map(slot => {
+          const { addSlotToScreen, ...rest } = slot
+          return {
+            ...rest,
+            startTime: formatTime(slot.startTime),
+            endTime: formatTime(slot.endTime)
+          }
+        })
+        formattedData[date] = obj
+      }
+    }
+    return formattedData
+  }, [selectedSlot])
 
   const addSlot = () => {
     if (startTime && endTime) {
@@ -232,12 +258,36 @@ const AvailabilityScreen = ({ navigation }) => {
     </View>;
   };
 
-  const formatTime = (time) => {
-    return time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-  };
+
+  const postAvailability = () => {
+    console.log({
+      slots,
+      flag: selectedFlag,
+      type: isSwitchOn ? 'group' : 'individual',
+      location: chosenLoc
+    })
+  }
+  const availability = useMemo(() => {
+    return {
+      slots,
+      flag: selectedFlag,
+      type: isSwitchOn ? 'group' : 'single',
+      location: chosenLoc
+
+    }
+  }, [slots, selectedFlag, isSwitchOn, chosenLoc])
+
+
   const handleSave = () => {
-    hideTabCtx.hideTab(false)
-    navigation.goBack()
+    if (route?.params) {
+      hideTabCtx.hideTab(false)
+      navigation.navigate("UploadForm", { ...route.params, availability })
+    } else {
+      postAvailability()
+      hideTabCtx.hideTab(false)
+      navigation.goBack()
+    }
+
   }
   return (
     <View style={styles.container}>
@@ -356,7 +406,7 @@ const AvailabilityScreen = ({ navigation }) => {
         <View style={styles.dropdownContainer}>
           <CustomDropdown
             options={[i18n.t('video'), i18n.t('clinic')]}
-            onSelect={(opt) => console.log(opt)}
+            onSelect={(opt) => setChosenLoc(opt)}
             placeholder={i18n.t('select_type')}
             style={{ borderRadius: 30, borderColor: Colors.primary800, height: 30, width: 110, alignItems: 'center', justifyContent: 'center', marginTop: 0 }}
             inputStyles={{ height: 20, fontSize: 12, padding: 3 }}

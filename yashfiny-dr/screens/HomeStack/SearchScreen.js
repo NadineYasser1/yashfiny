@@ -53,8 +53,8 @@ const SearchScreen = () => {
             id.toString().includes(query);
     };
 
-    const renderRecentItem = (patientId) => {
-        const patient = DummyPatients.find(patient => patient.id == patientId);
+    const renderRecentItem = () => {
+        const patient = DummyPatients.find(patient => patient.id == recentId);
         if (patient) {
             return (
                 <View style={styles.recentsContainer}>
@@ -87,7 +87,7 @@ const SearchScreen = () => {
                 inputStyle={{ color: 'black', fontSize: 13 }}
             />
             <View style={styles.recentContainer}>
-                {renderRecentItem(recentId)}
+                {renderRecentItem()}
             </View>
             <FlatList
                 data={data}

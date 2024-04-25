@@ -20,6 +20,7 @@ import i18n from '../../i18n';
 import CustomDropdown from '../../components/CustomDropDown';
 import { HideTabContext } from '../../store/HideTabContext';
 import dayjs from 'dayjs';
+import AddAvailabilityModal from '../../components/AddAvailabilityModal';
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
@@ -29,6 +30,7 @@ const AvailabilityScreen = ({ navigation, route }) => {
   const hideTabCtx = useContext(HideTabContext)
   useEffect(() => {
     hideTabCtx.hideTab(true)
+    Alert.alert(i18n.t('avail_alert_title'), i18n.t('avail_alert_note'))
   }, [])
 
   const currentDate = new Date();
@@ -36,8 +38,15 @@ const AvailabilityScreen = ({ navigation, route }) => {
   const year = currentDate.getFullYear();
   const month = String(currentDate.getMonth() + 1).padStart(2, '0');
   const day = String(currentDate.getDate()).padStart(2, '0');
+  const opts = [
+    { value: i18n.t('video'), key: 1 },
+    { value: i18n.t('clinic'), key: 2 },
+  ]
+  const optsArr = [
+    { value: i18n.t('group'), key: 1 },
+    { value: i18n.t('individual'), key: 2 },
+  ]
 
-  const [selectedFlag, setSelectedFlag] = useState(1);
   const [selectedDay, setSelectedDay] = useState(`${year}-${month}-${day}`);
   const [selectedSlot, setSelectedSlot] = useState({});
   const [showPicker, setShowPicker] = useState(false);
@@ -47,63 +56,99 @@ const AvailabilityScreen = ({ navigation, route }) => {
   const [endTime, setEndTime] = useState('');
   const [editingIndex, setEditingIndex] = useState(null);
   const [isEditingModalVisible, setIsEditingModalVisible] = useState(false);
-  const [isSwitchOn, setIsSwitchOn] = useState(false)
+  const [aptMethod, setAptMethod] = useState()
   const [newChanges, setNewChanges] = useState(false)
-  const [chosenLoc, setChosenLoc] = useState()
+  const [addModalVisible, setAddModalVisible] = useState(false)
+  const [slotType, setSlotType] = useState()
 
   const formatTime = (time) => {
     return time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
   };
 
-  const slots = useMemo(() => {
-    const formattedData = {}
-    if (selectedSlot) {
-      for (const date in selectedSlot) {
-        const obj = selectedSlot[date].map(slot => {
-          const { addSlotToScreen, ...rest } = slot
-          return {
-            ...rest,
-            startTime: formatTime(slot.startTime),
-            endTime: formatTime(slot.endTime)
-          }
-        })
-        formattedData[date] = obj
-      }
-    }
-    return formattedData
-  }, [selectedSlot])
 
-  const addSlot = () => {
+  const getSlotById = (optionsArray, key) => {
+    return optionsArray.find((opt) => opt.key == key)
+  }
+  const onSelectOpt = (type, option) => {
+    if (type == 'type') {
+      setSlotType(getSlotById(optsArr, option).value)
+    } else if (type == 'location') {
+      setAptMethod(getSlotById(opts, option).value)
+    }
+
+  }
+
+  const showAvailabilityModal = () => {
     if (startTime && endTime) {
+      setAddModalVisible(true)
+    } else {
+      Alert.alert(i18n.t('time_slot_alert'))
+    }
+  }
+  const addSlot = () => {
+    setAddModalVisible(false)
+    if (startTime && endTime && slotType && aptMethod) {
       const newSlot = {
         startTime: startTime,
         endTime: endTime,
+        type: slotType,
+        location: aptMethod,
         addSlotToScreen: true
       };
       setSelectedSlot((prevSlots) => ({
         ...prevSlots,
         [selectedDay]: [...(prevSlots[selectedDay] || []), newSlot],
       }));
+      const dayOne = selectedDay
+      const dayTwo = selectedDay
+      const dayThree = selectedDay
+      const dayFour = selectedDay
+
+      const datesArr = [
+        dayjs(dayOne).add(7, 'day').format('YYYY-MM-DD'),
+        dayjs(dayTwo).add(14, 'day').format('YYYY-MM-DD'),
+        dayjs(dayThree).add(21, 'day').format('YYYY-MM-DD'),
+        dayjs(dayFour).add(28, 'day').format('YYYY-MM-DD'),
+      ]
+
+      datesArr.forEach((date) => setSelectedSlot((prevSlots) => ({
+        ...prevSlots,
+        [date]: [...(prevSlots[date] || []), newSlot],
+      })))
+
       setStartTime('')
       setEndTime('')
       setNewChanges(true)
     } else {
-      Alert.alert(i18n.t('time_slot_alert'))
+      Alert.alert(i18n.t('modal_slot_alert'))
     }
   };
 
   const deleteSlot = (index) => {
+    const dayOne = selectedDay
+    const dayTwo = selectedDay
+    const dayThree = selectedDay
+    const dayFour = selectedDay
+
+    const datesArr = [
+      dayjs(dayOne).add(7, 'day').format('YYYY-MM-DD'),
+      dayjs(dayTwo).add(14, 'day').format('YYYY-MM-DD'),
+      dayjs(dayThree).add(21, 'day').format('YYYY-MM-DD'),
+      dayjs(dayFour).add(28, 'day').format('YYYY-MM-DD'),
+    ]
+
     const updatedSlots = selectedSlot[selectedDay].filter((_, i) => i !== index);
-    if (updatedSlots.length === 0) {
-      delete updatedSlots[selectedDay];
-      const { [selectedDay]: deletedDay, ...rest } = selectedSlot;
-      setSelectedSlot(rest);
-    } else {
+    const updatedSelectedSlot = { ...selectedSlot, [selectedDay]: updatedSlots };
+
+    setSelectedSlot(updatedSelectedSlot);
+
+    datesArr.forEach((date) => {
+      const updatedSlotsForDate = selectedSlot[date].filter((_, i) => i !== index);
       setSelectedSlot((prevSlots) => ({
         ...prevSlots,
-        [selectedDay]: updatedSlots,
+        [date]: updatedSlotsForDate,
       }));
-    }
+    });
     setNewChanges(true)
   };
 
@@ -111,6 +156,8 @@ const AvailabilityScreen = ({ navigation, route }) => {
     setEditingIndex(index);
     setStartTime(selectedSlot[selectedDay][index].startTime);
     setEndTime(selectedSlot[selectedDay][index].endTime);
+    setSlotType(selectedSlot[selectedDay][index].type);
+    setAptMethod(selectedSlot[selectedDay][index].location);
     setIsEditingModalVisible(true);
   };
 
@@ -119,12 +166,33 @@ const AvailabilityScreen = ({ navigation, route }) => {
     updatedSlots[editingIndex] = {
       startTime: startTime,
       endTime: endTime,
+      type: slotType,
+      location: aptMethod,
       addSlotToScreen: true
     };
     setSelectedSlot((prevSlots) => ({
       ...prevSlots,
       [selectedDay]: updatedSlots,
     }));
+    const dayOne = selectedDay
+    const dayTwo = selectedDay
+    const dayThree = selectedDay
+    const dayFour = selectedDay
+
+    const datesArr = [
+      dayjs(dayOne).add(7, 'day').format('YYYY-MM-DD'),
+      dayjs(dayTwo).add(14, 'day').format('YYYY-MM-DD'),
+      dayjs(dayThree).add(21, 'day').format('YYYY-MM-DD'),
+      dayjs(dayFour).add(28, 'day').format('YYYY-MM-DD'),
+    ]
+
+    datesArr.forEach((date) =>
+      setSelectedSlot((prevSlots) => ({
+        ...prevSlots,
+        [date]: updatedSlots,
+      }))
+    )
+
     setEditingIndex(null);
     setStartTime('');
     setEndTime('');
@@ -212,8 +280,6 @@ const AvailabilityScreen = ({ navigation, route }) => {
           date: new Date(date),
           dots: [
             {
-              // color: 'grey',
-              // selectedColor: Colors.primary800
               color: selectedDay == date ? Colors.primary800 : 'grey'
             }
           ]
@@ -229,15 +295,16 @@ const AvailabilityScreen = ({ navigation, route }) => {
     const selectedDaySlots = selectedSlot[selectedDay];
     if (selectedDaySlots && selectedDaySlots.length > 0) {
       return selectedDaySlots.map((slot, index) => {
-        if (slot?.startTime && slot?.endTime && slot?.addSlotToScreen) {
+        if (slot?.startTime && slot?.endTime && slot?.location && slot?.type && slot?.addSlotToScreen) {
           return (
             <View style={{ flexDirection: 'row', justifyContent: 'space-around' }} key={index}>
-              <View style={styles.slotContainer} key={index}>
-                <Text style={{ color: Colors.primary800, fontWeight: "600" }}>{formatTime(slot.startTime)}</Text>
+              <View style={[styles.slotContainer, { borderColor: slot.location.toLowerCase() == 'video' ? Colors.primary800 : Colors.accent800 }]} key={index}>
+                <MaterialCommunityIcons name={slot.type.toLowerCase() == 'group' ? 'account-group' : 'account'} color={slot.location.toLowerCase() == 'video' ? Colors.primary800 : Colors.accent800} size={13} />
+                <Text style={{ color: slot.location.toLowerCase() == 'video' ? Colors.primary800 : Colors.accent800, fontWeight: "600" }}>{formatTime(slot.startTime)}</Text>
                 <Text style={{ color: Colors.grey100, fontWeight: "700", marginHorizontal: 20 }}>{i18n.t('to')}</Text>
-                <Text style={{ color: Colors.primary800, fontWeight: "600" }}>{formatTime(slot.endTime)}</Text>
+                <Text style={{ color: slot.location.toLowerCase() == 'video' ? Colors.primary800 : Colors.accent800, fontWeight: "600" }}>{formatTime(slot.endTime)}</Text>
                 <TouchableOpacity onPress={() => editSlot(index)} style={{ marginHorizontal: 20 }}>
-                  <MaterialCommunityIcons name="pencil" size={24} color={Colors.primary800} />
+                  <MaterialCommunityIcons name="pencil" size={24} color={slot.location.toLowerCase() == 'video' ? Colors.primary800 : Colors.accent800} />
                 </TouchableOpacity>
               </View>
               <View style={styles.iconContainer}>
@@ -258,24 +325,15 @@ const AvailabilityScreen = ({ navigation, route }) => {
     </View>;
   };
 
-
   const postAvailability = () => {
-    console.log({
-      slots,
-      flag: selectedFlag,
-      type: isSwitchOn ? 'group' : 'individual',
-      location: chosenLoc
-    })
+    console.log(availability)
   }
+
   const availability = useMemo(() => {
     return {
-      slots,
-      flag: selectedFlag,
-      type: isSwitchOn ? 'group' : 'single',
-      location: chosenLoc
-
+      ...selectedSlot
     }
-  }, [slots, selectedFlag, isSwitchOn, chosenLoc])
+  }, [selectedSlot])
 
 
   const handleSave = () => {
@@ -287,8 +345,8 @@ const AvailabilityScreen = ({ navigation, route }) => {
       hideTabCtx.hideTab(false)
       navigation.goBack()
     }
-
   }
+
   return (
     <View style={styles.container}>
       <Modal
@@ -321,6 +379,33 @@ const AvailabilityScreen = ({ navigation, route }) => {
               />
             </View>
             {renderModalTimePicker()}
+            <View>
+              <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 30, marginTop: 20 }}>
+                <Text style={styles.slotTypeTxt}>{i18n.t('slot_location')}</Text>
+                <CustomDropdown
+                  options={opts}
+
+                  onSelect={(opt) => onSelectOpt('location', opt)}
+                  defaultOption={opts.find((opt) => opt.value == aptMethod)}
+                  placeholder={i18n.t('select_location')}
+                  style={{ borderRadius: 20, borderColor: Colors.primary800, height: 30, width: 100, alignItems: 'center', justifyContent: 'center', marginTop: 0 }}
+                  inputStyles={{ height: 20, fontSize: 12, padding: 3 }}
+                  dropdownTextStyles={{ fontSize: 12 }}
+                />
+              </View>
+              <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 20 }}>
+                <Text style={[styles.slotTypeTxt, { marginEnd: 60 }]}>{i18n.t('slot_type')}</Text>
+                <CustomDropdown
+                  options={optsArr}
+                  onSelect={(opt) => onSelectOpt('type', opt)}
+                  defaultOption={optsArr.find((opt) => opt.value == slotType)}
+                  placeholder={i18n.t('select_type')}
+                  style={{ borderRadius: 20, borderColor: Colors.primary800, height: 30, width: 100, alignItems: 'center', justifyContent: 'center', marginTop: 0 }}
+                  inputStyles={{ height: 20, fontSize: 12, padding: 3 }}
+                  dropdownTextStyles={{ fontSize: 12 }}
+                />
+              </View>
+            </View>
             <View style={styles.modalButtons}>
               <TouchableOpacity onPress={() => updateSlot()} style={styles.updateButtonContainer}>
                 <Text style={styles.updateButtonText}>{i18n.t('update')}</Text>
@@ -332,39 +417,8 @@ const AvailabilityScreen = ({ navigation, route }) => {
           </View>
         </View>
       </Modal>
+
       <View style={styles.topContainer}>
-        <View style={styles.bar}>
-          <TouchableOpacity onPress={() => setSelectedFlag(1)}>
-            <View
-              style={[
-                styles.variantButton,
-                selectedFlag === 1 && styles.variantButtonSelected,
-              ]}
-            >
-              <Text>{i18n.t('day')}</Text>
-            </View>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => setSelectedFlag(7)}>
-            <View
-              style={[
-                styles.variantButton,
-                selectedFlag === 7 && styles.variantButtonSelected,
-              ]}
-            >
-              <Text>{i18n.t('week')}</Text>
-            </View>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => setSelectedFlag(30)}>
-            <View
-              style={[
-                styles.variantButton,
-                selectedFlag === 30 && styles.variantButtonSelected,
-              ]}
-            >
-              <Text>{i18n.t('month')}</Text>
-            </View>
-          </TouchableOpacity>
-        </View>
         <CalendarStrip
           style={{ height: windowHeight * 0.13, marginHorizontal: 10 }}
           selectedDate={selectedDay}
@@ -374,49 +428,33 @@ const AvailabilityScreen = ({ navigation, route }) => {
           iconContainer={{ flex: 0.1 }}
           daySelectionAnimation={{
             type: 'background',
-            // duration: 200,
-            // borderWidth: 2,
-            // borderHighlightColor: Colors.primary800,
             backgroundColor: Colors.primary800,
           }}
-          // calendarAnimation={{ type: 'parallel', duration: 10 }}
           highlightDateNumberStyle={{ color: Colors.primary800 }}
           highlightDateNameStyle={{ color: Colors.primary800 }}
           highlightDateContainerStyle={{ backgroundColor: Colors.primary800 }}
           markedDates={markedDatesArray}
+          minDate={currentDate}
+          maxDate={dayjs(currentDate).add(1, 'month').toDate()}
         />
       </View>
-      <View style={styles.rowContainer}>
-        <View style={styles.switchContainer}>
-          <Text
-            style={[{ width: 50, color: Colors.primary800, fontWeight: "700" }, !isSwitchOn && { fontWeight: 'normal' }]}
-          >
-            {isSwitchOn ? i18n.t('group') : i18n.t('single')}
-          </Text>
-          <Switch
-            trackColor={{ false: '#767577', true: Colors.primary800 }}
-            thumbColor='white'
-            ios_backgroundColor="#3e3e3e"
-            onValueChange={() => setIsSwitchOn(!isSwitchOn)}
-            value={isSwitchOn}
-
-          />
-
-        </View>
-        <View style={styles.dropdownContainer}>
-          <CustomDropdown
-            options={[i18n.t('video'), i18n.t('clinic')]}
-            onSelect={(opt) => setChosenLoc(opt)}
-            placeholder={i18n.t('select_type')}
-            style={{ borderRadius: 30, borderColor: Colors.primary800, height: 30, width: 110, alignItems: 'center', justifyContent: 'center', marginTop: 0 }}
-            inputStyles={{ height: 20, fontSize: 12, padding: 3 }}
-            dropdownTextStyles={{ fontSize: 12 }}
-            defaultOption={i18n.t('clinic')}
-          />
-        </View>
+      <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+        <AddAvailabilityModal visible={addModalVisible} onSelectOpt={onSelectOpt} addSlot={() =>
+          addSlot(selectedDay, selectedSlot[selectedDay]?.startTime, selectedSlot[selectedDay]?.endTime)}
+          onRequestClose={() => setAddModalVisible(false)} />
+      </View>
+      <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'flex-end', marginBottom: 20 }}>
+        <MaterialCommunityIcons name='account' color={Colors.grey300} style={{ marginEnd: 5, marginStart: 20 }} size={18} />
+        <Text style={{ color: Colors.grey300, fontSize: 13, marginEnd: 20, }}>{i18n.t('individual')}</Text>
+        <MaterialCommunityIcons name='account-group' color={Colors.grey300} size={18} style={{ marginEnd: 5 }} />
+        <Text style={{ color: Colors.grey300, fontSize: 13, marginEnd: 10 }}>{i18n.t('group')}</Text>
+        <MaterialCommunityIcons name='square-rounded' color={Colors.accent800} style={{ marginEnd: 5, marginStart: 20 }} size={18} />
+        <Text style={{ color: Colors.accent800, fontSize: 13, marginEnd: 20 }}>{i18n.t('clinic')}</Text>
+        <MaterialCommunityIcons name='square-rounded' color={Colors.primary800} size={18} style={{ marginEnd: 5 }} />
+        <Text style={{ color: Colors.primary800, fontSize: 13, marginEnd: 20 }}>{i18n.t('video')}</Text>
       </View>
       <View contentContainerStyle={styles.content}>
-        <View style={{ backgroundColor: 'white', borderRadius: 20, marginHorizontal: 8, padding: 8, height: windowHeight > 800 ? windowHeight * 0.43 : windowHeight * 0.45 }}>
+        <View style={{ backgroundColor: 'white', borderRadius: 20, marginHorizontal: 8, padding: 8, height: windowHeight > 800 ? windowHeight * 0.47 : windowHeight * 0.46 }}>
           <View style={styles.timePicker}>
             <View style={{ flexDirection: 'column' }}>
               <Text style={{ marginHorizontal: 10, color: Colors.grey100 }}>{i18n.t('from')}</Text>
@@ -446,10 +484,9 @@ const AvailabilityScreen = ({ navigation, route }) => {
                 />
               </Pressable>
             </View>
+
             <TouchableOpacity
-              onPress={() =>
-                addSlot(selectedDay, selectedSlot[selectedDay]?.startTime, selectedSlot[selectedDay]?.endTime)
-              }
+              onPress={showAvailabilityModal}
             >
               <View style={styles.addButton}>
                 <MaterialCommunityIcons name="plus" size={25} color={Colors.accent800} />
@@ -483,6 +520,7 @@ const styles = StyleSheet.create({
     paddingBottom: windowHeight * 0.005,
     borderBottomColor: Colors.grey100,
     borderBottomWidth: 1,
+    paddingTop: 30
   },
   editContainer: {
     flex: 1,
@@ -681,6 +719,12 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 15,
     fontWeight: "600"
+  },
+  slotTypeTxt: {
+    marginEnd: 40,
+    marginTop: 5,
+    fontSize: 13,
+    color: Colors.grey300
   }
 
 });

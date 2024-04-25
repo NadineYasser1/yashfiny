@@ -4,6 +4,7 @@ import { Avatar } from 'react-native-elements';
 import * as DocumentPicker from 'expo-document-picker';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Colors } from '../constants/colors';
+import i18n from '../i18n';
 const windowWidth = Dimensions.get('window').width
 const windowHeight = Dimensions.get('window').height
 const UploadAvatar = ({ handleChange }) => {
@@ -22,8 +23,8 @@ const UploadAvatar = ({ handleChange }) => {
 
         } catch (error) {
             Alert.alert(
-                "Error",
-                "An error occurred while selecting document. Please try again later.",
+                i18n.t('error'),
+                i18n.t('error_selecting_doc'),
                 [
                     { text: "OK", onPress: () => { } }
                 ],

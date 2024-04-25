@@ -115,7 +115,25 @@ const translations = {
     add: 'Add',
     disease_missing_alert: 'Please choose a disease first!',
     specialization: 'Specialization',
-    subspecialities: 'Subspecialities'
+    subspecialities: 'Subspecialities',
+    no_new_msgs: 'You have no new messages from our system moderators.',
+    see_more: 'See more',
+    see_less: 'See less',
+    contact_us_text: 'Write your message and Yashfiny’s team will get back to you.',
+    send: 'Send',
+    slot_type: 'Slot type',
+    slot_location: 'Slot location',
+    individual: 'Individual',
+    select_location: 'Select location',
+    modal_slot_alert: 'Please select slot type and location.',
+    avail_alert_note: 'Please add, update and delete your available slots to the days of the current week only and the slots you add will be replicated for the whole month!',
+    avail_alert_title: 'A note from us',
+    coming_soon: 'Coming Soon!',
+    coming_soon_alert_text: 'Our developers are working on this feature, please check back again later!',
+    ok: 'OK',
+    error: 'Error',
+    error_selecting_doc: "An error occurred while selecting document. Please try again later."
+
   },
   ar: {
     login_assistant: 'تسجيل الدخول كمساعد ',

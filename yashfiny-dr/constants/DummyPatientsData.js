@@ -284,7 +284,7 @@ export const DummyPatients = [
         appointments: [
             {
                 aptId: 1,
-                status: 'upcoming',
+                status: 'cancelled',
                 type: {
                     name: 'video',
                     id: 1
@@ -294,7 +294,7 @@ export const DummyPatients = [
             },
             {
                 aptId: 2,
-                status: 'cancelled',
+                status: 'upcoming',
                 type: {
                     name: 'clinic',
                     id: 2
@@ -542,7 +542,7 @@ export const DummyPatients = [
         appointments: [
             {
                 aptId: 1,
-                status: 'upcoming',
+                status: 'cancelled',
                 type: {
                     name: 'Clinic',
                     id: 1

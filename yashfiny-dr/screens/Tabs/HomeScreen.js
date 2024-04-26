@@ -105,26 +105,35 @@ const HomeScreen = ({ navigation }) => {
       </View>
       <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
         <Text style={{ color: Colors.primary800, marginHorizontal: 20, marginTop: 25, fontWeight: "700", fontSize: 15, paddingBottom: 3 }}>{i18n.t('upcoming_apts')}</Text>
-        <Pressable>
+        {DummyPatients.filter((patient) => patient.appointments.some(appointment => appointment.status === 'upcoming')).length > 0 && <Pressable
+          onPress={() => navigation.navigate('Appointments', { filter: 'upcoming' })}>
           <Text style={{ marginHorizontal: 30, marginTop: 30, fontWeight: "400", fontSize: 12, color: Colors.link }}>{i18n.t('view_all')}</Text>
-        </Pressable>
+        </Pressable>}
       </View>
-      <FlatList
-        data={DummyPatients.filter((patient) => patient.appointments.some(appointment => appointment.status === 'upcoming'))}
-        renderItem={({ item }) => <ListItem
-          avatarUri={item.avatar}
-          fname={item.fname}
-          lname={item.lname}
-          aptDate={item.appointments.find((apt) => apt.status == 'upcoming').date}
-          gender={item.gender}
-          age={item.age?.toString()}
-          id={item.id}
-          phone={item.phoneNum}
-          diseases={item.history.chronicDis}
-          aptType={item.appointments.find((apt) => apt.status == 'upcoming').type.name}
-        />
-        }
-        keyExtractor={(patient) => patient.id.toString()} />
+      {
+        DummyPatients.filter((patient) => patient.appointments.some(appointment => appointment.status === 'upcoming')).length > 0 ?
+          <FlatList
+            data={DummyPatients.filter((patient) => patient.appointments.some(appointment => appointment.status === 'upcoming'))}
+            renderItem={({ item }) => <ListItem
+              avatarUri={item.avatar}
+              fname={item.fname}
+              lname={item.lname}
+              aptDate={item.appointments.find((apt) => apt.status == 'upcoming').date}
+              gender={item.gender}
+              age={item.age?.toString()}
+              id={item.id}
+              phone={item.phoneNum}
+              diseases={item.history.chronicDis}
+              aptType={item.appointments.find((apt) => apt.status == 'upcoming').type.name}
+            />
+            }
+            keyExtractor={(patient) => patient.id.toString()} />
+          :
+          <View style={{ justifyContent: 'center', alignItems: 'center', marginTop: 40 }}>
+            <MaterialCommunityIcons name='clock-alert-outline' color={Colors.grey300} size={70} style={{ marginBottom: 20 }} />
+            <Text style={{ color: Colors.grey300, fontSize: 16, fontWeight: "600" }}>{i18n.t('no_upcoming_apts')}</Text>
+          </View>
+      }
     </View>
   );
 };

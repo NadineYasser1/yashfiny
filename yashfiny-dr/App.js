@@ -59,6 +59,8 @@ import VideoRequestsScreen from "./screens/Tabs/VideoRequestsScreen";
 import SpecialRequestsScreen from "./screens/Tabs/SpecialRequestsScreen";
 import HideTabContextProvider, { HideTabContext } from "./store/HideTabContext";
 import SearchScreen from "./screens/HomeStack/SearchScreen";
+import EditProfileScreen from "./screens/Drawer/EditDoctorProfileScreen";
+import DoctorContextProvider from "./store/DoctorContext";
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -110,7 +112,7 @@ const CustomDrawerContent = (props) => {
 
   return (
     <DrawerContentScrollView {...props}>
-      <EditProfileDrawer />
+      <EditProfileDrawer navigation={props.navigation} />
       <DrawerItemList {...props} />
       <DrawerItem
         label={i18n.t('other_lang')}
@@ -260,6 +262,21 @@ const DashboardStack = () => {
 
       }}
       />
+      <Stack.Screen name="EditProfile" component={EditProfileScreen} options={{
+        animationTypeForReplace: 'pop',
+        presentation: 'modal',
+        tabBar: { visible: false },
+        headerStyle: { height: 100 },
+        header: ({ navigation, route, options, back }) => {
+          return (
+            <CustomHeader
+              title={i18n.t('edit_profile')}
+              navigation={navigation}
+              style={options.headerStyle} />
+          )
+        }
+
+      }} />
     </Stack.Navigator>
   )
 }
@@ -544,9 +561,12 @@ const AuthStack = () => {
 };
 
 const AuthenticatedStack = () => {
-  return (<HideTabContextProvider>
-    <TabsNavigator />
-  </HideTabContextProvider>
+  return (
+    <HideTabContextProvider>
+      <DoctorContextProvider>
+        <TabsNavigator />
+      </DoctorContextProvider>
+    </HideTabContextProvider>
   )
 };
 

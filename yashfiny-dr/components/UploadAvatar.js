@@ -1,15 +1,17 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useContext } from 'react';
 import { View, TouchableOpacity, Image, Alert, Dimensions } from 'react-native';
 import { Avatar } from 'react-native-elements';
 import * as DocumentPicker from 'expo-document-picker';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Colors } from '../constants/colors';
 import i18n from '../i18n';
+import { DoctorContext } from '../store/DoctorContext';
 const windowWidth = Dimensions.get('window').width
 const windowHeight = Dimensions.get('window').height
-const UploadAvatar = ({ handleChange }) => {
-    const [avatarSource, setAvatarSource] = useState(null);
+const UploadAvatar = ({ handleChange, editDoctor }) => {
 
+    const doctorCtx = useContext(DoctorContext)
+    const [avatarSource, setAvatarSource] = useState(editDoctor ? doctorCtx.avatarUri || null : null);
     const openDocumentPicker = async () => {
         try {
             const result = await DocumentPicker.getDocumentAsync({
@@ -19,6 +21,7 @@ const UploadAvatar = ({ handleChange }) => {
             if (result.canceled == false) {
                 setAvatarSource(result.assets[0].uri)
                 handleChange('avatar', { uri: result.assets[0].uri, type: result.assets[0].mimeType, size: result.assets[0].size })
+                editDoctor && doctorCtx.updateAvatar(result.assets[0].uri)
             }
 
         } catch (error) {

@@ -21,6 +21,7 @@ import CustomDropdown from "../../components/CustomDropDown";
 import CustomInput from "../../components/CustomInput";
 import CustomMultipleSelect from "../../components/CustomMultipleSelect";
 import { CheckBox, colors } from "react-native-elements";
+import { tempDiseases } from "../../constants/DummyDiseases";
 
 const RegistrationScreen = ({ route, navigation }) => {
   const [date, setDate] = useState(new Date())
@@ -31,12 +32,6 @@ const RegistrationScreen = ({ route, navigation }) => {
   const [choices, setChoices] = useState([]);
   const [price, setPrice] = useState([])
   const [newData, setNewData] = useState()
-
-  const tempDiseases = [
-    { value: 'disease 1', id: 1 },
-    { value: 'disease 2', id: 2 },
-    { value: 'disease 3', id: 3 },
-  ]
 
   const data = useMemo(() => {
     return {
@@ -224,17 +219,20 @@ const RegistrationScreen = ({ route, navigation }) => {
               <View style={[styles.inputContainer, { marginRight: 10 }]}>
                 <Text style={styles.label}>{i18n.t("specialization")}</Text>
                 <View style={{ width: 160 }}>
-                  <CustomMultipleSelect
+                  <CustomDropdown
                     options={tempDiseases}
-                    onSelect={(arr) => handleDataChange('specialization', arr)} label={i18n.t('specialization')} />
+                    onSelect={(opt) => handleDataChange('specialization', opt)}
+                    label={i18n.t('specialization')} />
                 </View>
               </View>
               <View style={styles.inputContainer}>
-                <Text style={styles.label}>{i18n.t("subspecialities")}</Text>
+                <Text style={styles.label}>{i18n.t("subspeciality")}</Text>
                 <View style={{ width: 160 }}>
-                  <CustomMultipleSelect
+                  <CustomDropdown
                     options={tempDiseases}
-                    onSelect={(arr) => handleDataChange('subspecialities', arr)} label={i18n.t('subspecialities')} />
+                    onSelect={(opt) => handleDataChange('subspeciality', opt)}
+                    label={i18n.t('subspeciality')}
+                  />
                 </View>
               </View>
             </View>

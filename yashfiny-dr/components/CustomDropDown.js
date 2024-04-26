@@ -3,9 +3,9 @@ import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-nativ
 import { SelectList } from 'react-native-dropdown-select-list';
 import i18n from '../i18n';
 
-const CustomDropdown = ({ options, onSelect, dropdownStyles, dropdownTextStyles, inputStyles, defaultOption, style, ...otherProps }) => {
-  const [selectedOption, setSelectedOption] = useState(null);
-
+const CustomDropdown = ({ options, onSelect, dropdownStyles, dropdownTextStyles, inputStyles, defaultOption, selectedOpt, style, ...otherProps }) => {
+  const [selectedOption, setSelectedOption] = useState(selectedOpt || null);
+  console.log(defaultOption)
   const handleSelectOption = (option) => {
     setSelectedOption(option);
     onSelect(option);

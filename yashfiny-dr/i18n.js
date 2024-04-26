@@ -115,7 +115,7 @@ const translations = {
     add: 'Add',
     disease_missing_alert: 'Please choose a disease first!',
     specialization: 'Specialization',
-    subspecialities: 'Subspecialities',
+    subspeciality: 'subspeciality',
     no_new_msgs: 'You have no new messages from our system moderators.',
     see_more: 'See more',
     see_less: 'See less',
@@ -132,7 +132,16 @@ const translations = {
     coming_soon_alert_text: 'Our developers are working on this feature, please check back again later!',
     ok: 'OK',
     error: 'Error',
-    error_selecting_doc: "An error occurred while selecting document. Please try again later."
+    error_selecting_doc: "An error occurred while selecting document. Please try again later.",
+    all: 'All',
+    no_upcoming_apts: 'You have no upcoming appointments...',
+    attended: 'Attended',
+    cancelled: 'Cancelled',
+    no_income_for_chosen_filters: 'No income for chosen filters...',
+    total: 'Total',
+    add_more: 'Add more',
+    type: 'Type',
+    method: 'Method'
 
   },
   ar: {

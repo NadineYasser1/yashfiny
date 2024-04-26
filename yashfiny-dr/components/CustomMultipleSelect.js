@@ -4,14 +4,14 @@ import { MultipleSelectList } from 'react-native-dropdown-select-list';
 import i18n from '../i18n';
 import { Colors } from '../constants/colors';
 
-const CustomMultipleSelect = ({ options, onSelect, label, ...otherProps }) => {
-  const [selected, setSelected] = useState([]);
-
+const CustomMultipleSelect = ({ options, onSelect, label, selectedOpts, ...otherProps }) => {
+  const [selected, setSelected] = useState(selectedOpts || []);
   return (
     <View style={styles.dropdownContainer}>
       <MultipleSelectList
         setSelected={(val) => setSelected(val)}
         onSelect={() => onSelect(selected)}
+        selected={selectedOpts}
         data={options}
         save="value"
         boxStyles={{ marginTop: 10, backgroundColor: 'white' }}
@@ -19,6 +19,7 @@ const CustomMultipleSelect = ({ options, onSelect, label, ...otherProps }) => {
         {...otherProps}
         label={label}
         labelStyles={{ color: 'grey', fontWeight: "300" }}
+        defaultOption={selectedOpts}
       />
     </View>
   );

@@ -50,6 +50,7 @@ const LoginScreen = ({ navigation }) => {
         { cancelable: true }
       );
     }).finally(() => setLoading(false))
+    //get doctor data
   }
 
   return (

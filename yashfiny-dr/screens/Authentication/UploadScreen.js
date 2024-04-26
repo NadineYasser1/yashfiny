@@ -10,6 +10,7 @@ import SuccessModal from "../../components/SucessModal";
 import axios from "axios";
 import { API } from "../../utils/config";
 import LoadingScreen from "../../components/LoadingScreen";
+import { PAYMENT_METHODS } from "../../constants/paymentMethods";
 
 const UploadScreen = ({ route, navigation }) => {
 
@@ -26,11 +27,6 @@ const UploadScreen = ({ route, navigation }) => {
 
     }, [route.params])
 
-    const tempOpts = [
-        { value: i18n.t('bank_account'), key: 1 },
-        { value: i18n.t('instapay'), key: 2 },
-        { value: i18n.t('phone_wallet'), key: 3 }
-    ]
 
     const handleSelection = (key, opt) => {
         setUpdatedData((prev) => ({
@@ -124,7 +120,7 @@ const UploadScreen = ({ route, navigation }) => {
                                 <Text style={styles.label}>{i18n.t('payment_method')}</Text>
                                 <View style={{ flexDirection: 'row', alignContent: 'space-between' }}>
                                     <CustomDropdown
-                                        options={tempOpts}
+                                        options={PAYMENT_METHODS}
                                         onSelect={(opt) => handleSelection('payment_method', opt)}
                                         style={{ width: 150 }}
                                     />

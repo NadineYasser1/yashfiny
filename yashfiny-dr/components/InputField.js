@@ -1,16 +1,17 @@
 import { View, Text, TextInput, StyleSheet } from "react-native"
 import { Colors } from "../constants/colors";
 
-const InputField = ({ label, placeholder, showLabel, style, keypad, handleChange, inputKey }) => {
+const InputField = ({ label, placeholder, showLabel, style, keypad, handleChange, inputStyles, inputKey, value }) => {
     return (
         <View style={[styles.inputContainer, style]}>
             {showLabel && <Text style={styles.label}>{label}</Text>}
             <TextInput
                 placeholder={placeholder}
                 placeholderTextColor="#aaa"
-                style={styles.input}
+                style={[styles.input, inputStyles]}
                 keyboardType={keypad}
-                onChangeText={(text) => handleChange(inputKey, text)}
+                onChangeText={(text) => handleChange(inputKey || null, text)}
+                value={value}
             />
         </View>
     )

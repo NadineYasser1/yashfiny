@@ -141,8 +141,17 @@ const translations = {
     total: 'Total',
     add_more: 'Add more',
     type: 'Type',
-    method: 'Method'
-
+    method: 'Method',
+    cancel_alert_title: 'Cancel Appointment',
+    cancel_alert_ques: 'Are you sure you want to cancel this appointment?',
+    filter_by: 'Filter By',
+    type: 'Type',
+    location: 'Location',
+    upcoming: 'Upcoming',
+    visited: 'Visited',
+    clear: 'Clear',
+    apply: 'Apply',
+    status: 'Status'
   },
   ar: {
     login_assistant: 'تسجيل الدخول كمساعد ',

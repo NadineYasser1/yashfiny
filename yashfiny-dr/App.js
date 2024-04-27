@@ -61,6 +61,7 @@ import HideTabContextProvider, { HideTabContext } from "./store/HideTabContext";
 import SearchScreen from "./screens/HomeStack/SearchScreen";
 import EditProfileScreen from "./screens/Drawer/EditDoctorProfileScreen";
 import DoctorContextProvider from "./store/DoctorContext";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -562,11 +563,13 @@ const AuthStack = () => {
 
 const AuthenticatedStack = () => {
   return (
-    <HideTabContextProvider>
-      <DoctorContextProvider>
-        <TabsNavigator />
-      </DoctorContextProvider>
-    </HideTabContextProvider>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <HideTabContextProvider>
+        <DoctorContextProvider>
+          <TabsNavigator />
+        </DoctorContextProvider>
+      </HideTabContextProvider>
+    </GestureHandlerRootView>
   )
 };
 

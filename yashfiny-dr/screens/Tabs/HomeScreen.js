@@ -106,7 +106,7 @@ const HomeScreen = ({ navigation }) => {
       <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
         <Text style={{ color: Colors.primary800, marginHorizontal: 20, marginTop: 25, fontWeight: "700", fontSize: 15, paddingBottom: 3 }}>{i18n.t('upcoming_apts')}</Text>
         {DummyPatients.filter((patient) => patient.appointments.some(appointment => appointment.status === 'upcoming')).length > 0 && <Pressable
-          onPress={() => navigation.navigate('Appointments', { filter: 'upcoming' })}>
+          onPress={() => navigation.navigate('Appointments', { statusFilter: true })}>
           <Text style={{ marginHorizontal: 30, marginTop: 30, fontWeight: "400", fontSize: 12, color: Colors.link }}>{i18n.t('view_all')}</Text>
         </Pressable>}
       </View>
@@ -125,6 +125,7 @@ const HomeScreen = ({ navigation }) => {
               phone={item.phoneNum}
               diseases={item.history.chronicDis}
               aptType={item.appointments.find((apt) => apt.status == 'upcoming').type.name}
+              aptMethod={item.appointments.find((apt) => apt.status == 'upcoming').method}
             />
             }
             keyExtractor={(patient) => patient.id.toString()} />

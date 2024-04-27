@@ -31,7 +31,8 @@ export const DummyPatients = [
                     name: 'Video',
                     id: 1
                 },
-                date: dayjs(new Date()), //a dayjs object
+                method: 'group',
+                date: dayjs(new Date('2024-01-05')), //a dayjs object
 
             },
             {
@@ -41,7 +42,8 @@ export const DummyPatients = [
                     name: 'clinic',
                     id: 2
                 },
-                date: dayjs(new Date()), //a dayjs object
+                method: 'group',
+                date: dayjs(new Date('2024-04-27')), //a dayjs object
 
             },
             {
@@ -51,6 +53,7 @@ export const DummyPatients = [
                     name: 'video',
                     id: 1
                 },
+                method: 'group',
                 date: dayjs(new Date()), //a dayjs object
                 aptResults: {
                     ix: ['lab testX', 'lab textY'],
@@ -160,6 +163,7 @@ export const DummyPatients = [
                     name: 'Clinic',
                     id: 1
                 },
+                method: 'individual',
                 date: dayjs(new Date()), //a dayjs object
 
             },
@@ -170,6 +174,7 @@ export const DummyPatients = [
                     name: 'clinic',
                     id: 2
                 },
+                method: 'individual',
                 date: dayjs(new Date()), //a dayjs object
 
             },
@@ -180,6 +185,7 @@ export const DummyPatients = [
                     name: 'video',
                     id: 1
                 },
+                method: 'individual',
                 date: dayjs(new Date()), //a dayjs object
                 aptResults: {
                     ix: ['lab testX', 'lab textY'],
@@ -289,6 +295,7 @@ export const DummyPatients = [
                     name: 'video',
                     id: 1
                 },
+                method: 'individual',
                 date: dayjs(new Date()), //a dayjs object
 
             },
@@ -299,6 +306,7 @@ export const DummyPatients = [
                     name: 'clinic',
                     id: 2
                 },
+                method: 'group',
                 date: dayjs(new Date()), //a dayjs object
 
             },
@@ -309,6 +317,7 @@ export const DummyPatients = [
                     name: 'video',
                     id: 1
                 },
+                method: 'individual',
                 date: dayjs(new Date()), //a dayjs object
                 aptResults: {
                     ix: ['lab testX', 'lab textY'],
@@ -418,6 +427,7 @@ export const DummyPatients = [
                     name: 'video',
                     id: 1
                 },
+                method: 'individual',
                 date: dayjs(new Date()), //a dayjs object
 
             },
@@ -428,6 +438,7 @@ export const DummyPatients = [
                     name: 'clinic',
                     id: 2
                 },
+                method: 'individual',
                 date: dayjs(new Date()), //a dayjs object
 
             },
@@ -438,6 +449,7 @@ export const DummyPatients = [
                     name: 'video',
                     id: 1
                 },
+                method: 'individual',
                 date: dayjs(new Date()), //a dayjs object
                 aptResults: {
                     ix: ['lab testX', 'lab textY'],
@@ -451,6 +463,7 @@ export const DummyPatients = [
                             name: 'diagnosisName'
                         },
                     ],
+                    method: 'individual',
                     advices: 'sleep',
                     summary: 'visit summary',
                     prescriptionURl: 'pdfUrl',
@@ -547,6 +560,7 @@ export const DummyPatients = [
                     name: 'Clinic',
                     id: 1
                 },
+                method: 'individual',
                 date: dayjs(new Date()), //a dayjs object
 
             },
@@ -557,6 +571,7 @@ export const DummyPatients = [
                     name: 'clinic',
                     id: 2
                 },
+                method: 'individual',
                 date: dayjs(new Date()), //a dayjs object
 
             },
@@ -567,6 +582,7 @@ export const DummyPatients = [
                     name: 'video',
                     id: 1
                 },
+                method: 'individual',
                 date: dayjs(new Date()), //a dayjs object
                 aptResults: {
                     ix: ['lab testX', 'lab textY'],

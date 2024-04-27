@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Text, View, StyleSheet, Dimensions, Pressable } from 'react-native';
 import Card from "./Card";
 import dayjs from 'dayjs';
@@ -7,10 +7,56 @@ import i18n from '../i18n';
 import { Avatar } from "react-native-elements";
 import DiseasePatch from './DiseasePatch';
 import AptTypePatch from './AptTypePatch';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 const windowWidth = Dimensions.get('window').width;
 
-const ListItem = ({ avatarUri, fname, lname, aptDate, gender, age, id, phone, diseases, aptType }) => {
+const ListItem = ({
+    avatarUri,
+    fname,
+    lname,
+    aptDate,
+    gender,
+    age,
+    id,
+    phone,
+    diseases,
+    aptType,
+    cancellable,
+    handleCancel,
+    aptStatus,
+    appointmentsScreen,
+    aptMethod
+}) => {
+    const color = useMemo(() => {
+        switch (aptStatus?.toLowerCase()) {
+            case 'cancelled':
+                return '#ff7f7f'
+            case 'upcoming':
+                return '#f8c471'
+            case 'visited':
+                return '#78e997'
+            default:
+                return Colors.primary600
+
+        }
+    }, [aptStatus || null])
+
+    const iconName = useMemo(() => {
+        switch (aptStatus?.toLowerCase()) {
+            case 'cancelled':
+                return 'close-circle'
+            case 'upcoming':
+                return 'clock-fast'
+            case 'visited':
+                return 'check'
+            default:
+                return Colors.primary600
+
+        }
+    }, [aptStatus || null])
+
+
     return (
         <Pressable>
             <Card style={styles.card}>
@@ -24,6 +70,7 @@ const ListItem = ({ avatarUri, fname, lname, aptDate, gender, age, id, phone, di
                         <View style={styles.headerCont}>
                             <Text style={styles.nameLabel}>{`${fname} ${lname}`}</Text>
                             <Text style={styles.dateLabel}>{dayjs(aptDate).format('DD MMMM, hh:mm A')}</Text>
+                            {appointmentsScreen && <MaterialCommunityIcons name={iconName} color={color} size={23} />}
                         </View>
                         <View style={styles.infoRow}>
                             <Text style={styles.genderLabel}>{gender + ' .'}</Text>
@@ -32,6 +79,8 @@ const ListItem = ({ avatarUri, fname, lname, aptDate, gender, age, id, phone, di
                         <View style={styles.infoRow}>
                             <Text style={styles.infoLabel}>{i18n.t('id') + ':' + id}</Text>
                             <Text style={styles.phoneLabel}>{i18n.t('phone') + ':' + phone}</Text>
+                            {appointmentsScreen && <MaterialCommunityIcons name={aptMethod?.toLowerCase() == 'group' ? 'account-group' : 'account'} color={Colors.grey300} size={25} style={{ marginStart: 50, marginEnd: 10 }} />}
+                            {appointmentsScreen && <MaterialCommunityIcons name={aptType == 'video' ? 'video-marker' : 'map-marker-radius'} size={25} color={aptType == 'video' ? Colors.primary800 : Colors.accent800} />}
                         </View>
                     </View>
                 </View>
@@ -39,8 +88,21 @@ const ListItem = ({ avatarUri, fname, lname, aptDate, gender, age, id, phone, di
                     <View style={styles.diseasesContainer}>
                         {diseases.map((disease, index) => <DiseasePatch disease={disease} key={index} />)}
                     </View>
-                    <AptTypePatch type={aptType} />
+                    {!appointmentsScreen && <MaterialCommunityIcons name={aptMethod?.toLowerCase() == 'group' ? 'account-group' : 'account'} color={Colors.grey300} size={25} style={{ marginStart: 50, marginEnd: 10 }} />}
+                    {!appointmentsScreen && <MaterialCommunityIcons name={aptType == 'video' ? 'video-marker' : 'map-marker-radius'} size={25} color={aptType == 'video' ? Colors.primary800 : Colors.accent800} />}
                 </View>
+
+
+                {
+                    appointmentsScreen && cancellable &&
+                    <View style={{ marginTop: 10, marginStart: 200 }}>
+                        <Pressable style={styles.cancelPatch} onPress={handleCancel}>
+                            <Text style={styles.cancel}>{i18n.t('cancel')}</Text>
+                        </Pressable>
+                    </View>
+                }
+
+
             </Card>
         </Pressable>
     );
@@ -52,12 +114,9 @@ const styles = StyleSheet.create({
     container: {
         flexDirection: 'row',
         alignItems: 'flex-start',
-        // paddingHorizontal: 1,
-        // paddingVertical: 4,
     },
     card: {
-        elevation: 3, //shadow for android
-        //shadow for ios:
+        elevation: 3,
         shadowColor: "black",
         shadowOffset: { width: 0, height: 0.1 },
         shadowRadius: 2,
@@ -108,7 +167,7 @@ const styles = StyleSheet.create({
     },
     patchesContainer: {
         flexDirection: 'row',
-        justifyContent: 'space-between',
+        alignItems: 'center',
         marginTop: 5,
         paddingHorizontal: 10,
     },
@@ -118,4 +177,41 @@ const styles = StyleSheet.create({
         flex: 1,
         marginLeft: 35
     },
+    cancelPatch: {
+        backgroundColor: Colors.red,
+        borderRadius: 8,
+        justifyContent: 'center',
+        alignItems: 'center',
+        // borderColor: Colors.red,
+        marginEnd: 10,
+        shadowColor: Colors.red,
+        shadowOffset: { width: 0, height: 0.1 },
+        shadowRadius: 2,
+        shadowOpacity: 0.2,
+
+    },
+    cancel: {
+        color: 'white',
+        paddingHorizontal: 19,
+        paddingVertical: 3,
+        fontSize: 15,
+        fontWeight: '600'
+    },
+    statusContainer: {
+        borderRadius: 5,
+        width: 90,
+        alignItems: 'center',
+        justifyContent: 'center'
+    },
+    aptStatus: {
+        color: 'white',
+        paddingVertical: 3,
+        fontWeight: '600'
+    },
+    statusRow: {
+        flexDirection: 'row',
+        justifyContent: 'flex-start',
+        alignItems: 'flex-start',
+        marginTop: 15,
+    }
 });

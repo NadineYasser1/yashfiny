@@ -35,21 +35,22 @@ const LoginScreen = ({ navigation }) => {
     ))
   }
   const handleLogin = () => {
-    setLoading(true)
-    axios.post(API.login, loginData
-    ).then(({ data }) => {
-      console.log('logged in!')
-      authCtx.authenticate(data.token)
-    }).catch((err) => {
-      Alert.alert(
-        "Error",
-        err.response.data.message,
-        [
-          { text: "OK", onPress: () => { } }
-        ],
-        { cancelable: true }
-      );
-    }).finally(() => setLoading(false))
+    authCtx.authenticate('1234')
+    // setLoading(true)
+    // axios.post(API.login, loginData
+    // ).then(({ data }) => {
+    //   console.log('logged in!')
+    //   authCtx.authenticate(data.token)
+    // }).catch((err) => {
+    //   Alert.alert(
+    //     "Error",
+    //     err.response.data.message,
+    //     [
+    //       { text: "OK", onPress: () => { } }
+    //     ],
+    //     { cancelable: true }
+    //   );
+    // }).finally(() => setLoading(false))
     //get doctor data
   }
 

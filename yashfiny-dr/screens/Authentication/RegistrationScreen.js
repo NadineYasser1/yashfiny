@@ -20,7 +20,7 @@ import dayjs from "dayjs";
 import CustomDropdown from "../../components/CustomDropDown";
 import CustomInput from "../../components/CustomInput";
 import CustomMultipleSelect from "../../components/CustomMultipleSelect";
-import { CheckBox, colors } from "react-native-elements";
+import { CheckBox } from "react-native-elements";
 import { tempDiseases } from "../../constants/DummyDiseases";
 
 const RegistrationScreen = ({ route, navigation }) => {

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { View, Text, StyleSheet, Dimensions } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
@@ -8,7 +8,7 @@ import { Colors } from '../constants/colors';
 const windowHeight = Dimensions.get('window').height
 const MonthlyEarningsCard = () => {
   const incomes = [
-    { month: 'Oct', inc: '1000', progress: 0.3 },
+    { month: 'Oct', inc: '3000', progress: 0.3 },
     { month: 'Nov', inc: '2000', progress: 0.7 },
     { month: 'Dec', inc: '1000', progress: 0.8 },
     { month: 'Jan', inc: '4000', progress: 0.9 },
@@ -17,7 +17,12 @@ const MonthlyEarningsCard = () => {
   ]
 
   const curr = 'EGP'
-  const perThanLastMonth = '80'
+  const perThanLastMonth = useMemo(() => {
+    if (incomes) {
+      return (((parseFloat(incomes[0].inc, 0) - parseFloat(incomes[1].inc, 0)) / parseFloat(incomes[1].inc, 0)) * 100).toString()
+    }
+    return 0
+  })
 
   return (
     <View style={styles.container}>
@@ -35,9 +40,9 @@ const MonthlyEarningsCard = () => {
           ))}
         </View>
         <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-          <Text style={styles.currentIncome}>{`${incomes[incomes.length - 1].inc} ${curr}`}</Text>
-          <View style={{ borderRadius: 3, backgroundColor: 'green', marginLeft: 10, marginTop: 10 }}>
-            <Text style={{ fontSize: 10, padding: 3, color: 'white' }}>{`+${perThanLastMonth}%`}</Text>
+          <Text style={styles.currentIncome}>{`${incomes[0].inc} ${curr}`}</Text>
+          <View style={{ borderRadius: 3, backgroundColor: perThanLastMonth >= 0 ? 'green' : Colors.red, marginLeft: 10, marginTop: 10 }}>
+            <Text style={{ fontSize: 10, padding: 3, color: 'white' }}>{`${perThanLastMonth > 0 ? '+' : ''} ${perThanLastMonth}%`}</Text>
           </View>
         </View>
       </LinearGradient>

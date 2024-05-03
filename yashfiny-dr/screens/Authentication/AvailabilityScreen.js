@@ -334,7 +334,7 @@ const AvailabilityScreen = ({ navigation, route }) => {
       ...selectedSlot
     }
   }, [selectedSlot])
-
+  console.log(windowHeight)
 
   const handleSave = () => {
     if (route?.params) {
@@ -454,7 +454,7 @@ const AvailabilityScreen = ({ navigation, route }) => {
         <Text style={{ color: Colors.primary800, fontSize: 13, marginEnd: 20 }}>{i18n.t('video')}</Text>
       </View>
       <View contentContainerStyle={styles.content}>
-        <View style={{ backgroundColor: 'white', borderRadius: 20, marginHorizontal: 8, padding: 8, height: windowHeight > 800 ? windowHeight * 0.47 : windowHeight * 0.46 }}>
+        <View style={{ backgroundColor: 'white', borderRadius: 20, marginHorizontal: 8, padding: 8, height: windowHeight > 800 && windowHeight <= 900 ? windowHeight * 0.47 : windowHeight > 900 ? windowHeight * 0.6 : windowHeight * 0.46 }}>
           <View style={styles.timePicker}>
             <View style={{ flexDirection: 'column' }}>
               <Text style={{ marginHorizontal: 10, color: Colors.grey100 }}>{i18n.t('from')}</Text>

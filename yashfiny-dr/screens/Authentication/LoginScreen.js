@@ -34,12 +34,12 @@ const LoginScreen = ({ navigation }) => {
     }
     ))
   }
+
   const handleLogin = () => {
     authCtx.authenticate('1234')
     // setLoading(true)
     // axios.post(API.login, loginData
     // ).then(({ data }) => {
-    //   console.log('logged in!')
     //   authCtx.authenticate(data.token)
     // }).catch((err) => {
     //   Alert.alert(
@@ -51,7 +51,7 @@ const LoginScreen = ({ navigation }) => {
     //     { cancelable: true }
     //   );
     // }).finally(() => setLoading(false))
-    //get doctor data
+    // get doctor data and add to doctorContext
   }
 
   return (

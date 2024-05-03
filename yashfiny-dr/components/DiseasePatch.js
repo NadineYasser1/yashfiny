@@ -1,11 +1,11 @@
 import { StyleSheet, View, Text } from "react-native";
 import { Colors } from "../constants/colors";
 
-const DiseasePatch = ({ disease }) => {
+const DiseasePatch = ({ disease, containerStyle, labelStyle }) => {
 
     return (
-        <View style={styles.container}>
-            <Text style={styles.label}>{disease}</Text>
+        <View style={[styles.container, containerStyle]}>
+            <Text style={[styles.label, labelStyle]}>{disease}</Text>
         </View>
     )
 }

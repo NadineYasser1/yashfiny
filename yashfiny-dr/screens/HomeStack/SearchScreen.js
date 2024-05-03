@@ -9,7 +9,7 @@ import { HideTabContext } from "../../store/HideTabContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
-const SearchScreen = () => {
+const SearchScreen = ({ navigation }) => {
     const [search, setSearch] = useState('');
     const [data, setData] = useState(DummyPatients);
     const [recentId, setrecentId] = useState();
@@ -34,6 +34,12 @@ const SearchScreen = () => {
     const handlePatientChoice = async (patientId) => {
         try {
             await AsyncStorage.setItem('recentSearch', JSON.stringify(patientId.toString()));
+            hideTabCtx.hideTab(false);
+            navigation.navigate('Patients', {
+                screen: 'PatientDetails',
+                params: patientId
+
+            });
         } catch (error) {
             Alert.alert('error')
         }
@@ -50,7 +56,8 @@ const SearchScreen = () => {
     const contains = ({ fname, lname, id }, query) => {
         return fname.toLowerCase().includes(query) ||
             lname.toLowerCase().includes(query) ||
-            id.toString().includes(query);
+            id.toString().includes(query) ||
+            `${fname?.toLowerCase()} ${lname.toLowerCase()}`.includes(query);
     };
 
     const renderRecentItem = () => {

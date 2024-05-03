@@ -1,8 +1,10 @@
 import { Text } from "react-native"
+import RequestsList from "../../components/RequestsList";
+import { clinicReqs } from "../../constants/DummyRequests";
 
 const ClinicRequestsScreen = () => {
     return (
-        <Text>ClinicRequestsScreen</Text>
+        <RequestsList data={clinicReqs} />
     )
 }
 export default ClinicRequestsScreen;

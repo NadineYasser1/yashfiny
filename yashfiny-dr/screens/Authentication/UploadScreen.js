@@ -65,6 +65,7 @@ const UploadScreen = ({ route, navigation }) => {
                 { cancelable: true }
             );
         }).finally(() => setLoading(false))
+        // setSuccess(true)
 
     }
 

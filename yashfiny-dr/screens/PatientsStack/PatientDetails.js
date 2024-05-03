@@ -1,6 +1,7 @@
 import { Text } from "react-native"
 
-const PatientDetails = () => {
+const PatientDetails = ({ route }) => {
+    console.log(route.params)
     return (
         <Text>Patient Details</Text>
     )

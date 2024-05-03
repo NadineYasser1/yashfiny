@@ -4,13 +4,15 @@ import { ProgressBar } from 'react-native-paper';
 import { Colors } from '../constants/colors';
 import { useNavigation } from '@react-navigation/native';
 
-const LoadingScreen = () => {
-    // const navigation = useNavigation()
-    // useEffect(() => {
-    //     navigation.setOptions({
-    //         headerShown: false
-    //     })
-    // }, [])
+const LoadingScreen = ({ notFromNav }) => {
+    const navigation = !notFromNav ? useNavigation() : null
+    useEffect(() => {
+        if (!notFromNav) {
+            navigation.setOptions({
+                headerShown: false
+            })
+        }
+    }, [notFromNav])
     return (
         <View style={styles.container}>
             <Image

@@ -2,7 +2,7 @@ import "react-native-gesture-handler";
 import { StatusBar } from "expo-status-bar";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
-import { Dimensions, Platform, StyleSheet, View } from "react-native";
+import { Alert, Dimensions, Platform, StyleSheet, View } from "react-native";
 import {
   Menu,
   IconButton,
@@ -138,7 +138,7 @@ const AssistantStack = () => {
     <Stack.Navigator
       initialRouteName="Assistants Screen"
       screenOptions={{
-        headerStyle: { backgroundColor: Colors.primary800 },
+        headerStyle: { backgroundColor: Colors.primary800, height: windowHeight > 650 ? 120 : 80 },
         headerTintColor: "white",
         // headerTitleStyle: { color: "transparent" },
         headerBackTitleVisible: false,
@@ -158,7 +158,7 @@ const IncomeStack = () => {
     <Stack.Navigator
       initialRouteName="Income Screen"
       screenOptions={{
-        headerStyle: { backgroundColor: Colors.primary800 },
+        headerStyle: { backgroundColor: Colors.primary800, height: windowHeight > 650 ? 120 : 80 },
         headerTintColor: "white",
         // headerTitleStyle: { color: "transparent" },
         headerBackTitleVisible: false,
@@ -175,7 +175,7 @@ const ArticlesStack = () => {
     <Stack.Navigator
       initialRouteName="Articles Screen"
       screenOptions={{
-        headerStyle: { backgroundColor: Colors.primary800 },
+        headerStyle: { backgroundColor: Colors.primary800, height: windowHeight > 650 ? 120 : 80 },
         headerTintColor: "white",
         // headerTitleStyle: { color: "transparent" },
         headerBackTitleVisible: false,
@@ -192,7 +192,7 @@ const DashboardStack = () => {
     <Stack.Navigator
       initialRouteName="Home"
       screenOptions={{
-        headerStyle: { backgroundColor: Colors.primary800 },
+        headerStyle: { backgroundColor: Colors.primary800, height: windowHeight > 650 ? 120 : 80 },
         headerTintColor: "white",
         // headerTitleStyle: { color: "transparent" },
         headerBackTitleVisible: false,
@@ -207,6 +207,7 @@ const DashboardStack = () => {
 
           headerStyle: { height: 150 },
           headerTitleStyle: { color: 'transparent' },
+          headerTitle: i18n.t('home')
           // headerShown: false
 
         }}
@@ -227,10 +228,10 @@ const DashboardStack = () => {
         }
 
       }} />
-      <Stack.Screen name="Assistants" component={AssistantStack} />
-      <Stack.Screen name="Promotions" component={PromotionsScreen} />
-      <Stack.Screen name="Activities" component={ActivitiesScreen} />
-      <Stack.Screen name="Income" component={IncomeStack} />
+      <Stack.Screen name="Assistants" component={AssistantStack} options={{ headerTitle: i18n.t('assistants') }} />
+      <Stack.Screen name="Promotions" component={PromotionsScreen} options={{ headerTitle: i18n.t('promotions') }} />
+      <Stack.Screen name="Activities" component={ActivitiesScreen} options={{ headerTitle: i18n.t('activities') }} />
+      <Stack.Screen name="Income" component={IncomeStack} options={{ headerTitle: i18n.t('income') }} />
       <Stack.Screen name="NewPatient" component={NewPatientScreen} options={{
         animationTypeForReplace: 'pop',
         presentation: 'modal',
@@ -286,15 +287,21 @@ const PatientsStack = () => {
     <Stack.Navigator
       initialRouteName="PatientsScreen"
       screenOptions={{
-        headerStyle: { backgroundColor: Colors.primary800 },
+        headerStyle: { backgroundColor: Colors.primary800, height: windowHeight > 650 ? 120 : 80 },
         headerTintColor: "white",
         // headerTitleStyle: { color: "transparent" },
         headerBackTitleVisible: false,
         // headerShadowVisible: false,
       }}
     >
-      <Stack.Screen name="PatientsScreen" component={PatientsScreen} options={{ headerShown: false }} />
-      <Stack.Screen name="PatientDetails " component={PatientDetails} />
+      <Stack.Screen name="PatientsScreen" component={PatientsScreen} options={{
+        headerTitle: i18n.t('patients'),
+        headerBackTitleVisible: false
+      }} />
+      <Stack.Screen name="PatientDetails" component={PatientDetails} options={({ navigation, route }) => ({
+        headerTitle: i18n.t('patient_details'),
+        headerLeft: ({ tintColor }) => <MaterialCommunityIcons name="chevron-left" color={tintColor} size={30} onPress={() => navigation.navigate('PatientsScreen')} />
+      })} />
       <Stack.Screen name="VisitResults" component={VisitResults} />
       <Stack.Screen name="AddDrug" component={AddDrug} />
     </Stack.Navigator>
@@ -306,17 +313,17 @@ const RequestsStack = () => {
     <Stack.Navigator
       initialRouteName="RequestsScreen"
       screenOptions={{
-        headerStyle: { backgroundColor: Colors.primary800 },
+        headerStyle: { backgroundColor: Colors.primary800, height: windowHeight > 650 ? 120 : 80 },
         headerTintColor: "white",
         // headerTitleStyle: { color: "transparent" },
         headerBackTitleVisible: false,
         // headerShadowVisible: false,
       }}
     >
-      <Stack.Screen name="RequestsScreen" component={RequestsScreen} options={{ headerShown: false }} />
-      <Stack.Screen name="ClinicRequests" component={ClinicRequestsScreen} />
-      <Stack.Screen name="VideoRequests" component={VideoRequestsScreen} />
-      <Stack.Screen name="SpecialRequests" component={SpecialRequestsScreen} />
+      <Stack.Screen name="RequestsScreen" component={RequestsScreen} options={{ headerTitle: i18n.t('requests') }} />
+      <Stack.Screen name="ClinicRequests" component={ClinicRequestsScreen} options={{ headerTitle: i18n.t('clinic_requests') }} />
+      <Stack.Screen name="VideoRequests" component={VideoRequestsScreen} options={{ headerTitle: i18n.t('video_requests') }} />
+      <Stack.Screen name="SpecialRequests" component={SpecialRequestsScreen} options={{ headerTitle: i18n.t('special_requests') }} />
     </Stack.Navigator>
   )
 
@@ -328,7 +335,7 @@ const DrawerNav = () => {
       drawerContent={(props) => <CustomDrawerContent {...props} />}
       initialRouteName="HomeStack"
       screenOptions={{
-        headerStyle: { backgroundColor: Colors.primary800, height: 120 },
+        headerStyle: { backgroundColor: Colors.primary800, height: windowHeight > 650 ? 120 : 80 },
         headerTintColor: 'white',
         drawerStyle: { backgroundColor: Colors.primary800 },
         drawerInactiveTintColor: 'white',
@@ -400,19 +407,23 @@ const TabsNavigator = () => {
         }} />
         <Tab.Screen name="Appointments" component={AppointmentsScreen} options={{
           tabBarIcon: ({ color, size }) => <MaterialCommunityIcons name="calendar-blank" color={color} size={size} />,
-          tabBarLabel: i18n.t('appointments')
+          tabBarLabel: i18n.t('appointments'),
+          headerTitle: i18n.t('appointments')
         }} />
         <Tab.Screen name="Patients" component={PatientsStack} options={{
           tabBarIcon: ({ color, size }) => <MaterialCommunityIcons name="account-group" color={color} size={size} />,
-          tabBarLabel: i18n.t('patients')
+          tabBarLabel: i18n.t('patients'),
+          headerShown: false
         }} />
         <Tab.Screen name="Requests" component={RequestsStack} options={{
           tabBarIcon: ({ color, size }) => <MaterialCommunityIcons name="link" color={color} size={size} />,
-          tabBarLabel: i18n.t('requests')
+          tabBarLabel: i18n.t('requests'),
+          headerShown: false
         }} />
         <Tab.Screen name="Calls" component={CallsScreen} options={{
           tabBarIcon: ({ color, size }) => <MaterialCommunityIcons name="video-box" color={color} size={size} />,
-          tabBarLabel: i18n.t('calls')
+          tabBarLabel: i18n.t('calls'),
+          headerTitle: i18n.t('calls')
         }} />
       </Tab.Navigator>
     </NavigationContainer>)
@@ -594,7 +605,7 @@ const Root = () => {
         authCtx.authenticate(storedToken)
       }
     } catch (err) {
-      console.log(err)
+      Alert.alert(i18n.t('error'))
     } finally {
       setIsTryingLogin(false)
     }
@@ -606,7 +617,7 @@ const Root = () => {
   }, [])
 
   if (isTryingLogin) {
-    return <LoadingScreen />
+    return <LoadingScreen notFromNav={true} />
   }
 
   return (
@@ -671,7 +682,7 @@ export default App = () => {
   });
 
   if (!isLoaded) {
-    return <LoadingScreen />
+    return <LoadingScreen notFromNav={true} />
   }
 
   return (

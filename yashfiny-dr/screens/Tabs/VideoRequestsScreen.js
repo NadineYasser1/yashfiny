@@ -1,8 +1,10 @@
 import { Text } from "react-native"
+import RequestsList from "../../components/RequestsList";
+import { videoReqs } from "../../constants/DummyRequests";
 
 const VideoRequestsScreen = () => {
     return (
-        <Text>VideoRequestsScreen</Text>
+        <RequestsList data={videoReqs} />
     )
 }
 export default VideoRequestsScreen;

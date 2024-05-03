@@ -38,14 +38,14 @@ const RegistrationForm = ({ editDoctor }) => {
             handleChange('price', pricing)
             doctorCtx.updateData(data)
             console.log(data)
-        } else {
+        } else if (!editDoctor) {
             console.log({
                 ...data,
                 history
             })
         }
-        // hideTabCtx.hideTab(false)
-        // navigation.goBack()
+        hideTabCtx.hideTab(false)
+        navigation.goBack()
     }
     const handleChange = (key, val) => {
         setData((prev) => ({
@@ -185,7 +185,6 @@ const RegistrationForm = ({ editDoctor }) => {
                             size={25}
                             style={{ marginTop: 12, marginHorizontal: 10 }}
                             onPress={() => {
-                                console.log(newPrice)
                                 pricing.push(newPrice)
                                 setNewPrice({})
                                 setShowMore(false)

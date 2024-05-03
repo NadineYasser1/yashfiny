@@ -8,7 +8,7 @@ const translations = {
     goodbye: 'Goodbye',
     other_lang: 'العربية',
     login_assistant: 'Login As Assistant',
-    phone_numb_or_email: 'Phone Number or Email',
+    phone_numb_or_email: 'Email',
     password: 'Password',
     login: 'Login',
     forgot_pass: 'Forgot password',
@@ -151,7 +151,32 @@ const translations = {
     visited: 'Visited',
     clear: 'Clear',
     apply: 'Apply',
-    status: 'Status'
+    status: 'Status',
+    video_requests: 'Video Requests',
+    clinic_requests: 'Clinic Requests',
+    special_requests: 'Special Requests',
+    clinic_apt_reqs: 'Clinic Appointment Requests',
+    video_apt_reqs: 'Video Appointment Requests',
+    special_apt_reqs: 'Special Appointment Requests',
+    symptoms: 'Symptoms',
+    current_complaint: 'Current Complaint',
+    accept: 'Accept',
+    decline: 'Decline',
+    income: 'Income',
+    activities: 'Activities',
+    promotions: 'Promotions',
+    time_left_till_apt: 'Time left until appointment',
+    hours: 'Hours',
+    mins: 'Mins',
+    start_appointment: 'Start Appointment',
+    patient_details: 'Patient Details',
+    not_my_speciality: 'I specialize in a different area of medicine. Consult with another specialist',
+    slot_not_available: 'I am no longer available during the slot you have requested.',
+    group_apts_reserved: 'Please note that group sessions are currently reserved for previous patients.',
+    send_quick_message_instead: 'Do you want to send a quick message to the patient?',
+    select_message: 'Select a message to send',
+    no: 'No',
+    yashfiny_asks_you: 'Yashfiny asks'
   },
   ar: {
     login_assistant: 'تسجيل الدخول كمساعد ',
@@ -159,7 +184,7 @@ const translations = {
     greeting: 'مرحبا',
     goodbye: 'مع السلامة',
     other_lang: 'English',
-    yashfiny: 'يشفيني'
+    yashfiny: 'يشفيني',
 
   }
 }

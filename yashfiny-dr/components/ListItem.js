@@ -26,7 +26,9 @@ const ListItem = ({
     handleCancel,
     aptStatus,
     appointmentsScreen,
-    aptMethod
+    aptMethod,
+    patientScreen,
+    handlePress
 }) => {
     const color = useMemo(() => {
         switch (aptStatus?.toLowerCase()) {
@@ -58,40 +60,44 @@ const ListItem = ({
 
 
     return (
-        <Pressable>
+        <Pressable onPress={handlePress}>
             <Card style={styles.card}>
-                <View style={styles.container}>
+                <View style={[styles.container, patientScreen && { paddingVertical: 20 }]}>
                     <Avatar
                         rounded
                         source={{ uri: avatarUri }}
-                        size={45}
+                        size={patientScreen ? 60 : 45}
                     />
                     <View style={styles.infoContainer}>
                         <View style={styles.headerCont}>
                             <Text style={styles.nameLabel}>{`${fname} ${lname}`}</Text>
-                            <Text style={styles.dateLabel}>{dayjs(aptDate).format('DD MMMM, hh:mm A')}</Text>
+                            {aptDate && <Text style={styles.dateLabel}>{dayjs(aptDate).format('DD MMMM, hh:mm A')}</Text>}
                             {appointmentsScreen && <MaterialCommunityIcons name={iconName} color={color} size={23} />}
                         </View>
                         <View style={styles.infoRow}>
-                            <Text style={styles.genderLabel}>{gender + ' .'}</Text>
-                            <Text style={styles.ageLabel}>{age + i18n.t('yrs')}</Text>
+                            <Text style={[styles.genderLabel, patientScreen && { color: Colors.grey300 }]}>{gender + ' .'}</Text>
+                            <Text style={[styles.ageLabel, patientScreen && { color: Colors.grey300 }]}>{age + i18n.t('yrs')}</Text>
                         </View>
                         <View style={styles.infoRow}>
-                            <Text style={styles.infoLabel}>{i18n.t('id') + ':' + id}</Text>
-                            <Text style={styles.phoneLabel}>{i18n.t('phone') + ':' + phone}</Text>
+                            <Text style={[styles.infoLabel, patientScreen && { color: Colors.grey300 }]}>{i18n.t('id') + ':' + id}</Text>
+                            <Text style={[styles.phoneLabel, patientScreen && { color: Colors.grey300 }]}>{i18n.t('phone') + ':' + phone}</Text>
                             {appointmentsScreen && <MaterialCommunityIcons name={aptMethod?.toLowerCase() == 'group' ? 'account-group' : 'account'} color={Colors.grey300} size={25} style={{ marginStart: 50, marginEnd: 10 }} />}
                             {appointmentsScreen && <MaterialCommunityIcons name={aptType == 'video' ? 'video-marker' : 'map-marker-radius'} size={25} color={aptType == 'video' ? Colors.primary800 : Colors.accent800} />}
                         </View>
                     </View>
+                    {patientScreen && <View>
+                        <MaterialCommunityIcons name='chevron-right' color={Colors.grey300} size={40} />
+
+                    </View>}
                 </View>
-                <View style={styles.patchesContainer}>
+                {!patientScreen && <View style={styles.patchesContainer}>
                     <View style={styles.diseasesContainer}>
                         {diseases.map((disease, index) => <DiseasePatch disease={disease} key={index} />)}
                     </View>
                     {!appointmentsScreen && <MaterialCommunityIcons name={aptMethod?.toLowerCase() == 'group' ? 'account-group' : 'account'} color={Colors.grey300} size={25} style={{ marginStart: 50, marginEnd: 10 }} />}
                     {!appointmentsScreen && <MaterialCommunityIcons name={aptType == 'video' ? 'video-marker' : 'map-marker-radius'} size={25} color={aptType == 'video' ? Colors.primary800 : Colors.accent800} />}
                 </View>
-
+                }
 
                 {
                     appointmentsScreen && cancellable &&

@@ -1,5 +1,19 @@
-const baseUrl = 'http://192.168.1.5:3000'
 export const API = {
-    login: `${baseUrl}/doctor/login`,
-    register: `${baseUrl}/doctor/register`
+    login: '/login',
+    register: '/register',
+    patients: '/patients',
+    profile: {
+        get: '/profile',
+        patch: '/profile'
+    },
+    requests: '/requests',
+    specialities: '/specialities',
+    incomeDashboard: '/income',
+    income: '/incomeScreen',
+    appointments: '/appointments',
+    patient: '/patient/{patientId}',
+    calls: '/upcomingVideo',
+    availability: '/availability',
+    forgetPassword: '/forgetPassword'
+
 }

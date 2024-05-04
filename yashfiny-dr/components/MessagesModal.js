@@ -5,6 +5,7 @@ import { QUICK_MESSAGES } from '../constants/quickMessages';
 import i18n from '../i18n';
 import { Colors } from '../constants/colors';
 
+
 const MessagesModal = ({ modalVisible, setModalVisible, handleSelectMessage, reqId }) => {
     const [selectedMessage, setSelectedMessage] = useState(null);
 
@@ -26,7 +27,7 @@ const MessagesModal = ({ modalVisible, setModalVisible, handleSelectMessage, req
                                 selectedMessage === message && styles.selectedMessage,
                             ]}
                         >
-                            <Text style={[styles.messageText, selectedMessage == message && { color: Colors.primary800 }]}>{message}</Text>
+                            <Text style={[styles.messageText, selectedMessage == message && { color: Colors.primary800, fontWeight: "500" }]}>{message}</Text>
                         </TouchableOpacity>
                     ))}
                     <View style={styles.buttonContainer}>
@@ -79,10 +80,11 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         borderWidth: 1,
         borderColor: Colors.grey200,
+        width: 300
 
     },
     selectedMessage: {
-        backgroundColor: Colors.accent700,
+        backgroundColor: '#cfe2f3',
     },
     messageText: {
         fontSize: 12,

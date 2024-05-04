@@ -15,7 +15,6 @@ import { DoctorContext } from "../store/DoctorContext"
 import { PAYMENT_METHODS } from "../constants/paymentMethods"
 import CustomDropdown from "./CustomDropDown"
 import { tempDiseases } from "../constants/DummyDiseases"
-import CustomMultipleSelect from "./CustomMultipleSelect"
 import { OPTIONS } from "../constants/options"
 import { MaterialCommunityIcons } from "@expo/vector-icons"
 

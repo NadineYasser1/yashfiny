@@ -7,7 +7,7 @@ import CustomDropdown from "../../components/CustomDropDown";
 import { IconButton } from "react-native-paper";
 import UploadButton from "../../components/UploadButton";
 import SuccessModal from "../../components/SucessModal";
-import axios from "axios";
+import { axios } from "../../utils/axios";
 import { API } from "../../utils/config";
 import LoadingScreen from "../../components/LoadingScreen";
 import { PAYMENT_METHODS } from "../../constants/paymentMethods";

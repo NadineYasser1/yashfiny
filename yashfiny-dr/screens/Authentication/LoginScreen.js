@@ -17,7 +17,7 @@ import i18n from "../../i18n";
 import { Colors } from "../../constants/colors";
 import { LinearGradient } from "expo-linear-gradient";
 import { AuthContext } from "../../store/AuthContext";
-import axios from "axios";
+import { axios } from "../../utils/axios";
 import { API } from "../../utils/config";
 import { ActivityIndicator } from "react-native-paper";
 
@@ -36,21 +36,21 @@ const LoginScreen = ({ navigation }) => {
   }
 
   const handleLogin = () => {
-    authCtx.authenticate('1234')
-    // setLoading(true)
-    // axios.post(API.login, loginData
-    // ).then(({ data }) => {
-    //   authCtx.authenticate(data.token)
-    // }).catch((err) => {
-    //   Alert.alert(
-    //     "Error",
-    //     err.response.data.message,
-    //     [
-    //       { text: "OK", onPress: () => { } }
-    //     ],
-    //     { cancelable: true }
-    //   );
-    // }).finally(() => setLoading(false))
+    // authCtx.authenticate('1234')
+    setLoading(true)
+    axios.post(API.login, loginData
+    ).then(({ data }) => {
+      authCtx.authenticate(data.token)
+    }).catch((err) => {
+      Alert.alert(
+        "Error",
+        err.response.data.message,
+        [
+          { text: "OK", onPress: () => { } }
+        ],
+        { cancelable: true }
+      );
+    }).finally(() => setLoading(false))
     // get doctor data and add to doctorContext
   }
 

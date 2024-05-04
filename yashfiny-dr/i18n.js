@@ -176,7 +176,18 @@ const translations = {
     send_quick_message_instead: 'Do you want to send a quick message to the patient?',
     select_message: 'Select a message to send',
     no: 'No',
-    yashfiny_asks_you: 'Yashfiny asks'
+    yashfiny_asks_you: 'Yashfiny asks',
+    years: 'Years',
+    months: 'Months',
+    days: 'Days',
+    age: 'Age',
+    co_history: 'CO & History',
+    visits: 'Visits',
+    ix: 'IX',
+    rx: 'RX',
+    chronic_disease: 'Chronic Disease',
+    allergies: 'Allergies',
+    no_history_to_show: 'No history to show.'
   },
   ar: {
     login_assistant: 'تسجيل الدخول كمساعد ',

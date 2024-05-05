@@ -326,25 +326,13 @@ const AvailabilityScreen = ({ navigation, route }) => {
   };
 
   const postAvailability = () => {
-    console.log(availability)
+    console.log(selectedSlot)
   }
 
-  const availability = useMemo(() => {
-    return {
-      ...selectedSlot
-    }
-  }, [selectedSlot])
-  console.log(windowHeight)
-
   const handleSave = () => {
-    if (route?.params) {
-      hideTabCtx.hideTab(false)
-      navigation.navigate("UploadForm", { ...route.params, availability })
-    } else {
-      postAvailability()
-      hideTabCtx.hideTab(false)
-      navigation.goBack()
-    }
+    postAvailability()
+    hideTabCtx.hideTab(false)
+    navigation.goBack()
   }
 
   return (

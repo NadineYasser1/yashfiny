@@ -187,7 +187,13 @@ const translations = {
     rx: 'RX',
     chronic_disease: 'Chronic Disease',
     allergies: 'Allergies',
-    no_history_to_show: 'No history to show.'
+    no_history_to_show: 'No history to show.',
+    morning: 'Morning',
+    noon: 'Noon',
+    evening: 'Evening',
+    night: 'Night',
+    add_new_drug: 'Add New Drug',
+    add_drug: 'Add Drug'
   },
   ar: {
     login_assistant: 'تسجيل الدخول كمساعد ',

@@ -1,15 +1,15 @@
-import { Dimensions, Text, View, StyleSheet, TouchableOpacity } from "react-native"
+import { Dimensions, Text, View, StyleSheet, TouchableOpacity, Pressable, FlatList } from "react-native"
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs'
 import { Colors } from '../../constants/colors'
 import { ScrollView } from "react-native-gesture-handler"
 import { patient } from "../../constants/DummyPatient"
-import { useContext, useEffect, useMemo } from "react"
+import { useContext, useEffect, useMemo, useState } from "react"
 import { Avatar } from "react-native-elements"
 import { MaterialCommunityIcons } from "@expo/vector-icons"
 import { PatientsContext } from "../../store/PatientsContext"
 import i18n from '../../i18n'
+import Collapsible from 'react-native-collapsible';
 import dayjs from "dayjs"
-import Timeline from 'react-native-timeline-flatlist'
 
 const windowHeight = Dimensions.get('window').height
 
@@ -119,7 +119,45 @@ const styles = StyleSheet.create({
         color: Colors.grey300,
         fontWeight: "500",
         marginEnd: 2
-    }
+    },
+    timeline: {
+        position: "relative",
+    },
+    verticalLine: {
+        position: "absolute",
+        backgroundColor: "black",
+        width: 2,
+        height: "100%",
+        left: 28,
+        zIndex: -1,
+    },
+    timelineItem: {
+        flexDirection: "row",
+        alignItems: "center",
+        marginBottom: 20,
+        marginLeft: 10,
+        paddingLeft: 10,
+    },
+    circle: {
+        width: 20,
+        height: 20,
+        borderRadius: 10,
+        backgroundColor: "gray",
+        justifyContent: "center",
+        alignItems: "center",
+        marginRight: 5,
+    },
+    yearText: {
+        color: "black",
+        fontWeight: "bold",
+        fontSize: 15,
+        marginTop: 20
+    },
+    content: {
+        flex: 1,
+        // flexDirection: "row",
+        alignItems: "flex-start",
+    },
 })
 
 const Co = () => {
@@ -176,18 +214,184 @@ const Ix = () => {
         </ScrollView>
     )
 }
-const Rx = () => {
+const Rx = ({ navigation }) => {
+    const patientCtx = useContext(PatientsContext)
+    const [timing, setTiming] = useState('')
+    const contentArr = useMemo(() => {
+        const mappedDrugs = {}
+        patientCtx.patientData?.drugs.forEach(drug => {
+            const { name, duration, instructions, time, dosage } = drug;
+            if (!mappedDrugs[time.toLowerCase()]) {
+                mappedDrugs[time.toLowerCase()] = [];
+            }
+            mappedDrugs[time.toLowerCase()].push({
+                name: name,
+                dosage: dosage,
+                description: `for ${duration} ${instructions}`
+            });
+        });
+        return mappedDrugs
+    }, [patientCtx.patientData])
+    const sections = [
+        {
+            title: i18n.t('morning'),
+            content: contentArr?.morning || null
+
+        },
+        {
+            title: i18n.t('noon'),
+            content: contentArr?.noon || null
+
+        },
+        {
+            title: i18n.t('evening'),
+            content: contentArr?.evening || null
+
+        },
+        {
+            title: i18n.t('night'),
+            content: contentArr?.night || null
+
+        }
+    ]
+
     return (
         <ScrollView style={{ flex: 1, backgroundColor: 'white' }}>
-
+            <Pressable
+                style={{
+                    flexDirection: 'row',
+                    borderBottomColor: Colors.grey200,
+                    borderBottomWidth: 2,
+                    paddingVertical: 20,
+                    alignItems: 'center'
+                }}
+                onPress={() => navigation.navigate('AddDrug')}>
+                <View style={{ borderRadius: 15, backgroundColor: Colors.grey200, width: 30, height: 30, justifyContent: 'center', alignItems: 'center' }}>
+                    <Text style={{ color: Colors.primary800, fontWeight: "600", fontSize: 22, marginBottom: 3 }}>+</Text>
+                </View>
+                <Text style={{ color: Colors.primary800, marginHorizontal: 10, fontSize: 14, fontWeight: "500" }}>{i18n.t('add_new_drug')}</Text>
+            </Pressable>
+            {
+                sections.map((section, index) =>
+                    <View key={index}>
+                        <Pressable
+                            onPress={() => setTiming(timing.toLowerCase() == section.title.toLowerCase() ? '' : section.title)}
+                            style={{
+                                flexDirection: 'row',
+                                justifyContent: 'space-between',
+                                paddingVertical: 20,
+                                borderTopColor: Colors.grey200,
+                                borderBottomColor: Colors.grey200,
+                                borderBottomWidth: 2,
+                                // borderTopWidth: 2,
+                                paddingHorizontal: 10
+                            }}>
+                            <View style={{ flexDirection: 'row' }}>
+                                <Text style={{ fontSize: 18, fontWeight: "600" }}>{section.title}</Text>
+                                <View style={{ backgroundColor: Colors.primary800, borderRadius: 30, height: 23, width: 23, justifyContent: 'center', alignItems: 'center', marginStart: 10 }}>
+                                    <Text style={{ color: 'white', fontWeight: "600" }}>{section.content.length.toString()}</Text>
+                                </View>
+                            </View>
+                            <MaterialCommunityIcons name={timing.toLowerCase() == section.title.toLowerCase() ? "chevron-up" : "chevron-down"} color={Colors.grey300} size={18} />
+                        </Pressable>
+                        <Collapsible
+                            collapsed={timing.toLowerCase() != section.title.toLowerCase()}
+                        >
+                            {section.content && section.content.map((item, index) => (
+                                <View key={index} style={{
+                                    backgroundColor: '#f4f6fc',
+                                    borderBottomColor: 'white',
+                                    borderBottomWidth: 2,
+                                    paddingVertical: 10
+                                }}>
+                                    <View style={{ flexDirection: 'row', paddingHorizontal: 10 }}>
+                                        <MaterialCommunityIcons name="pill" size={23} color={Colors.accent800} style={{ marginEnd: 10 }} />
+                                        <Text style={{ fontWeight: "500", fontSize: 16, marginBottom: 8 }}>{item.name} {item.dosage}</Text>
+                                    </View>
+                                    <Text style={{ fontSize: 12, paddingHorizontal: 30 }}>{item.description}</Text>
+                                </View>
+                            ))}
+                        </Collapsible>
+                    </View>
+                )
+            }
         </ScrollView>
     )
 }
 const Visits = () => {
     const patientCtx = useContext(PatientsContext)
-    return (
-        <ScrollView style={{ flex: 1, backgroundColor: 'white' }} >
 
+    const timelineData = useMemo(() => {
+        if (patientCtx.patientData?.visits) {
+            return patientCtx.patientData.visits.sort((a, b) => a.date - b.date).map(visit => ({
+                date: dayjs(visit.date).format('DD MMM, YYYY hh:mm A'),
+                color: visit.status === 'cancelled' ? '#ff3131' : visit.status === 'upcoming' ? '#ffdb15' : visit.status === 'visited' ? '#26f7b2' : 'grey',
+                diagnosis: visit.diagnosis.map(diagnosis => diagnosis.name).join(', '),
+                prescription: visit.prescription.map(prescription => prescription.name + ' (' + prescription.dosage + ')').join(', ')
+            }))
+        }
+        return null
+    }, [patientCtx.patientData])
+    return (
+        <ScrollView style={{
+            flex: 1,
+            paddingTop: 40,
+            paddingBottom: 20,
+            paddingHorizontal: 20,
+            backgroundColor: 'white'
+        }} >
+            <Text style={{ paddingHorizontal: 20, marginBottom: 10, color: Colors.grey100 }}>{i18n.t('visits')}</Text>
+            <View style={styles.timeline}>
+                <View style={styles.verticalLine} />
+                <FlatList
+                    data={timelineData}
+                    keyExtractor={(item) => item.date}
+                    renderItem={({ item }) => (
+                        <TouchableOpacity
+                        >
+                            <View
+                                style={[
+                                    styles.timelineItem,
+                                    { borderLeftColor: item.color || "gray" },
+                                ]}
+                            >
+                                <View
+                                    style={[
+                                        styles.circle,
+                                        {
+                                            backgroundColor:
+                                                item.color || "gray",
+                                        },
+                                    ]}
+                                >
+                                </View>
+                                <View style={styles.content}>
+                                    <Text style={styles.yearText}>
+                                        {item.date}
+                                    </Text>
+                                    <Text
+                                        style={{
+                                            color: "black",
+                                            fontSize: 13,
+                                        }}
+                                    >
+                                        {item.diagnosis}
+                                    </Text>
+                                    <Text
+                                        style={{
+                                            color: "black",
+                                            fontSize: 13,
+                                        }}
+                                    >
+                                        {item.prescription}
+                                    </Text>
+
+                                </View>
+                            </View>
+                        </TouchableOpacity>
+                    )}
+                />
+            </View>
         </ScrollView>
     )
 }

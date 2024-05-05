@@ -10,82 +10,26 @@ import SuccessModal from "../../components/SucessModal";
 import { axios } from "../../utils/axios";
 import { API } from "../../utils/config";
 import LoadingScreen from "../../components/LoadingScreen";
-import { PAYMENT_METHODS } from "../../constants/paymentMethods";
+
 
 const UploadScreen = ({ route, navigation }) => {
 
-    const [updatedData, setUpdatedData] = useState(route.params)
+    const [doctorId, setDoctorId] = useState(route.params)
     const [documents, setDocuments] = useState([])
     const [Success, setSuccess] = useState(false)
     const [loading, setLoading] = useState(false)
 
-    const availability = useMemo(() => {
-        if (route.params.availability) {
-            return route.params.availability
-        }
-        return null
 
-    }, [route.params])
-
-
-    const handleSelection = (key, opt) => {
-        setUpdatedData((prev) => ({
-            ...prev,
-            [key]: opt
-        }))
-
-    }
     const handleAddDoc = (key, doc) => {
         setDocuments((prev) => ({
             ...prev,
             [key]: doc
         }))
     }
-    const body = useMemo(() => {
-        return {
-            ...updatedData,
-            documents,
-            availability
-        }
-    }, [updatedData, documents, availability])
+
     const handleContinue = () => {
-        setLoading(true)
-        axios.post(API.register, { ...body }
-        ).then(({ data }) => {
-            setLoading(false)
-            console.log(data.message)
-            setSuccess(true)
-        }).catch((err) => {
-            Alert.alert(
-                "Error",
-                err.response.data.message,
-                [
-                    { text: "OK", onPress: () => { } }
-                ],
-                { cancelable: true }
-            );
-        }).finally(() => setLoading(false))
-        // setSuccess(true)
-
+        setSuccess(true)
     }
-
-    const paymentPlaceHolder = useMemo(() => {
-        if (updatedData?.payment_method) {
-            switch (updatedData.payment_method) {
-                case 2: {
-                    return i18n.t('instapay_mail')
-                }
-                case 3: {
-                    return i18n.t('phone_number')
-                }
-                default: {
-                    return i18n.t('bank_acc_no')
-                }
-            }
-        } else {
-            return i18n.t('select_payment_method')
-        }
-    }, [updatedData])
 
     useEffect(() => {
         navigation.setOptions({
@@ -117,28 +61,12 @@ const UploadScreen = ({ route, navigation }) => {
                             <View style={styles.textContainer}>
                                 <Text style={styles.fpText}>{i18n.t('one_last_step')}</Text>
                             </View>
-                            <View style={styles.inputContainer}>
-                                <Text style={styles.label}>{i18n.t('payment_method')}</Text>
-                                <View style={{ flexDirection: 'row', alignContent: 'space-between' }}>
-                                    <CustomDropdown
-                                        options={PAYMENT_METHODS}
-                                        onSelect={(opt) => handleSelection('payment_method', opt)}
-                                        style={{ width: 150 }}
-                                    />
-                                    <TextInput
-                                        placeholder={paymentPlaceHolder}
-                                        placeholderTextColor="#aaa"
-                                        style={styles.input}
-                                        onChangeText={(val) => handleSelection('payment', val)} />
-
-                                </View>
-                            </View>
                             <UploadButton label={i18n.t('medical_license')} buttonText={i18n.t('upload_medical_license')} handleSelection={handleAddDoc} fnKey={'medical_license'} />
                             <UploadButton label={i18n.t('academic_deg')} buttonText={i18n.t('upload_academic_deg')} handleSelection={handleAddDoc} fnKey={'academic_degree'} />
                             <UploadButton label={i18n.t('certificates')} buttonText={i18n.t('upload_certificates')} handleSelection={handleAddDoc} fnKey={'certificates'} />
                             <View style={styles.workinghrsContainer}>
                                 <Text style={styles.label}>{i18n.t('working_hours')}</Text>
-                                <Pressable style={styles.hoursButton} onPress={() => navigation.navigate('Availability', { ...updatedData, documents })}>
+                                <Pressable style={styles.hoursButton} onPress={() => navigation.navigate('Availability', doctorId)}>
                                     <IconButton icon='calendar-clock' iconColor={Colors.primary800} size={25} />
                                     <Text style={{ color: Colors.primary800 }}>{i18n.t('add_working_hours')}</Text>
                                 </Pressable>

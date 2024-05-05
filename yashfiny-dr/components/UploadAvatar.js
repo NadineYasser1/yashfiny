@@ -1,17 +1,27 @@
 import React, { useState, useMemo, useContext } from 'react';
-import { View, TouchableOpacity, Image, Alert, Dimensions } from 'react-native';
+import { View, TouchableOpacity, Image, Alert, Dimensions, Platform } from 'react-native';
 import { Avatar } from 'react-native-elements';
 import * as DocumentPicker from 'expo-document-picker';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Colors } from '../constants/colors';
 import i18n from '../i18n';
 import { DoctorContext } from '../store/DoctorContext';
+import { documentUploader } from '../utils/documentUploader';
+
 const windowWidth = Dimensions.get('window').width
 const windowHeight = Dimensions.get('window').height
 const UploadAvatar = ({ handleChange, editDoctor }) => {
 
     const doctorCtx = useContext(DoctorContext)
+    const data = new FormData()
     const [avatarSource, setAvatarSource] = useState(editDoctor ? doctorCtx.avatarUri || null : null);
+
+    const handleSuccess = (result) => {
+        setAvatarSource(result.assets[0].uri)
+        // handleChange('avatar', { uri: result.assets[0].uri, type: result.assets[0].mimeType, size: result.assets[0].size })
+        editDoctor && doctorCtx.updateAvatar(result.assets[0].uri)
+    }
+
     const openDocumentPicker = async () => {
         try {
             const result = await DocumentPicker.getDocumentAsync({
@@ -19,10 +29,15 @@ const UploadAvatar = ({ handleChange, editDoctor }) => {
                 multiple: false,
             });
             if (result.canceled == false) {
-                setAvatarSource(result.assets[0].uri)
-                handleChange('avatar', { uri: result.assets[0].uri, type: result.assets[0].mimeType, size: result.assets[0].size })
-                editDoctor && doctorCtx.updateAvatar(result.assets[0].uri)
+                data.append('file', {
+                    name: result.assets[0].name,
+                    type: result.assets[0].mimeType,
+                    size: result.assets[0].size,
+                    uri: Platform.OS == 'ios' ? result.assets[0].uri.replace('file://', '') : result.assets[0].uri
+
+                })
             }
+            documentUploader(data, result, handleSuccess)
 
         } catch (error) {
             Alert.alert(

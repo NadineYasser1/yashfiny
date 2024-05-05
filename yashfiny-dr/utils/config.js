@@ -14,6 +14,7 @@ export const API = {
     patient: '/patient/{patientId}',
     calls: '/upcomingVideo',
     availability: '/availability',
-    forgetPassword: '/forgetPassword'
+    forgetPassword: '/forgetPassword',
+    upload: '/uploadfiles'
 
 }

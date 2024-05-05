@@ -1,17 +1,34 @@
 import React, { useState, useEffect } from "react";
-import { StyleSheet, View, Text, Pressable, Alert } from "react-native";
+import { StyleSheet, View, Text, Pressable, Alert, Platform } from "react-native";
 import { IconButton } from "react-native-paper";
 import { Colors } from "../constants/colors";
 import * as DocumentPicker from 'expo-document-picker';
+import { documentUploader } from "../utils/documentUploader";
 
 const UploadButton = ({ label, buttonText, handleSelection, fnKey }) => {
 
     const [selectedDocuments, setSelectedDocuments] = useState([]);
+    const data = new FormData()
 
     useEffect(() => {
         handleSelection(fnKey, selectedDocuments);
 
     }, [selectedDocuments]);
+
+    const handleSuccess = (result) => {
+        result.assets.map((res) => {
+            setSelectedDocuments((prev) => [
+                ...prev,
+                {
+                    name: res.name,
+                    type: res.mimeType,
+                    size: res.size,
+                    uri: res.uri
+                }
+            ]);
+        });
+
+    }
 
     const onPress = async () => {
         try {
@@ -21,16 +38,15 @@ const UploadButton = ({ label, buttonText, handleSelection, fnKey }) => {
             });
             if (result.canceled == false) {
                 result.assets.map((res) => {
-                    setSelectedDocuments((prev) => [
-                        ...prev,
-                        {
-                            name: res.name,
-                            type: res.mimeType,
-                            size: res.size,
-                            uri: res.uri
-                        }
-                    ]);
+                    data.append('file', {
+                        name: res.name,
+                        type: res.mimeType,
+                        size: res.size,
+                        uri: Platform.OS == 'ios' ? res.uri.replace('file://', '') : res.uri
+
+                    })
                 });
+                documentUploader(data, result, handleSuccess)
             }
         } catch (error) {
             Alert.alert(

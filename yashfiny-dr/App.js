@@ -22,7 +22,6 @@ import AuthContextProvider from "./store/AuthContext";
 import RegistrationScreen from "./screens/Authentication/RegistrationScreen";
 import UploadScreen from "./screens/Authentication/UploadScreen";
 import AvailabilityScreen from "./screens/Authentication/AvailabilityScreen";
-import { getHeaderTitle } from '@react-navigation/elements'
 import CustomHeader from "./components/CustomHeader";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
@@ -219,7 +218,7 @@ const DashboardStack = () => {
         tabBarVisible: false,
         headerStyle: { height: 100 },
         header: ({ navigation, route, options, back }) => {
-          const title = getHeaderTitle(options, route.name)
+          const title = i18n.t('availability')
           return (
             <CustomHeader
               title={title}
@@ -303,8 +302,38 @@ const PatientsStack = () => {
         headerTitle: i18n.t('patient_details'),
         headerLeft: ({ tintColor }) => <MaterialCommunityIcons name="chevron-left" color={tintColor} size={30} onPress={() => navigation.navigate('PatientsScreen')} />
       })} />
-      <Stack.Screen name="VisitResults" component={VisitResults} />
-      <Stack.Screen name="AddDrug" component={AddDrug} />
+      <Stack.Screen name="VisitResults" component={VisitResults}
+        options={{
+          animationTypeForReplace: 'pop',
+          presentation: 'modal',
+          headerStyle: { height: 100 },
+          header: ({ navigation, route, options, back }) => {
+            const title = i18n.t('add_drug')
+            return (
+              <CustomHeader
+                title={title}
+                navigation={navigation}
+                style={options.headerStyle} />
+            )
+          }
+
+        }} />
+      <Stack.Screen name="AddDrug" component={AddDrug}
+        options={{
+          animationTypeForReplace: 'pop',
+          presentation: 'modal',
+          headerStyle: { height: 100 },
+          header: ({ navigation, route, options, back }) => {
+            const title = i18n.t('add_drug')
+            return (
+              <CustomHeader
+                title={title}
+                navigation={navigation}
+                style={options.headerStyle} />
+            )
+          }
+
+        }} />
     </Stack.Navigator>
   )
 }
@@ -557,7 +586,7 @@ const AuthStack = () => {
             presentation: 'modal',
             headerStyle: { height: 100 },
             header: ({ navigation, route, options, back }) => {
-              const title = getHeaderTitle(options, route.name)
+              const title = i18n.t('availability')
               return (
                 <CustomHeader
                   title={title}

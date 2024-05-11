@@ -93,7 +93,8 @@ const AvailabilityScreen = ({ navigation, route }) => {
         endTime: endTime,
         type: slotType,
         location: aptMethod,
-        addSlotToScreen: true
+        addSlotToScreen: true,
+        status: 'available'
       };
       setSelectedSlot((prevSlots) => ({
         ...prevSlots,
@@ -168,7 +169,8 @@ const AvailabilityScreen = ({ navigation, route }) => {
       endTime: endTime,
       type: slotType,
       location: aptMethod,
-      addSlotToScreen: true
+      addSlotToScreen: true,
+      status: 'available'
     };
     setSelectedSlot((prevSlots) => ({
       ...prevSlots,

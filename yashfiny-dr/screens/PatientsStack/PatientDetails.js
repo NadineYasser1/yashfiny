@@ -12,6 +12,7 @@ import Collapsible from 'react-native-collapsible';
 import dayjs from "dayjs"
 
 const windowHeight = Dimensions.get('window').height
+const windowWidth = Dimensions.get('window').width
 
 const PatientDetails = ({ route }) => {
     const patientCtx = useContext(PatientsContext)
@@ -68,14 +69,14 @@ const PatientDetails = ({ route }) => {
 
                 </View>
             </View>
-            <View style={{ padding: 10, backgroundColor: 'white', borderRadius: 25, height: windowHeight * 0.6 }}>
+            <View style={{ padding: 10, backgroundColor: 'white', borderRadius: 25, height: windowHeight > 900 ? windowHeight * 0.7 : windowHeight * 0.6 }}>
                 <TopTabs.Navigator
                     initialRouteName="co"
                     screenOptions={{
                         tabBarActiveTintColor: Colors.primary800,
                         tabBarLabelStyle: { fontWeight: "500", fontSize: 10 },
                         tabBarIndicatorStyle: { borderBottomColor: Colors.primary800 },
-                        tabBarItemStyle: { width: 85 },
+                        tabBarItemStyle: { width: (windowWidth - 50) / 4 },
                         tabBarStyle: { borderBottomColor: Colors.primary800 },
                         tabBarAllowFontScaling: true,
                         lazy: true,

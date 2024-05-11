@@ -71,8 +71,10 @@ const ListItem = ({
                     <View style={styles.infoContainer}>
                         <View style={styles.headerCont}>
                             <Text style={styles.nameLabel}>{`${fname} ${lname}`}</Text>
-                            {aptDate && <Text style={styles.dateLabel}>{dayjs(aptDate).format('DD MMMM, hh:mm A')}</Text>}
-                            {appointmentsScreen && <MaterialCommunityIcons name={iconName} color={color} size={23} />}
+                            <View style={{ flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center' }}>
+                                {aptDate && <Text style={[styles.dateLabel, { marginEnd: 5 }]}>{dayjs(aptDate).format('DD MMMM, hh:mm A')}</Text>}
+                                {appointmentsScreen && <MaterialCommunityIcons name={iconName} color={color} size={23} />}
+                            </View>
                         </View>
                         <View style={styles.infoRow}>
                             <Text style={[styles.genderLabel, patientScreen && { color: Colors.grey300 }]}>{gender + ' .'}</Text>
@@ -81,8 +83,10 @@ const ListItem = ({
                         <View style={styles.infoRow}>
                             <Text style={[styles.infoLabel, patientScreen && { color: Colors.grey300 }]}>{i18n.t('id') + ':' + id}</Text>
                             <Text style={[styles.phoneLabel, patientScreen && { color: Colors.grey300 }]}>{i18n.t('phone') + ':' + phone}</Text>
-                            {appointmentsScreen && <MaterialCommunityIcons name={aptMethod?.toLowerCase() == 'group' ? 'account-group' : 'account'} color={Colors.grey300} size={25} style={{ marginStart: 50, marginEnd: 10 }} />}
-                            {appointmentsScreen && <MaterialCommunityIcons name={aptType == 'video' ? 'video-marker' : 'map-marker-radius'} size={25} color={aptType == 'video' ? Colors.primary800 : Colors.accent800} />}
+                            <View style={{ flexDirection: 'row', justifyContent: 'flex-end' }}>
+                                {appointmentsScreen && <MaterialCommunityIcons name={aptMethod?.toLowerCase() == 'group' ? 'account-group' : 'account'} color={Colors.grey300} size={25} style={{ marginStart: 50, marginEnd: 10 }} />}
+                                {appointmentsScreen && <MaterialCommunityIcons name={aptType == 'video' ? 'video-marker' : 'map-marker-radius'} size={25} color={aptType == 'video' ? Colors.primary800 : Colors.accent800} />}
+                            </View>
                         </View>
                     </View>
                     {patientScreen && <View>
@@ -155,6 +159,7 @@ const styles = StyleSheet.create({
     infoRow: {
         flexDirection: 'row',
         alignItems: 'center',
+        // justifyContent: 'space-between',
         marginBottom: 2,
     },
     genderLabel: {

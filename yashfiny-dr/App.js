@@ -308,7 +308,7 @@ const PatientsStack = () => {
           presentation: 'modal',
           headerStyle: { height: 100 },
           header: ({ navigation, route, options, back }) => {
-            const title = i18n.t('add_drug')
+            const title = i18n.t('add_visit_results')
             return (
               <CustomHeader
                 title={title}

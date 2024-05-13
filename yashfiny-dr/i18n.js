@@ -193,7 +193,13 @@ const translations = {
     evening: 'Evening',
     night: 'Night',
     add_new_drug: 'Add New Drug',
-    add_drug: 'Add Drug'
+    add_drug: 'Add Drug',
+    add_visit_results: 'Add Visit Results',
+    diagnosis: 'Diagnosis',
+    advices: 'Advices',
+    summary: 'Summary',
+    preliminary: 'Preliminary',
+    final: 'Final'
   },
   ar: {
     login_assistant: 'تسجيل الدخول كمساعد ',

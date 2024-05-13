@@ -1,6 +1,7 @@
 import dayjs from "dayjs";
 
-export const patient = {
+export const patient =
+{
     id: '123456',
     avatarUri: 'https://www.gravatar.com/avatar/2c7d99fe281ecd3bcd65ab915bac6dd5?s=250',
     age: {
@@ -19,19 +20,37 @@ export const patient = {
     },
     visits: [
         {
-            date: new Date(),
+            date: new Date('2024-05-01'),
             status: 'upcoming', //upcoming or visited or cancelled
             diagnosis: [{ name: 'disease', type: 'final' }, { name: 'newDisease', type: 'preliminary' }],
             prescription: [{ name: 'drugX', dosage: '2mg' }, { name: 'drugY', dosage: '3mg' }]
         },
         {
-            date: new Date('19-04-2024'),
+            date: new Date('2023-05-01'),
+            status: 'upcoming', //upcoming or visited or cancelled
+            diagnosis: [{ name: 'disease', type: 'final' }, { name: 'newDisease', type: 'preliminary' }],
+            prescription: [{ name: 'drugX', dosage: '2mg' }, { name: 'drugY', dosage: '3mg' }]
+        },
+        {
+            date: new Date('2024-05-02'),
+            status: 'upcoming', //upcoming or visited or cancelled
+            diagnosis: [{ name: 'disease', type: 'final' }, { name: 'newDisease', type: 'preliminary' }],
+            prescription: [{ name: 'drugX', dosage: '2mg' }, { name: 'drugY', dosage: '3mg' }]
+        },
+        {
+            date: new Date('2024-04-19'),
             status: 'cancelled', //upcoming or visited or cancelled
             diagnosis: [{ name: 'disease', type: 'final' }, { name: 'newDisease', type: 'preliminary' }],
             prescription: [{ name: 'drugX', dosage: '2mg' }, { name: 'drugY', dosage: '3mg' }]
         },
         {
-            date: new Date('17-05-2023'),
+            date: new Date('2024-05-03'),
+            status: 'visited', //upcoming or visited or cancelled
+            diagnosis: [{ name: 'disease', type: 'final' }, { name: 'newDisease', type: 'preliminary' }],
+            prescription: [{ name: 'drugX', dosage: '2mg' }, { name: 'drugY', dosage: '3mg' }]
+        },
+        {
+            date: new Date('2024-05-04'),
             status: 'visited', //upcoming or visited or cancelled
             diagnosis: [{ name: 'disease', type: 'final' }, { name: 'newDisease', type: 'preliminary' }],
             prescription: [{ name: 'drugX', dosage: '2mg' }, { name: 'drugY', dosage: '3mg' }]
@@ -94,7 +113,24 @@ export const patient = {
             dosage: '10mg'
 
         },
-
+    ],
+    tests: [
+        {
+            name: 'test1',
+            date: new Date(),
+            uri: 'https://www.clickdimensions.com/links/TestPDFfile.pdf'
+        },
+        {
+            name: 'test1',
+            date: new Date(),
+            uri: 'https://www.clickdimensions.com/links/TestPDFfile.pdf'
+        },
+        {
+            name: 'test1',
+            date: new Date(),
+            uri: 'https://www.clickdimensions.com/links/TestPDFfile.pdf'
+        },
 
     ]
+
 }

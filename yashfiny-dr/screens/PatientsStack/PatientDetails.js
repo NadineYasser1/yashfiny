@@ -10,6 +10,8 @@ import { PatientsContext } from "../../store/PatientsContext"
 import i18n from '../../i18n'
 import Collapsible from 'react-native-collapsible';
 import dayjs from "dayjs"
+import Card from "../../components/Card"
+// import PDFView from "../../components/PDFView"
 
 const windowHeight = Dimensions.get('window').height
 const windowWidth = Dimensions.get('window').width
@@ -63,7 +65,6 @@ const PatientDetails = ({ route }) => {
                             <Text style={styles.label}>{i18n.t('gender')}: </Text>
                             <Text>{patientCtx.patientData?.gender}</Text>
                         </View>
-
 
                     </View>
 
@@ -209,11 +210,46 @@ const Co = () => {
     )
 }
 const Ix = () => {
-    return (
-        <ScrollView style={{ flex: 1, backgroundColor: 'white' }}>
+    const patientCtx = useContext(PatientsContext)
+    const [pdf, setPdf] = useState(null)
+    console.log(pdf)
 
-        </ScrollView>
-    )
+    return !pdf ? <View style={{ flex: 1, backgroundColor: 'white', paddingVertical: 20 }}>
+        <FlatList
+            keyExtractor={(item, index) => index}
+            data={patientCtx.patientData.tests}
+            renderItem={({ item }) => (
+                <Pressable onPress={() => setPdf(item.uri)}>
+                    <Card
+                        style={{
+                            alignItems: 'flex-start',
+                            elevation: 2, //shadow for android
+                            //shadow for ios:
+                            shadowColor: "black",
+                            shadowOffset: { width: 0.3, height: 0.5 },
+                            shadowRadius: 1,
+                            shadowOpacity: 0.4,
+                            // borderColor: Colors.grey100,
+                            // borderWidth: 1
+                        }}
+                    >
+                        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+                            <View style={{ flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center' }}>
+                                <MaterialCommunityIcons name="file-pdf-box" color={Colors.primary800} size={25} />
+                                <Text style={{ fontSize: 17, fontWeight: "500", margin: 3 }}>{item.name}</Text>
+                            </View>
+                            <Text style={{ color: Colors.grey300, margin: 5, marginStart: 10, fontSize: 13 }}>{dayjs(item.date).format('YYYY-MM-DD')}</Text>
+                        </View>
+                    </Card>
+                </Pressable>
+            )}
+        />
+    </View> :
+        // <PDFView
+        //     src={pdf}
+        // />
+        <></>
+
 }
 const Rx = ({ navigation }) => {
     const patientCtx = useContext(PatientsContext)
@@ -266,7 +302,7 @@ const Rx = ({ navigation }) => {
                     paddingVertical: 20,
                     alignItems: 'center'
                 }}
-                onPress={() => navigation.navigate('AddDrug')}>
+                onPress={() => navigation.navigate('AddDrug', patientCtx.patientData.id)}>
                 <View style={{ borderRadius: 15, backgroundColor: Colors.grey200, width: 30, height: 30, justifyContent: 'center', alignItems: 'center' }}>
                     <Text style={{ color: Colors.primary800, fontWeight: "600", fontSize: 22, marginBottom: 3 }}>+</Text>
                 </View>
@@ -319,80 +355,93 @@ const Rx = ({ navigation }) => {
         </ScrollView>
     )
 }
-const Visits = () => {
-    const patientCtx = useContext(PatientsContext)
+const Visits = ({ navigation }) => {
+    const patientCtx = useContext(PatientsContext);
 
     const timelineData = useMemo(() => {
         if (patientCtx.patientData?.visits) {
-            return patientCtx.patientData.visits.sort((a, b) => a.date - b.date).map(visit => ({
+            return patientCtx.patientData.visits.sort((a, b) => b.date - a.date).map(visit => ({
                 date: dayjs(visit.date).format('DD MMM, YYYY hh:mm A'),
                 color: visit.status === 'cancelled' ? '#ff3131' : visit.status === 'upcoming' ? '#ffdb15' : visit.status === 'visited' ? '#26f7b2' : 'grey',
                 diagnosis: visit.diagnosis.map(diagnosis => diagnosis.name).join(', '),
-                prescription: visit.prescription.map(prescription => prescription.name + ' (' + prescription.dosage + ')').join(', ')
+                prescription: visit.prescription.map(prescription => prescription.name + ' (' + prescription.dosage + ')').join(', '),
+                status: visit.status,
+                icon: visit.status == 'upcoming' ? 'clock-fast' : visit.status == 'cancelled' ? 'close' : 'check-bold'
             }))
         }
-        return null
-    }, [patientCtx.patientData])
-    return (
-        <ScrollView style={{
-            flex: 1,
-            paddingTop: 40,
-            paddingBottom: 20,
-            paddingHorizontal: 20,
-            backgroundColor: 'white'
-        }} >
-            <Text style={{ paddingHorizontal: 20, marginBottom: 10, color: Colors.grey100 }}>{i18n.t('visits')}</Text>
-            <View style={styles.timeline}>
-                <View style={styles.verticalLine} />
-                <FlatList
-                    data={timelineData}
-                    keyExtractor={(item) => item.date}
-                    renderItem={({ item }) => (
-                        <TouchableOpacity
-                        >
-                            <View
-                                style={[
-                                    styles.timelineItem,
-                                    { borderLeftColor: item.color || "gray" },
-                                ]}
-                            >
+        return null;
+    }, [patientCtx.patientData]);
+
+    const renderTimeline = (status, other) => {
+        const filteredData = timelineData.filter((visit) => visit.status === status || (visit.status == other));
+
+        if (filteredData.length === 0) return null;
+
+        return (
+            <View style={{ marginVertical: 10, marginBottom: 50 }}>
+                <Text style={{ paddingHorizontal: 20, marginBottom: 20, fontWeight: "600", fontSize: 16, color: Colors.grey100 }}>{i18n.t(status === 'upcoming' ? 'upcoming' : 'visited')}</Text>
+                <View style={styles.timeline}>
+                    <View style={styles.verticalLine} />
+                    <FlatList
+                        data={filteredData}
+                        keyExtractor={(item, index) => index.toString()}
+                        scrollEnabled={false}
+                        renderItem={({ item }) => (
+                            <View>
                                 <View
                                     style={[
-                                        styles.circle,
-                                        {
-                                            backgroundColor:
-                                                item.color || "gray",
-                                        },
+                                        styles.timelineItem,
+                                        { borderLeftColor: item.color || 'gray' },
                                     ]}
                                 >
-                                </View>
-                                <View style={styles.content}>
-                                    <Text style={styles.yearText}>
-                                        {item.date}
-                                    </Text>
-                                    <Text
-                                        style={{
-                                            color: "black",
-                                            fontSize: 13,
-                                        }}
+                                    <View
+                                        style={[
+                                            styles.circle,
+                                            {
+                                                backgroundColor: item.color || 'gray',
+                                            },
+                                        ]}
                                     >
-                                        {item.diagnosis}
-                                    </Text>
-                                    <Text
-                                        style={{
-                                            color: "black",
-                                            fontSize: 13,
-                                        }}
-                                    >
-                                        {item.prescription}
-                                    </Text>
-
+                                        <MaterialCommunityIcons name={item.icon} color='white' />
+                                    </View>
+                                    <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+                                        <View style={styles.content}>
+                                            <Text style={styles.yearText}>{item.date}</Text>
+                                            <Text style={{ color: 'black', fontSize: 13 }}>{item.diagnosis}</Text>
+                                            <Text style={{ color: 'black', fontSize: 13 }}>{item.prescription}</Text>
+                                        </View>
+                                        {item.status == 'upcoming' &&
+                                            <Pressable
+                                                style={{
+                                                    marginEnd: 25,
+                                                    marginVertical: 20,
+                                                    flexDirection: 'row',
+                                                    alignItems: 'center',
+                                                    justifyContent: 'center',
+                                                    backgroundColor: Colors.grey200,
+                                                    borderRadius: 25,
+                                                    paddingHorizontal: 5,
+                                                    paddingVertical: 2
+                                                }}
+                                                onPress={() => navigation.navigate('VisitResults', patientCtx.patientData.id)}>
+                                                <MaterialCommunityIcons name="plus-thick" size={12} color={Colors.primary800} />
+                                                <Text style={{ color: Colors.primary800, fontWeight: "600", paddingHorizontal: 3 }}>Results</Text>
+                                            </Pressable>}
+                                    </View>
                                 </View>
                             </View>
-                        </TouchableOpacity>
-                    )}
-                />
+                        )}
+                    />
+                </View>
             </View>
+        );
+    };
+
+    return (
+        <ScrollView style={{ flex: 1, paddingTop: 40, paddingBottom: 20, paddingHorizontal: 10, backgroundColor: 'white' }}>
+            {renderTimeline('upcoming', 'cancelled')}
+            {renderTimeline('visited')}
         </ScrollView>
-    )
-}
+    );
+};
+

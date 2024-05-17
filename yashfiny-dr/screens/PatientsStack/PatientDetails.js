@@ -11,7 +11,7 @@ import i18n from '../../i18n'
 import Collapsible from 'react-native-collapsible';
 import dayjs from "dayjs"
 import Card from "../../components/Card"
-// import PDFView from "../../components/PDFView"
+import PdfView from "../../components/PdfView"
 
 const windowHeight = Dimensions.get('window').height
 const windowWidth = Dimensions.get('window').width
@@ -212,7 +212,7 @@ const Co = () => {
 const Ix = () => {
     const patientCtx = useContext(PatientsContext)
     const [pdf, setPdf] = useState(null)
-    console.log(pdf)
+    // console.log(pdf)
 
     return !pdf ? <View style={{ flex: 1, backgroundColor: 'white', paddingVertical: 20 }}>
         <FlatList
@@ -223,12 +223,12 @@ const Ix = () => {
                     <Card
                         style={{
                             alignItems: 'flex-start',
-                            elevation: 2, //shadow for android
+                            elevation: 3, //shadow for android
                             //shadow for ios:
                             shadowColor: "black",
-                            shadowOffset: { width: 0.3, height: 0.5 },
-                            shadowRadius: 1,
-                            shadowOpacity: 0.4,
+                            shadowOffset: { width: 0.5, height: 0.5 },
+                            shadowRadius: 2,
+                            shadowOpacity: 0.5,
                             // borderColor: Colors.grey100,
                             // borderWidth: 1
                         }}
@@ -245,10 +245,10 @@ const Ix = () => {
             )}
         />
     </View> :
-        // <PDFView
-        //     src={pdf}
-        // />
-        <></>
+        <View style={{ flex: 1, backgroundColor: 'white' }}>
+            <PdfView src={pdf} onPress={() => setPdf(null)} />
+        </View >
+
 
 }
 const Rx = ({ navigation }) => {

@@ -1,126 +1,25 @@
 import { View, Text, StyleSheet, Pressable, FlatList } from "react-native"
 import i18n from "../../../i18n";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Colors } from "../../../constants/colors";
 import dayjs from "dayjs";
 import CustomDropdown from "../../../components/CustomDropDown";
 import IncomeListItem from "../../../components/IncomeListItem";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { axios } from "../../../utils/axios";
+import { API } from "../../../utils/config";
+import LoadingScreen from "../../../components/LoadingScreen";
 
 const IncomeScreen = () => {
-    const currentDate = dayjs(new Date());
-    const lastSixMonths = [];
+    const [loading, setLoading] = useState(false)
+    const [dummyIncome, setDummyIncome] = useState({})
 
-    for (let i = 0; i < 6; i++) {
-        const month = currentDate.subtract(i, 'month').format('MMMM YYYY');
-        lastSixMonths.push(month);
-    }
-
-    const dummyIncome = {
-        [lastSixMonths[0]]: [ // April 2024 masalan
-            {
-                fname: 'Nadine',
-                lname: 'Yasser',
-                patientId: '12345678',
-                date: new Date(),
-                status: { id: 1, name: 'attended' },
-                payment: '150',
-                cur: 'EGP',
-                type: 'video'
-            },
-            {
-                fname: 'Nadine',
-                lname: 'Yasser',
-                patientId: '12345678',
-                date: new Date(),
-                status: { id: 0, name: 'cancelled' },
-                payment: '150',
-                cur: 'EGP',
-                type: 'video'
-            },
-            {
-                fname: 'Nadine',
-                lname: 'Yasser',
-                patientId: '12345678',
-                date: new Date(),
-                status: { id: 0, name: 'cancelled' },
-                payment: '150',
-                cur: 'EGP',
-                type: 'clinic'
-            },
-            {
-                fname: 'Nadine',
-                lname: 'Yasser',
-                patientId: '12345678',
-                date: new Date(),
-                status: { id: 1, name: 'attended' },
-                payment: '150',
-                cur: 'EGP',
-                type: 'clinic'
-            },
-
-        ],
-        [lastSixMonths[1]]: [ //March 2024
-            {
-                fname: 'Nadine',
-                lname: 'Yasser',
-                patientId: '12345678',
-                date: new Date(),
-                status: { id: 0, name: 'cancelled' },
-                payment: '150',
-                cur: 'EGP',
-                type: 'video'
-            }
-        ],
-        [lastSixMonths[2]]: [ //February 2024
-            {
-                fname: 'Nadine',
-                lname: 'Yasser',
-                patientId: '12345678',
-                date: new Date(),
-                status: { id: 1, name: 'attended' },
-                payment: '150',
-                cur: 'EGP',
-                type: 'clinic'
-            }
-        ],
-        [lastSixMonths[3]]: [
-            {
-                fname: 'Nadine',
-                lname: 'Yasser',
-                patientId: '12345678',
-                date: new Date(),
-                status: { id: 1, name: 'attended' },
-                payment: '150',
-                cur: 'EGP',
-                type: 'clinic'
-            }
-        ],
-        [lastSixMonths[4]]: [
-            {
-                fname: 'Nadine',
-                lname: 'Yasser',
-                patientId: '12345678',
-                date: new Date(),
-                status: { id: 1, name: 'attended' },
-                payment: '150',
-                cur: 'EGP',
-                type: 'video'
-            }
-        ],
-        [lastSixMonths[5]]: [
-            {
-                fname: 'Nadine',
-                lname: 'Yasser',
-                patientId: '12345678',
-                date: new Date(),
-                status: { id: 1, name: 'attended' },
-                payment: '150',
-                cur: 'EGP',
-                type: 'video'
-            }
-        ],
-
+    const fetchIncome = () => {
+        setLoading(true)
+        axios.get(API.income).then(({ data }) => {
+            setDummyIncome(data.data)
+        }).catch((err) => console.log(err)
+        ).finally(() => setLoading(false))
     }
 
     const calculateSumOfPayments = (appointments) => {
@@ -142,7 +41,7 @@ const IncomeScreen = () => {
         return { key: index, value: key };
     });
     const [filterOpt, setFilterOpt] = useState('all')
-    const [selectedMonth, setSelectedMonth] = useState(options[0].value)
+    const [selectedMonth, setSelectedMonth] = useState(options[0]?.value)
 
     const onSelect = (opt) => {
         setSelectedMonth(getOptionById(opt))
@@ -156,14 +55,18 @@ const IncomeScreen = () => {
     }, [filterOpt, selectedMonth])
 
     const totalIncome = useMemo(() => {
-        if (listData.length > 0) {
+        if (listData?.length > 0) {
             return calculateSumOfPayments(listData)
         }
 
         return 0
     }, [listData])
+
+    useEffect(() => {
+        fetchIncome()
+    }, [])
     return (
-        <View style={styles.container}>
+        loading ? <LoadingScreen notFromNav={true} /> : <View style={styles.container}>
             <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 40, paddingTop: 10 }}>
                 <Pressable
                     onPress={() => setFilterOpt('all')}
@@ -200,7 +103,7 @@ const IncomeScreen = () => {
                     dropdownTextStyles={{ fontSize: 12 }}
                 />
             </View>
-            {listData.length > 0 ? <View>
+            {listData?.length > 0 ? <View>
                 <FlatList
                     data={listData}
                     renderItem={({ item }) => <IncomeListItem
@@ -208,7 +111,7 @@ const IncomeScreen = () => {
                         lname={item.lname}
                         aptDate={item.date}
                         id={item.patientId}
-                        payment={item.payment}
+                        payment={parseFloat(item.payment, 2)}
                         status={item.status}
                         currency={item.cur}
                     />}

@@ -6,23 +6,17 @@ import Progress from './Progress';
 import i18n from '../i18n';
 import { Colors } from '../constants/colors';
 const windowHeight = Dimensions.get('window').height
-const MonthlyEarningsCard = () => {
-  const incomes = [
-    { month: 'Oct', inc: '3000', progress: 0.3 },
-    { month: 'Nov', inc: '2000', progress: 0.7 },
-    { month: 'Dec', inc: '1000', progress: 0.8 },
-    { month: 'Jan', inc: '4000', progress: 0.9 },
-    { month: 'Feb', inc: '0000', progress: 1 },
-    { month: 'Mar', inc: '7000', progress: 0.1 },
-  ]
-
+const MonthlyEarningsCard = ({ incomes }) => {
   const curr = 'EGP'
   const perThanLastMonth = useMemo(() => {
     if (incomes) {
-      return (((parseFloat(incomes[0].inc, 0) - parseFloat(incomes[1].inc, 0)) / parseFloat(incomes[1].inc, 0)) * 100).toString()
+      inc = (((parseFloat(incomes[0].inc, 0) - parseFloat(incomes[1].inc, 0)) / parseFloat(incomes[1].inc, 0)) * 100)
+      console.log(inc)
+      return inc == NaN || inc == 0 ? '0' : inc.toString()
     }
-    return 0
-  })
+    return '0'
+  }, [incomes])
+
 
   return (
     <View style={styles.container}>

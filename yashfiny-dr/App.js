@@ -62,6 +62,7 @@ import EditProfileScreen from "./screens/Drawer/EditDoctorProfileScreen";
 import DoctorContextProvider from "./store/DoctorContext";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import PatientsContextProvider from "./store/PatientsContext";
+import { setupInterceptor } from "./utils/axios";
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -606,11 +607,9 @@ const AuthenticatedStack = () => {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <HideTabContextProvider>
-        <DoctorContextProvider>
-          <PatientsContextProvider>
-            <TabsNavigator />
-          </PatientsContextProvider>
-        </DoctorContextProvider>
+        <PatientsContextProvider>
+          <TabsNavigator />
+        </PatientsContextProvider>
       </HideTabContextProvider>
     </GestureHandlerRootView>
   )
@@ -629,6 +628,7 @@ const Navigation = () => {
 const Root = () => {
   const [isTryingLogin, setIsTryingLogin] = useState(false)
   const authCtx = useContext(AuthContext)
+  setupInterceptor(authCtx)
   const fetchToken = async () => {
     try {
       setIsTryingLogin(true)
@@ -720,7 +720,9 @@ export default App = () => {
   return (
     <AuthContextProvider>
       <LangContextProvider>
-        <Root />
+        <DoctorContextProvider>
+          <Root />
+        </DoctorContextProvider>
       </LangContextProvider>
     </AuthContextProvider>
   );

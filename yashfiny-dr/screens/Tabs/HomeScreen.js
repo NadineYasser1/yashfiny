@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { StyleSheet, View, Text, Pressable, Dimensions, FlatList } from 'react-native';
 import { Colors } from '../../constants/colors';
 import Card from '../../components/Card';
@@ -7,17 +7,57 @@ import i18n from '../../i18n';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import DashboardButton from '../../components/DashboardButton';
 import MonthlyEarningsCard from '../../components/MonthlyEarningsCard';
-import { DummyPatients } from '../../constants/DummyPatientsData';
 import ListItem from '../../components/ListItem';
+import { axios } from '../../utils/axios';
+import { API } from '../../utils/config';
+import LoadingScreen from '../../components/LoadingScreen';
+import { DoctorContext } from '../../store/DoctorContext';
 const windowHeight = Dimensions.get('window').height
 const HomeScreen = ({ navigation }) => {
+
+  const [loading, setLoading] = useState(false)
+  const [incomeData, setIncomeData] = useState()
+  const [patientsData, setpatientsData] = useState()
+  const doctorCtx = useContext(DoctorContext)
+
+  const fetchDoctorData = () => {
+    setLoading(true)
+    axios.get(API.profile).then(({ data }) => {
+      data.data.title = 'Dr'
+      doctorCtx.setNewData(data.data)
+      doctorCtx.updateAvatar(data.data.avatarUri)
+    }).catch((err) => console.log(err)
+    ).finally(() => setLoading(false))
+  }
+
+  const fetchPatientsData = () => {
+    setLoading(true)
+    axios.get(API.patients).then(({ data }) => {
+      console.log(data.data)
+      setpatientsData(data.data)
+    }
+    ).catch((err) => console.log(err)
+    ).finally(() => setLoading(false))
+  }
+  const fetchIncomeData = () => {
+    setLoading(true)
+    axios.get(API.incomeDashboard).then(({ data }) => {
+      setIncomeData(data.data)
+    }).catch((err) => console.log(err)
+    ).finally(() => setLoading(false))
+  }
 
   const handleSearchClick = (data) => {
     navigation.navigate('SearchScreen')
   }
+  useEffect(() => {
+    fetchDoctorData()
+    fetchIncomeData()
+    fetchPatientsData()
+  }, [])
 
   return (
-    <View style={styles.container}>
+    loading ? <LoadingScreen notFromNav={true} /> : <View style={styles.container}>
       <View style={styles.topContainer}>
         <View style={{ justifyContent: 'center', paddingTop: 2 }}>
           <Card>
@@ -99,21 +139,21 @@ const HomeScreen = ({ navigation }) => {
             />
           </View>
         </View>
-        <Pressable style={{ width: '50%', height: '100%', marginRight: 10 }} onPress={() => navigation.navigate("Income")}>
-          <MonthlyEarningsCard />
-        </Pressable>
+        {incomeData && <Pressable style={{ width: '50%', height: '100%', marginRight: 10 }} onPress={() => navigation.navigate("Income")}>
+          <MonthlyEarningsCard incomes={incomeData} />
+        </Pressable>}
       </View>
       <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
         <Text style={{ color: Colors.primary800, marginHorizontal: 20, marginTop: 25, fontWeight: "700", fontSize: 15, paddingBottom: 3 }}>{i18n.t('upcoming_apts')}</Text>
-        {DummyPatients.filter((patient) => patient.appointments.some(appointment => appointment.status === 'upcoming')).length > 0 && <Pressable
+        {patientsData?.filter((patient) => patient.appointments.some(appointment => appointment.status === 'upcoming')).length > 0 && <Pressable
           onPress={() => navigation.navigate('Appointments', { statusFilter: true })}>
           <Text style={{ marginHorizontal: 30, marginTop: 30, fontWeight: "400", fontSize: 12, color: Colors.link }}>{i18n.t('view_all')}</Text>
         </Pressable>}
       </View>
       {
-        DummyPatients.filter((patient) => patient.appointments.some(appointment => appointment.status === 'upcoming')).length > 0 ?
+        patientsData?.filter((patient) => patient.appointments.some(appointment => appointment.status === 'upcoming')).length > 0 ?
           <FlatList
-            data={DummyPatients.filter((patient) => patient.appointments.some(appointment => appointment.status === 'upcoming'))}
+            data={patientsData?.filter((patient) => patient.appointments.some(appointment => appointment.status === 'upcoming'))}
             renderItem={({ item }) => <ListItem
               avatarUri={item.avatar}
               fname={item.fname}

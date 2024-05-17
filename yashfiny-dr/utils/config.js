@@ -2,11 +2,8 @@ export const API = {
     login: '/login',
     register: '/register',
     patients: '/patients',
-    profile: {
-        get: '/profile',
-        patch: '/profile'
-    },
-    requests: '/requests',
+    profile: '/profile',
+    requests: '/requests?type={method}',
     specialities: '/specialities',
     incomeDashboard: '/income',
     income: '/incomeScreen',

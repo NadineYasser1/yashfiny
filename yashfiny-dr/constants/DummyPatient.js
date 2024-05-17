@@ -128,7 +128,12 @@ export const patient =
         {
             name: 'test1',
             date: new Date(),
-            uri: 'https://www.clickdimensions.com/links/TestPDFfile.pdf'
+            uri: 'https://pdfobject.com/pdf/sample.pdf'
+        },
+        {
+            name: 'test1',
+            date: new Date(),
+            uri: 'https://pdfobject.com/pdf/sample.pdf'
         },
 
     ]

@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import {
   StyleSheet,
   TextInput,
@@ -6,9 +6,9 @@ import {
   Text,
   KeyboardAvoidingView,
   Platform,
-  TouchableOpacity,
   Pressable,
-  ScrollView
+  ScrollView,
+  Alert
 } from "react-native";
 
 import { LinearGradient } from "expo-linear-gradient";
@@ -36,6 +36,15 @@ const RegistrationScreen = ({ route, navigation }) => {
   const [price, setPrice] = useState([])
   const [newData, setNewData] = useState()
   const [isLoading, setIsLoading] = useState(false)
+  const [opts, setOpts] = useState()
+
+  const fetchOpts = () => {
+    setIsLoading(true)
+    axios.get(API.specialities).then(({ data }) => {
+      setOpts(data.data)
+    }).catch((err) => console.log(err)
+    ).finally(() => setIsLoading(false))
+  }
 
   const data = useMemo(() => {
     return {
@@ -115,200 +124,207 @@ const RegistrationScreen = ({ route, navigation }) => {
     setShowPicker(false);
   }
   const handleContinue = () => {
-    // setIsLoading(true)
-    // axios.post(API.register, data
-    // ).then(({ data }) => {
-    //   navigation.navigate("UploadForm", data.id)
-    // }
-    // ).catch((err) => console.log(err)
-    // ).finally(() =>
-    //   setIsLoading(false)
-    // )
-    navigation.navigate("UploadForm")
-  }
-  const renderScreen = useMemo(() => {
-    if (isLoading) {
-      return <LoadingScreen />
+    console.log(data)
+    setIsLoading(true)
+    axios.post(API.register, data
+    ).then(({ data }) => {
+      console.log(data.data.id)
+      navigation.navigate("UploadForm", data.data.id)
     }
-    return (
-      <LinearGradient
-        colors={[Colors.primary800, "white"]}
-        locations={[0.6, 1]}
-        style={{ flex: 1 }}
-      >
-        <KeyboardAvoidingView
-          style={{ flex: 1 }}
-          behavior={Platform.OS == "ios" ? "padding" : "height"}
-          keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : -500}
-        >
-          <ScrollView contentContainerStyle={styles.scrollViewContent} >
-            <View style={styles.container}>
+    ).catch((err) => Alert.alert(err.message)
+    ).finally(() =>
+      setIsLoading(false)
+    )
 
-              <View style={styles.inputContainer}>
-                <Text style={styles.label}>{i18n.t("identification")}</Text>
-                <TextInput
-                  placeholder={i18n.t("national_id_or_passport")}
-                  placeholderTextColor="#aaa"
-                  style={styles.input}
-                  onChangeText={(val) => handleDataChange('identification', val)}
-                />
+  }
+
+  useEffect(() => {
+    fetchOpts()
+  }, [])
+
+
+  return (
+    isLoading ? <LoadingScreen notFromNav={true} /> : <LinearGradient
+      colors={[Colors.primary800, "white"]}
+      locations={[0.6, 1]}
+      style={{ flex: 1 }}
+    >
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS == "ios" ? "padding" : "height"}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : -500}
+      >
+        <ScrollView contentContainerStyle={styles.scrollViewContent} >
+          <View style={styles.container}>
+
+            <View style={styles.inputContainer}>
+              <Text style={styles.label}>{i18n.t("identification")}</Text>
+              <TextInput
+                placeholder={i18n.t("national_id_or_passport")}
+                placeholderTextColor="#aaa"
+                style={styles.input}
+                onChangeText={(val) => handleDataChange('identification', val)}
+              />
+            </View>
+            <View style={styles.inputContainer}>
+              <View style={{ flexDirection: 'row' }}>
+                <Text style={styles.label}>{i18n.t("bdate")}</Text>
+                <Text style={styles.genderLabel}>{i18n.t("gender")}</Text>
               </View>
-              <View style={styles.inputContainer}>
-                <View style={{ flexDirection: 'row' }}>
-                  <Text style={styles.label}>{i18n.t("bdate")}</Text>
-                  <Text style={styles.genderLabel}>{i18n.t("gender")}</Text>
-                </View>
-                <Pressable onPress={toggleDatePicker}>
-                  <View style={styles.rowContainer}>
-                    <TextInput
-                      value={dayjs(date).format("YYYY-MM-DD")}
-                      editable={false}
-                      style={[styles.smallInput, dayjs(date).format('YYYY-MM-DD') == dayjs(new Date()).format('YYYY-MM-DD') ? { color: '#aaa' } : { color: 'black' }]}
-                      placeholderTextColor="#aaa"
-                      onPressIn={toggleDatePicker}
-                    />
-                    <Icon name="calendar" size={23} color={Colors.accent800} style={{ marginHorizontal: 10, marginTop: 10 }} />
-                    <View style={styles.genderContainer}>
-                      <View style={styles.genderButtons}>
-                        <TouchableOpacity onPress={() => { setGender('male') }} style={[styles.genderButton, gender == 'male' && styles.genderButtonPressed]}>
-                          <Text style={[styles.genderText, gender == 'male' && { color: 'white' }]}>{i18n.t('male')}</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity onPress={() => { setGender('female') }} style={[styles.genderButton, gender == 'female' && styles.genderButtonPressed]} >
-                          <Text style={[styles.genderText, gender == 'female' && { color: 'white' }]}>{i18n.t('female')}</Text>
-                        </TouchableOpacity>
-                      </View>
+              <Pressable onPress={toggleDatePicker}>
+                <View style={styles.rowContainer}>
+                  <TextInput
+                    value={dayjs(date).format("YYYY-MM-DD")}
+                    editable={false}
+                    style={[styles.smallInput, dayjs(date).format('YYYY-MM-DD') == dayjs(new Date()).format('YYYY-MM-DD') ? { color: '#aaa' } : { color: 'black' }]}
+                    placeholderTextColor="#aaa"
+                    onPressIn={toggleDatePicker}
+                  />
+                  <Icon name="calendar" size={23} color={Colors.accent800} style={{ marginHorizontal: 10, marginTop: 10 }} />
+                  <View style={styles.genderContainer}>
+                    <View style={styles.genderButtons}>
+                      <Pressable onPress={() => { setGender('male') }} style={[styles.genderButton, gender == 'male' && styles.genderButtonPressed]}>
+                        <Text style={[styles.genderText, gender == 'male' && { color: 'white' }]}>{i18n.t('male')}</Text>
+                      </Pressable>
+                      <Pressable onPress={() => { setGender('female') }} style={[styles.genderButton, gender == 'female' && styles.genderButtonPressed]} >
+                        <Text style={[styles.genderText, gender == 'female' && { color: 'white' }]}>{i18n.t('female')}</Text>
+                      </Pressable>
                     </View>
                   </View>
-                </Pressable>
-                {showPicker &&
-                  <View style={{ borderRadius: 15, borderWidth: 1, borderColor: '#bdc3c7', overflow: 'hidden', marginTop: 5, marginRight: 5, backgroundColor: 'white' }}>
-                    <DateTimePicker
-                      mode="date"
-                      display='spinner'
-                      value={date}
-                      onChange={handleChange}
-                      style={{ backgroundColor: 'white' }}
-                      maximumDate={new Date()}
+                </View>
+              </Pressable>
+              {showPicker &&
+                <View style={{ borderRadius: 15, borderWidth: 1, borderColor: '#bdc3c7', overflow: 'hidden', marginTop: 5, marginRight: 5, backgroundColor: 'white' }}>
+                  <DateTimePicker
+                    mode="date"
+                    display='spinner'
+                    value={date}
+                    onChange={handleChange}
+                    style={{ backgroundColor: 'white' }}
+                    maximumDate={new Date()}
 
+                  />
+                  {
+                    showPicker && Platform.OS === "ios" && (
+                      <View style={styles.iosPickerButtons}>
+                        <Pressable onPress={confirmIosDate} style={styles.confirmButton}>
+                          <Text style={styles.confirmText}>{i18n.t('confirm')}</Text>
+                        </Pressable>
+                        <Pressable onPress={toggleDatePicker} style={styles.cancelButton} >
+                          <Text style={styles.cancelText}>{i18n.t('cancel')}</Text>
+                        </Pressable>
+                      </View>
+                    )
+                  }
+                </View>
+              }
+            </View>
+            <View style={styles.inputContainer}>
+              <Text style={styles.label}>{i18n.t("address")}</Text>
+              <View style={{ flexDirection: 'row' }}>
+                <TextInput
+                  placeholder={i18n.t("address_placeholder")}
+                  placeholderTextColor="#aaa"
+                  style={styles.input}
+                  onChangeText={(val) => handleDataChange('address', val)}
+                />
+                <Icon name="map-marker" color={Colors.accent800} size={30} style={{ marginLeft: 5, marginTop: 9 }} />
+              </View>
+              <View style={{ flexDirection: 'row', alignContent: 'space-between' }}>
+                <TextInput
+                  placeholder={i18n.t('city')}
+                  style={styles.addressInput}
+                  placeholderTextColor="#aaa"
+                  onChangeText={(val) => handleDataChange('city', val)}
+                />
+                <TextInput
+                  placeholder={i18n.t('country')}
+                  style={styles.addressInput}
+                  placeholderTextColor="#aaa"
+                  onChangeText={(val) => handleDataChange('country', val)}
+                />
+              </View>
+            </View>
+            <View style={styles.inputContainer}>
+              <Text style={styles.label}>{i18n.t("phone_number")}</Text>
+              <View style={{ flexDirection: 'row', alignContent: 'space-between' }}>
+                <TextInput
+                  defaultValue='+20'
+                  style={styles.codeInput}
+                  placeholderTextColor="black"
+                  inputMode="numeric"
+                  onChangeText={(val) => handleDataChange('country_code', val)}
+                />
+                <TextInput
+                  style={styles.phoneInput}
+                  inputMode="numeric"
+                  placeholder="e.g: 12345678"
+                  onChangeText={(val) => handleDataChange('phone', val)}
+                />
+              </View>
+            </View>
+            <View style={{ flexDirection: 'row' }}>
+              <View style={[styles.inputContainer, { marginRight: 10 }]}>
+                <Text style={styles.label}>{i18n.t("specialization")}</Text>
+                {opts && <View style={{ width: 160 }}>
+                  <CustomDropdown
+                    options={opts}
+                    onSelect={(opt) => handleDataChange('specialization', opt)}
+                    label={i18n.t('specialization')}
+                    style={{ width: 160, height: 60 }}
+                  />
+                </View>}
+              </View>
+              <View style={styles.inputContainer}>
+                <Text style={styles.label}>{i18n.t("subspeciality")}</Text>
+                {opts && <View style={{ width: 160 }}>
+                  <CustomDropdown
+                    options={opts}
+                    onSelect={(opt) => handleDataChange('subspeciality', opt)}
+                    label={i18n.t('subspeciality')}
+                    style={{ width: 160, height: 60 }}
+                  />
+                </View>}
+              </View>
+            </View>
+            <View style={styles.inputContainer}>
+              <Text style={styles.label}>{i18n.t("pricing")}</Text>
+              {choices.length > 0 && (
+                <View style={styles.choicesContainer}>
+                  {choices.map((choice, index) => (
+                    <Pressable
+                      key={index}
+                      style={styles.choice}
+                      onPress={() => handleDeleteChoice(index)}>
+                      <Text style={{ color: Colors.primary600, marginHorizontal: 5 }}>{choice}</Text>
+                      <Text style={styles.deleteButton}>x</Text>
+                    </Pressable>
+                  ))}
+                </View>)}
+              <View style={{ flexDirection: 'row', alignContent: 'space-between' }}>
+                <CustomDropdown
+                  options={[i18n.t('examination'), i18n.t('consultation')]}
+                  onSelect={(opt) => handleSelection('type', opt)}
+                />
+                {selection?.type && (
+                  <>
+                    <CustomDropdown
+                      options={[i18n.t('video'), i18n.t('clinic')]}
+                      onSelect={(opt) => handleSelection('method', opt)}
+                      placeholder={i18n.t('select_type')}
                     />
                     {
-                      showPicker && Platform.OS === "ios" && (
-                        <View style={styles.iosPickerButtons}>
-                          <TouchableOpacity onPress={confirmIosDate} style={styles.confirmButton}>
-                            <Text style={styles.confirmText}>{i18n.t('confirm')}</Text>
-                          </TouchableOpacity>
-                          <TouchableOpacity onPress={toggleDatePicker} style={styles.cancelButton} >
-                            <Text style={styles.cancelText}>{i18n.t('cancel')}</Text>
-                          </TouchableOpacity>
-                        </View>
+                      selection?.method && (
+                        <CustomInput placeholder={"Price"} onAdd={handleAddChoice} />
                       )
                     }
-                  </View>
-                }
-              </View>
-              <View style={styles.inputContainer}>
-                <Text style={styles.label}>{i18n.t("address")}</Text>
-                <View style={{ flexDirection: 'row' }}>
-                  <TextInput
-                    placeholder={i18n.t("address_placeholder")}
-                    placeholderTextColor="#aaa"
-                    style={styles.input}
-                    onChangeText={(val) => handleDataChange('address', val)}
-                  />
-                  <Icon name="map-marker" color={Colors.accent800} size={30} style={{ marginLeft: 5, marginTop: 9 }} />
-                </View>
-                <View style={{ flexDirection: 'row', alignContent: 'space-between' }}>
-                  <TextInput
-                    placeholder={i18n.t('city')}
-                    style={styles.addressInput}
-                    placeholderTextColor="#aaa"
-                    onChangeText={(val) => handleDataChange('city', val)}
-                  />
-                  <TextInput
-                    placeholder={i18n.t('country')}
-                    style={styles.addressInput}
-                    placeholderTextColor="#aaa"
-                    onChangeText={(val) => handleDataChange('country', val)}
-                  />
-                </View>
-              </View>
-              <View style={styles.inputContainer}>
-                <Text style={styles.label}>{i18n.t("phone_number")}</Text>
-                <View style={{ flexDirection: 'row', alignContent: 'space-between' }}>
-                  <TextInput
-                    defaultValue='+20'
-                    style={styles.codeInput}
-                    placeholderTextColor="black"
-                    inputMode="numeric"
-                    onChangeText={(val) => handleDataChange('country_code', val)}
-                  />
-                  <TextInput
-                    style={styles.phoneInput}
-                    inputMode="numeric"
-                    placeholder="e.g: 12345678"
-                    onChangeText={(val) => handleDataChange('phone', val)}
-                  />
-                </View>
-              </View>
-              <View style={{ flexDirection: 'row' }}>
-                <View style={[styles.inputContainer, { marginRight: 10 }]}>
-                  <Text style={styles.label}>{i18n.t("specialization")}</Text>
-                  <View style={{ width: 160 }}>
-                    <CustomDropdown
-                      options={tempDiseases}
-                      onSelect={(opt) => handleDataChange('specialization', opt)}
-                      label={i18n.t('specialization')} />
-                  </View>
-                </View>
-                <View style={styles.inputContainer}>
-                  <Text style={styles.label}>{i18n.t("subspeciality")}</Text>
-                  <View style={{ width: 160 }}>
-                    <CustomDropdown
-                      options={tempDiseases}
-                      onSelect={(opt) => handleDataChange('subspeciality', opt)}
-                      label={i18n.t('subspeciality')}
-                    />
-                  </View>
-                </View>
-              </View>
-              <View style={styles.inputContainer}>
-                <Text style={styles.label}>{i18n.t("pricing")}</Text>
-                {choices.length > 0 && (
-                  <View style={styles.choicesContainer}>
-                    {choices.map((choice, index) => (
-                      <TouchableOpacity
-                        key={index}
-                        style={styles.choice}
-                        onPress={() => handleDeleteChoice(index)}>
-                        <Text style={{ color: Colors.primary600, marginHorizontal: 5 }}>{choice}</Text>
-                        <Text style={styles.deleteButton}>x</Text>
-                      </TouchableOpacity>
-                    ))}
-                  </View>)}
-                <View style={{ flexDirection: 'row', alignContent: 'space-between' }}>
-                  <CustomDropdown
-                    options={[i18n.t('examination'), i18n.t('consultation')]}
-                    onSelect={(opt) => handleSelection('type', opt)}
-                  />
-                  {selection?.type && (
-                    <>
-                      <CustomDropdown
-                        options={[i18n.t('video'), i18n.t('clinic')]}
-                        onSelect={(opt) => handleSelection('method', opt)}
-                        placeholder={i18n.t('select_type')}
-                      />
-                      {
-                        selection?.method && (
-                          <CustomInput placeholder={"Price"} onAdd={handleAddChoice} />
-                        )
-                      }
 
-                    </>
-                  )}
+                  </>
+                )}
 
-                </View>
               </View>
-              {/* <View style={styles.inputContainer}>
+            </View>
+            {/* <View style={styles.inputContainer}>
               <Text style={styles.label}>{i18n.t("diseases_treated")}</Text>
               <View style={{ width: 290 }}>
                 <CustomMultipleSelect
@@ -316,70 +332,67 @@ const RegistrationScreen = ({ route, navigation }) => {
                   onSelect={(arr) => handleDataChange('diseases_treated', arr)} label={i18n.t('diseases')} />
               </View>
             </View> */}
-              <View style={styles.inputContainer}>
-                <Text style={styles.label}>{i18n.t('payment_method')}</Text>
-                <View style={{ flexDirection: 'row', alignContent: 'center', justifyContent: 'flex-start' }}>
-                  <CustomDropdown
-                    options={PAYMENT_METHODS}
-                    onSelect={(opt) => handleDataChange('payment_method', opt)}
-                    style={{ width: 150 }}
-                  />
-                  <TextInput
-                    placeholder={paymentPlaceHolder}
-                    placeholderTextColor="#aaa"
-                    style={[styles.input, { marginTop: 12, width: '50%', height: 38 }]}
-                    onChangeText={(val) => handleDataChange('payment', val)} />
-
-                </View>
-              </View>
-              <View style={styles.inputContainer}>
-                <Text style={styles.label}>{i18n.t("will_you_handle_apts")}</Text>
-                <CheckBox
-                  containerStyle={{ marginLeft: 0, width: '100%', backgroundColor: 'transparent', borderColor: 'transparent' }}
-                  checked={circleCheckBoxValue?.doctor}
-                  title={i18n.t('yes')}
-                  checkedIcon='dot-circle-o'
-                  uncheckedIcon='circle-o'
-                  uncheckedColor="white"
-                  checkedColor={Colors.accent800}
-                  textStyle={{ color: 'white' }}
-                  onPress={() => setCircleCheckBoxValue((prev) => ({
-                    ...prev,
-                    doctor: !circleCheckBoxValue?.doctor,
-                    assistant: circleCheckBoxValue?.doctor
-                  }))}
+            <View style={styles.inputContainer}>
+              <Text style={styles.label}>{i18n.t('payment_method')}</Text>
+              <View style={{ flexDirection: 'row', alignContent: 'center', justifyContent: 'flex-start' }}>
+                <CustomDropdown
+                  options={PAYMENT_METHODS}
+                  onSelect={(opt) => handleDataChange('payment_method', opt)}
+                  style={{ width: 150 }}
                 />
-                <CheckBox
-                  containerStyle={{ marginLeft: 0, width: '100%', backgroundColor: 'transparent', borderColor: 'transparent' }}
-                  checked={circleCheckBoxValue?.assistant}
-                  title={i18n.t('no_assistant_handles')}
-                  checkedIcon='dot-circle-o'
-                  uncheckedIcon='circle-o'
-                  uncheckedColor="white"
-                  textStyle={{ color: 'white' }}
-                  checkedColor={Colors.accent800}
-                  onPress={() => setCircleCheckBoxValue((prev) => ({
-                    ...prev,
-                    assistant: !circleCheckBoxValue?.assistant,
-                    doctor: circleCheckBoxValue?.assistant
-                  }))} />
+                <TextInput
+                  placeholder={paymentPlaceHolder}
+                  placeholderTextColor="#aaa"
+                  style={[styles.input, { marginTop: 12, width: '50%', height: 38 }]}
+                  onChangeText={(val) => handleDataChange('payment', val)} />
+
               </View>
-              <TouchableOpacity
-                style={styles.continueButton}
-                onPress={handleContinue}
-              >
-                <Text style={styles.continueButtonText}>{i18n.t("continue")}</Text>
-              </TouchableOpacity>
             </View>
-          </ScrollView>
-        </KeyboardAvoidingView>
+            <View style={styles.inputContainer}>
+              <Text style={styles.label}>{i18n.t("will_you_handle_apts")}</Text>
+              <CheckBox
+                containerStyle={{ marginLeft: 0, width: '100%', backgroundColor: 'transparent', borderColor: 'transparent' }}
+                checked={circleCheckBoxValue?.doctor}
+                title={i18n.t('yes')}
+                checkedIcon='dot-circle-o'
+                uncheckedIcon='circle-o'
+                uncheckedColor="white"
+                checkedColor={Colors.accent800}
+                textStyle={{ color: 'white' }}
+                onPress={() => setCircleCheckBoxValue((prev) => ({
+                  ...prev,
+                  doctor: !circleCheckBoxValue?.doctor,
+                  assistant: circleCheckBoxValue?.doctor
+                }))}
+              />
+              <CheckBox
+                containerStyle={{ marginLeft: 0, width: '100%', backgroundColor: 'transparent', borderColor: 'transparent' }}
+                checked={circleCheckBoxValue?.assistant}
+                title={i18n.t('no_assistant_handles')}
+                checkedIcon='dot-circle-o'
+                uncheckedIcon='circle-o'
+                uncheckedColor="white"
+                textStyle={{ color: 'white' }}
+                checkedColor={Colors.accent800}
+                onPress={() => setCircleCheckBoxValue((prev) => ({
+                  ...prev,
+                  assistant: !circleCheckBoxValue?.assistant,
+                  doctor: circleCheckBoxValue?.assistant
+                }))} />
+            </View>
+            <Pressable
+              style={styles.continueButton}
+              onPress={handleContinue}
+            >
+              <Text style={styles.continueButtonText}>{i18n.t("continue")}</Text>
+            </Pressable>
+          </View>
+        </ScrollView>
+      </KeyboardAvoidingView>
 
-      </LinearGradient >
-    );
-  }, [isLoading])
-
-  return renderScreen
-};
+    </LinearGradient >
+  );
+}
 
 const styles = StyleSheet.create({
   scrollViewContent: {
@@ -388,7 +401,7 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    padding: 5,
+    padding: 10,
   },
   input: {
     width: "85%",

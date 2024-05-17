@@ -21,7 +21,14 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "permissions": [
+        "android.permission.READ_EXTERNAL_STORAGE",
+        "android.permission.WRITE_EXTERNAL_STORAGE",
+        "android.permission.DOWNLOAD_WITHOUT_NOTIFICATION",
+        "android.permission.ACCESS_NETWORK_STATE"
+      ],
+      "package": "com.nadineyasser.yashfinydr"
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -34,7 +41,14 @@
         }
       ],
       "expo-font",
-      "expo-localization"
-    ]
+      "expo-localization",
+      "@config-plugins/react-native-blob-util",
+      "@config-plugins/react-native-pdf"
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "b2cc6a17-69ef-4a27-a5b4-81c2202eefa9"
+      }
+    }
   }
 }

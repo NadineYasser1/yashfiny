@@ -21,6 +21,8 @@ import CustomDropdown from '../../components/CustomDropDown';
 import { HideTabContext } from '../../store/HideTabContext';
 import dayjs from 'dayjs';
 import AddAvailabilityModal from '../../components/AddAvailabilityModal';
+import { axios } from '../../utils/axios';
+import { API } from '../../utils/config';
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
@@ -60,6 +62,13 @@ const AvailabilityScreen = ({ navigation, route }) => {
   const [newChanges, setNewChanges] = useState(false)
   const [addModalVisible, setAddModalVisible] = useState(false)
   const [slotType, setSlotType] = useState()
+
+  const fetchAvailability = () => {
+    axios.get(API.availability).then(({ data }) => {
+      data.data.forEach((d) => d.addSlotToScreen = true)
+      setSelectedSlot(data.data)
+    }).catch((err) => console.log(err))
+  }
 
   const formatTime = (time) => {
     return time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
@@ -336,7 +345,9 @@ const AvailabilityScreen = ({ navigation, route }) => {
     hideTabCtx.hideTab(false)
     navigation.goBack()
   }
-
+  useEffect(() => {
+    fetchAvailability()
+  }, [])
   return (
     <View style={styles.container}>
       <Modal

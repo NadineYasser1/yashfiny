@@ -14,9 +14,11 @@ import dayjs from "dayjs"
 import { DoctorContext } from "../store/DoctorContext"
 import { PAYMENT_METHODS } from "../constants/paymentMethods"
 import CustomDropdown from "./CustomDropDown"
-import { tempDiseases } from "../constants/DummyDiseases"
 import { OPTIONS } from "../constants/options"
 import { MaterialCommunityIcons } from "@expo/vector-icons"
+import { axios } from "../utils/axios"
+import { API } from "../utils/config"
+
 
 const RegistrationForm = ({ editDoctor }) => {
     const navigation = useNavigation()
@@ -26,11 +28,14 @@ const RegistrationForm = ({ editDoctor }) => {
     const [pricing, setPricing] = useState(doctorCtx.doctorData.price)
     const [showMore, setShowMore] = useState(false)
     const [newPrice, setNewPrice] = useState({})
+    const [opts, setOpts] = useState()
     const hideTabCtx = useContext(HideTabContext)
 
-    useEffect(() => {
-        hideTabCtx.hideTab(true)
-    }, [])
+    const fetchData = () => {
+        axios.get(API.specialities).then(({ data }) => {
+            setOpts(data.data)
+        }).catch((err) => console.log(err))
+    }
 
     const handleSave = () => {
         if (editDoctor) {
@@ -69,7 +74,7 @@ const RegistrationForm = ({ editDoctor }) => {
         return PAYMENT_METHODS.find((method) => method.key == key)
     }
     const getsubspecialityByValue = (val) => {
-        return tempDiseases.find((dis) => dis.value == val)
+        return opts?.find((dis) => dis.value == val)
     }
     const getOptByKey = (key, val) => {
         if (val == 'type') {
@@ -240,6 +245,13 @@ const RegistrationForm = ({ editDoctor }) => {
         }
         return null
     }, [data, pricing, newPrice])
+
+
+    useEffect(() => {
+        fetchData()
+        hideTabCtx.hideTab(true)
+    }, [])
+
     return (
         <View style={styles.container}>
             <ScrollView>
@@ -344,13 +356,13 @@ const RegistrationForm = ({ editDoctor }) => {
                         </View>
                         <View style={styles.inputContainer}>
                             <Text style={styles.label}>{i18n.t('subspeciality')}</Text>
-                            <CustomDropdown
-                                options={tempDiseases}
+                            {opts && <CustomDropdown
+                                options={opts}
                                 selectedOpt={getsubspecialityByValue(data.subspeciality)}
                                 onSelect={(opt) => handleChange('subspeciality', opt)}
                                 defaultOption={getsubspecialityByValue(data.subspeciality)}
 
-                            />
+                            />}
                         </View>
                         <View>
                         </View>

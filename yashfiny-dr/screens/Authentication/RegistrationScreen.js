@@ -50,6 +50,7 @@ const RegistrationScreen = ({ route, navigation }) => {
     return {
       ...route.params,
       ...newData,
+      title: 'Dr',
       dob: dayjs(date).format('YYYY-MM-DD'),
       gender,
       price,
@@ -131,7 +132,7 @@ const RegistrationScreen = ({ route, navigation }) => {
       console.log(data.data.id)
       navigation.navigate("UploadForm", data.data.id)
     }
-    ).catch((err) => Alert.alert(err.message)
+    ).catch((err) => Alert.alert(err.data.message)
     ).finally(() =>
       setIsLoading(false)
     )

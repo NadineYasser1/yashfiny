@@ -388,6 +388,7 @@ const DrawerNav = () => {
         component={ArticlesStack}
         options={{
           drawerLabel: i18n.t('articles'),
+          headerTitle: i18n.t('articles'),
           drawerIcon: ({ color, size }) => (
             <MaterialCommunityIcons name="file-account" color={color} size={size} />
           ),
@@ -397,6 +398,7 @@ const DrawerNav = () => {
         name="Groups"
         component={GroupsScreen}
         options={{
+          headerTitle: i18n.t('groups'),
           drawerLabel: i18n.t('groups'),
           drawerIcon: ({ color, size }) => (
             <MaterialCommunityIcons name="account-group" color={color} size={size} />
@@ -408,6 +410,7 @@ const DrawerNav = () => {
         component={ContactUsScreen}
         options={{
           drawerLabel: i18n.t('contact_us'),
+          headerTitle: i18n.t('contact_us'),
           drawerIcon: ({ color, size }) => (
             <MaterialCommunityIcons name="face-agent" color={color} size={size} />
           ),

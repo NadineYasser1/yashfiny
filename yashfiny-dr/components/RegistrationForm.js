@@ -1,6 +1,6 @@
 import { useContext, useEffect, useMemo, useState } from "react"
 import { HideTabContext } from "../store/HideTabContext"
-import { TouchableOpacity, View, StyleSheet, Text, Pressable } from "react-native"
+import { TouchableOpacity, View, StyleSheet, Text, Pressable, Alert } from "react-native"
 import i18n from "../i18n"
 import { useNavigation } from "@react-navigation/native"
 import { Colors } from "../constants/colors"
@@ -23,7 +23,7 @@ import { API } from "../utils/config"
 const RegistrationForm = ({ editDoctor }) => {
     const navigation = useNavigation()
     const doctorCtx = useContext(DoctorContext)
-    const [data, setData] = useState(editDoctor ? doctorCtx.doctorData : { date: new Date() })
+    const [doctorData, setDoctorData] = useState(editDoctor ? doctorCtx.doctorData : { date: new Date() })
     const [history, setHistory] = useState()
     const [pricing, setPricing] = useState(doctorCtx.doctorData.price)
     const [showMore, setShowMore] = useState(false)
@@ -40,19 +40,29 @@ const RegistrationForm = ({ editDoctor }) => {
     const handleSave = () => {
         if (editDoctor) {
             handleChange('price', pricing)
-            doctorCtx.updateData(data)
-            console.log(data)
+            axios.patch(API.profile, doctorData).then(({ data }) => {
+                if (data.message == 'success') {
+                    doctorCtx.updateData(doctorData)
+                    Alert.alert(i18n.t('success'), i18n.t('data_updated_successfully!'))
+                    hideTabCtx.hideTab(false)
+                    navigation.goBack()
+                }
+            }).catch((err) => console.log(err))
+
+            console.log(doctorData)
         } else if (!editDoctor) {
             console.log({
-                ...data,
+                ...doctorData,
                 history
             })
+            Alert.alert(i18n.t('coming_soon_alert_text'))
+            hideTabCtx.hideTab(false)
+            navigation.goBack()
         }
-        hideTabCtx.hideTab(false)
-        navigation.goBack()
+
     }
     const handleChange = (key, val) => {
-        setData((prev) => ({
+        setDoctorData((prev) => ({
             ...prev,
             [key]: val
         }))
@@ -244,7 +254,7 @@ const RegistrationForm = ({ editDoctor }) => {
             })
         }
         return null
-    }, [data, pricing, newPrice])
+    }, [doctorData, pricing, newPrice])
 
 
     useEffect(() => {
@@ -263,20 +273,20 @@ const RegistrationForm = ({ editDoctor }) => {
                         showLabel
                         handleChange={handleChange}
                         inputKey={'fname'}
-                        value={editDoctor ? data.fname : null}
+                        value={editDoctor ? doctorData.fname : null}
                     />
                     <View style={styles.inputNoLabel}>
                         <InputField
                             placeholder={i18n.t('lname')}
                             handleChange={handleChange}
                             inputKey={'lname'}
-                            value={editDoctor ? data.lname : null}
+                            value={editDoctor ? doctorData.lname : null}
                         />
                     </View>
                 </View>
                 <View style={styles.dateGenderContainer}>
                     <DatePicker
-                        date={data.date}
+                        date={doctorData.date}
                         handleChange={handleChange}
                         label={i18n.t('bdate')}
                         selectorFor={'dob'}
@@ -290,7 +300,7 @@ const RegistrationForm = ({ editDoctor }) => {
                         showLabel
                         handleChange={handleChange}
                         inputKey={'email'}
-                        value={editDoctor ? data.email : null} />
+                        value={editDoctor ? doctorData.email : null} />
                 </View>
                 <View style={{ width: '59.5%' }}>
                     <InputField
@@ -299,7 +309,7 @@ const RegistrationForm = ({ editDoctor }) => {
                         showLabel
                         handleChange={handleChange}
                         inputKey={'address'}
-                        value={editDoctor ? data.address : null}
+                        value={editDoctor ? doctorData.address : null}
                     />
                     <View style={styles.nameInput}>
                         <InputField
@@ -307,14 +317,14 @@ const RegistrationForm = ({ editDoctor }) => {
                             style={{ marginTop: 2 }}
                             handleChange={handleChange}
                             inputKey={'city'}
-                            value={editDoctor ? data.city : null}
+                            value={editDoctor ? doctorData.city : null}
                         />
                         <InputField
                             placeholder={i18n.t('country')}
                             style={{ marginTop: 2 }}
                             handleChange={handleChange}
                             inputKey={'country'}
-                            value={editDoctor ? data.country : null}
+                            value={editDoctor ? doctorData.country : null}
                         />
                     </View>
                 </View>
@@ -326,7 +336,7 @@ const RegistrationForm = ({ editDoctor }) => {
                         keypad={'numeric'}
                         handleChange={handleChange}
                         inputKey={'phone'}
-                        value={editDoctor ? data.phone : null} />
+                        value={editDoctor ? doctorData.phone : null} />
                 </View>
                 {!editDoctor && <View style={styles.inputContainer}>
                     {diseasePatch}
@@ -341,14 +351,14 @@ const RegistrationForm = ({ editDoctor }) => {
                             <View style={{ flexDirection: 'row' }}>
                                 <CustomDropdown
                                     options={PAYMENT_METHODS}
-                                    selectedOpt={getPaymentMethodByKey(data.payment_method)}
+                                    selectedOpt={getPaymentMethodByKey(doctorData.payment_method)}
                                     onSelect={(opt) => handleChange('payment_method', opt)}
-                                    defaultOption={getPaymentMethodByKey(data.payment_method)}
+                                    defaultOption={getPaymentMethodByKey(doctorData.payment_method)}
                                 />
                                 <InputField
                                     handleChange={handleChange}
                                     inputKey={'payment'}
-                                    value={data.payment}
+                                    value={doctorData.payment}
                                     style={{ marginTop: 7 }}
 
                                 />
@@ -358,9 +368,9 @@ const RegistrationForm = ({ editDoctor }) => {
                             <Text style={styles.label}>{i18n.t('subspeciality')}</Text>
                             {opts && <CustomDropdown
                                 options={opts}
-                                selectedOpt={getsubspecialityByValue(data.subspeciality)}
+                                selectedOpt={getsubspecialityByValue(doctorData.subspeciality)}
                                 onSelect={(opt) => handleChange('subspeciality', opt)}
-                                defaultOption={getsubspecialityByValue(data.subspeciality)}
+                                defaultOption={getsubspecialityByValue(doctorData.subspeciality)}
 
                             />}
                         </View>

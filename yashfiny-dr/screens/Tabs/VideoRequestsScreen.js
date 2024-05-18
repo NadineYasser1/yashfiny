@@ -8,19 +8,39 @@ import LoadingScreen from "../../components/LoadingScreen";
 
 const VideoRequestsScreen = () => {
     const [loading, setLoading] = useState(false)
-    const [reqs, setReqs] = useState(videoReqs)
+    const [reqs, setReqs] = useState()
     const fetchData = () => {
         setLoading(true)
         axios.get(API.requests.replace('{method}', 'video')).then(({ data }) =>
-            console.log(data.data[0])
+            setReqs(data.data)
         ).catch((err) => console.log(err)
         ).finally(() => setLoading(false))
+    }
+    const handleAccept = (reqId) => {
+        const req = {
+            id: reqId,
+            status: 'accept'
+        }
+        axios.post(API.postReq, req).then(({ data }) => {
+            fetchData()
+        }).catch((err) => console.log(err))
+    }
+    const handleCancelApt = (reqId, message) => {
+        const req = {
+            id: reqId.reqId || reqId,
+            message,
+            status: 'decline'
+        }
+        axios.post(API.postReq, req).then(({ data }) => {
+            fetchData()
+        }).catch((err) => console.log(err))
+
     }
     useEffect(() => {
         fetchData()
     }, [])
     return (
-        loading ? <LoadingScreen notFromNav={true} /> : reqs && <RequestsList data={reqs} />
+        loading ? <LoadingScreen notFromNav={true} /> : reqs && <RequestsList data={reqs} fetchData={fetchData} handleAccept={handleAccept} handleCancelApt={handleCancelApt} />
     )
 }
 export default VideoRequestsScreen;

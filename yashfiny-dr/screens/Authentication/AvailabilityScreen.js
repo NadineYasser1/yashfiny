@@ -65,11 +65,30 @@ const AvailabilityScreen = ({ navigation, route }) => {
 
   const fetchAvailability = () => {
     axios.get(API.availability).then(({ data }) => {
-      data.data.forEach((d) => d.addSlotToScreen = true)
+      for (let date in data.data) {
+        const formattedDate = formatDateString(date);
+        data.data[formattedDate] = data.data[date];
+        delete data.data[date];
+        data.data[formattedDate].forEach(entry => {
+          entry.addSlotToScreen = true;
+          entry.startTime = formatRecievedTime(entry.startTime);
+          entry.endTime = formatRecievedTime(entry.endTime);
+        });
+      }
+      console.log(data.data)
       setSelectedSlot(data.data)
     }).catch((err) => console.log(err))
   }
 
+  function formatDateString(dateString) {
+    const parts = dateString.split('-');
+    return `20${parts[0]}-${parts[1]}-${parts[2]}`;
+  }
+
+  function formatRecievedTime(timeString) {
+    const [hours, minutes, seconds] = timeString.split(':').map(Number);
+    return new Date(1970, 0, 1, hours, minutes, seconds);
+  }
   const formatTime = (time) => {
     return time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
   };
@@ -164,12 +183,14 @@ const AvailabilityScreen = ({ navigation, route }) => {
 
   const editSlot = (index) => {
     setEditingIndex(index);
-    setStartTime(selectedSlot[selectedDay][index].startTime);
-    setEndTime(selectedSlot[selectedDay][index].endTime);
-    setSlotType(selectedSlot[selectedDay][index].type);
-    setAptMethod(selectedSlot[selectedDay][index].location);
+    const slot = selectedSlot[selectedDay][index];
+    setStartTime(slot.startTime);
+    setEndTime(slot.endTime);
+    setSlotType(slot.type);
+    setAptMethod(slot.location);
     setIsEditingModalVisible(true);
   };
+
 
   const updateSlot = () => {
     const updatedSlots = [...selectedSlot[selectedDay]];
@@ -337,7 +358,11 @@ const AvailabilityScreen = ({ navigation, route }) => {
   };
 
   const postAvailability = () => {
-    console.log(selectedSlot)
+    // console.log(selectedSlot)
+    axios.patch(API.availability, selectedSlot
+    ).then(({ data }) => {
+      console.log(data)
+    }).catch((err) => console.log(err))
   }
 
   const handleSave = () => {
@@ -387,7 +412,7 @@ const AvailabilityScreen = ({ navigation, route }) => {
                   options={opts}
 
                   onSelect={(opt) => onSelectOpt('location', opt)}
-                  defaultOption={opts.find((opt) => opt.value == aptMethod)}
+                  defaultOption={opts.find((opt) => opt.value?.toLowerCase() == aptMethod?.toLowerCase())}
                   placeholder={i18n.t('select_location')}
                   style={{ borderRadius: 20, borderColor: Colors.primary800, height: 30, width: 100, alignItems: 'center', justifyContent: 'center', marginTop: 0 }}
                   inputStyles={{ height: 20, fontSize: 12, padding: 3 }}
@@ -399,7 +424,7 @@ const AvailabilityScreen = ({ navigation, route }) => {
                 <CustomDropdown
                   options={optsArr}
                   onSelect={(opt) => onSelectOpt('type', opt)}
-                  defaultOption={optsArr.find((opt) => opt.value == slotType)}
+                  defaultOption={optsArr.find((opt) => opt.value?.toLowerCase() == slotType?.toLowerCase())}
                   placeholder={i18n.t('select_type')}
                   style={{ borderRadius: 20, borderColor: Colors.primary800, height: 30, width: 100, alignItems: 'center', justifyContent: 'center', marginTop: 0 }}
                   inputStyles={{ height: 20, fontSize: 12, padding: 3 }}
@@ -435,7 +460,7 @@ const AvailabilityScreen = ({ navigation, route }) => {
           highlightDateNameStyle={{ color: Colors.primary800 }}
           highlightDateContainerStyle={{ backgroundColor: Colors.primary800 }}
           markedDates={markedDatesArray}
-          minDate={currentDate}
+          // minDate={currentDate}
           maxDate={dayjs(currentDate).add(1, 'month').toDate()}
         />
       </View>

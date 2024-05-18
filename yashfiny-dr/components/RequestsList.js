@@ -5,8 +5,10 @@ import i18n from "../i18n"
 import filter from "lodash.filter"
 import RequestItem from "./RequestItem"
 import MessagesModal from "./MessagesModal"
+import { axios } from "../utils/axios"
+import { API } from "../utils/config"
 
-const RequestsList = ({ data }) => {
+const RequestsList = ({ data, handleCancelApt, handleAccept }) => {
 
     const [requests, setRequests] = useState(data)
     const [search, setSearch] = useState('')
@@ -28,12 +30,7 @@ const RequestsList = ({ data }) => {
             id?.toString().includes(query) ||
             `${fname?.toLowerCase()} ${lname.toLowerCase()}`.includes(query);
     };
-    const handleAccept = (reqId) => {
-        console.log({
-            id: reqId,
-            status: 'accept'
-        })
-    }
+
     const handleDecline = (reqId) => {
 
         Alert.alert(i18n.t('yashfiny_asks_you'), i18n.t('send_quick_message_instead'),
@@ -41,7 +38,7 @@ const RequestsList = ({ data }) => {
                 {
                     text: i18n.t('no'),
                     style: "cancel",
-                    onPress: () => handleCancelApt(reqId, null)
+                    onPress: () => { handleCancelApt(reqId, null), setMessagesModal(false) }
                 },
                 {
                     text: i18n.t('yes'),
@@ -56,21 +53,11 @@ const RequestsList = ({ data }) => {
 
     }
 
-    const handleCancelApt = (reqId, message) => {
-        setMessagesModal(false)
-        const req = {
-            id: reqId.reqId || reqId,
-            message,
-            status: 'decline'
-        }
-        console.log(req)
-
-    }
     return (
         <View style={{ flex: 1, padding: 10 }}>
             <View>
                 <SearchBar
-                    placeholder={i18n.t('search_home')}
+                    placeholder={i18n.t('search_reqs')}
                     lightTheme
                     round
                     value={search}

@@ -4,6 +4,7 @@ export const API = {
     patients: '/patients',
     profile: '/profile',
     requests: '/requests?type={method}',
+    postReq: '/requests',
     specialities: '/specialities',
     incomeDashboard: '/income',
     income: '/incomeScreen',

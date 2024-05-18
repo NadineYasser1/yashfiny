@@ -359,7 +359,10 @@ const AvailabilityScreen = ({ navigation, route }) => {
 
   const postAvailability = () => {
     const route = authCtx.isAuthenticated ? API.availability : API.newAvailability.replace('{doctorId}', doctorId)
-    axios.patch(route, { ...selectedSlot }
+    console.log({
+      ...selectedSlot
+    })
+    axios.patch(route, { availability: selectedSlot }
     ).then(({ data }) => {
       console.log(data)
       hideTabCtx.hideTab(false)
@@ -463,7 +466,7 @@ const AvailabilityScreen = ({ navigation, route }) => {
           highlightDateNameStyle={{ color: Colors.primary800 }}
           highlightDateContainerStyle={{ backgroundColor: Colors.primary800 }}
           markedDates={markedDatesArray}
-          // minDate={currentDate}
+          minDate={currentDate}
           maxDate={dayjs(currentDate).add(1, 'month').toDate()}
         />
       </View>

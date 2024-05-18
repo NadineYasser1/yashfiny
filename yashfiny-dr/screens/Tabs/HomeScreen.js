@@ -46,7 +46,6 @@ const HomeScreen = ({ navigation }) => {
     }).catch((err) => console.log(err)
     ).finally(() => setLoading(false))
   }
-
   const handleSearchClick = (data) => {
     navigation.navigate('SearchScreen')
   }
@@ -54,7 +53,7 @@ const HomeScreen = ({ navigation }) => {
     fetchDoctorData()
     fetchIncomeData()
     fetchPatientsData()
-  }, [])
+  }, [doctorCtx.avatarUri])
 
   return (
     loading ? <LoadingScreen notFromNav={true} /> : <View style={styles.container}>

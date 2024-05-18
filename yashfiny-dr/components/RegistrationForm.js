@@ -40,13 +40,12 @@ const RegistrationForm = ({ editDoctor }) => {
     const handleSave = () => {
         if (editDoctor) {
             handleChange('price', pricing)
+            console.log(doctorData)
             axios.patch(API.profile, doctorData).then(({ data }) => {
-                if (data.message == 'success') {
-                    doctorCtx.updateData(doctorData)
-                    Alert.alert(i18n.t('success'), i18n.t('data_updated_successfully!'))
-                    hideTabCtx.hideTab(false)
-                    navigation.goBack()
-                }
+                doctorCtx.updateData(doctorData)
+                Alert.alert(i18n.t('success'), i18n.t('data_updated_successfully!'))
+                hideTabCtx.hideTab(false)
+                navigation.goBack()
             }).catch((err) => console.log(err))
 
             console.log(doctorData)

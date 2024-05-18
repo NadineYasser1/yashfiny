@@ -2,7 +2,8 @@ import { axios } from "./axios";
 import { API } from "./config";
 
 export function documentUploader(doc, result, func, doctorId) {
-    axios.post(API.upload.replace('{doctorId}', doctorId), doc, {
+    const route = doctorId ? API.upload.replace('{doctorId}', doctorId) : API.uploadAvatar
+    axios.post(route, doc, {
         headers: {
             "Content-Type": "multipart/form-data",
         }

@@ -14,6 +14,7 @@ export const API = {
     availability: '/availability', //done
     forgetPassword: '/forgetPassword',
     upload: '/uploadDocument/{doctorId}',
-    newAvailability: '/availability/{doctorId}'
+    newAvailability: '/availability/{doctorId}',
+    uploadAvatar: '/uploadAvatar'
 
 }

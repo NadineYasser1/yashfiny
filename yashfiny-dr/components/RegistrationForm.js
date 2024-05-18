@@ -286,7 +286,7 @@ const RegistrationForm = ({ editDoctor }) => {
                 </View>
                 <View style={styles.dateGenderContainer}>
                     <DatePicker
-                        date={doctorData.date}
+                        date={new Date(doctorData.date)}
                         handleChange={handleChange}
                         label={i18n.t('bdate')}
                         selectorFor={'dob'}

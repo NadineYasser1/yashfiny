@@ -609,11 +609,13 @@ const AuthStack = () => {
 const AuthenticatedStack = () => {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-      <HideTabContextProvider>
-        <PatientsContextProvider>
-          <TabsNavigator />
-        </PatientsContextProvider>
-      </HideTabContextProvider>
+      <LangContextProvider>
+        <HideTabContextProvider>
+          <PatientsContextProvider>
+            <TabsNavigator />
+          </PatientsContextProvider>
+        </HideTabContextProvider>
+      </LangContextProvider>
     </GestureHandlerRootView>
   )
 };

@@ -18,8 +18,7 @@ const UploadAvatar = ({ handleChange, editDoctor }) => {
 
     const handleSuccess = (result) => {
         setAvatarSource(result.assets[0].uri)
-        // handleChange('avatar', { uri: result.assets[0].uri, type: result.assets[0].mimeType, size: result.assets[0].size })
-        editDoctor && doctorCtx.updateAvatar(result.assets[0].uri)
+        doctorCtx.updateAvatar(result.assets[0].uri)
     }
 
     const openDocumentPicker = async () => {
@@ -37,7 +36,12 @@ const UploadAvatar = ({ handleChange, editDoctor }) => {
 
                 })
             }
-            documentUploader(data, result, handleSuccess)
+            if (editDoctor) {
+                documentUploader(data, result, handleSuccess)
+            } else {
+                handleChange('avatar', { uri: result.assets[0].uri, type: result.assets[0].mimeType, size: result.assets[0].size })
+                setAvatarSource(result.assets[0].uri)
+            }
 
         } catch (error) {
             Alert.alert(

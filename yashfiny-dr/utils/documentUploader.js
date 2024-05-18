@@ -1,8 +1,8 @@
 import { axios } from "./axios";
 import { API } from "./config";
 
-export function documentUploader(doc, result, func) {
-    axios.post(API.upload, doc, {
+export function documentUploader(doc, result, func, doctorId) {
+    axios.post(API.upload.replace('{doctorId}', doctorId), doc, {
         headers: {
             "Content-Type": "multipart/form-data",
         }

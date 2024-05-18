@@ -61,9 +61,9 @@ const UploadScreen = ({ route, navigation }) => {
                             <View style={styles.textContainer}>
                                 <Text style={styles.fpText}>{i18n.t('one_last_step')}</Text>
                             </View>
-                            <UploadButton label={i18n.t('medical_license')} buttonText={i18n.t('upload_medical_license')} handleSelection={handleAddDoc} fnKey={'medical_license'} />
-                            <UploadButton label={i18n.t('academic_deg')} buttonText={i18n.t('upload_academic_deg')} handleSelection={handleAddDoc} fnKey={'academic_degree'} />
-                            <UploadButton label={i18n.t('certificates')} buttonText={i18n.t('upload_certificates')} handleSelection={handleAddDoc} fnKey={'certificates'} />
+                            <UploadButton label={i18n.t('medical_license')} buttonText={i18n.t('upload_medical_license')} handleSelection={handleAddDoc} fnKey={'medical_license'} doctorId={doctorId} />
+                            <UploadButton label={i18n.t('academic_deg')} buttonText={i18n.t('upload_academic_deg')} handleSelection={handleAddDoc} fnKey={'academic_degree'} doctorId={doctorId} />
+                            <UploadButton label={i18n.t('certificates')} buttonText={i18n.t('upload_certificates')} handleSelection={handleAddDoc} fnKey={'certificates'} doctorId={doctorId} />
                             <View style={styles.workinghrsContainer}>
                                 <Text style={styles.label}>{i18n.t('working_hours')}</Text>
                                 <Pressable style={styles.hoursButton} onPress={() => navigation.navigate('Availability', doctorId)}>

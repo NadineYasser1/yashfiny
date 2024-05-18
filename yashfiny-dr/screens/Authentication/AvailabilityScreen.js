@@ -23,6 +23,7 @@ import dayjs from 'dayjs';
 import AddAvailabilityModal from '../../components/AddAvailabilityModal';
 import { axios } from '../../utils/axios';
 import { API } from '../../utils/config';
+import { AuthContext } from '../../store/AuthContext'
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
@@ -30,10 +31,7 @@ const windowHeight = Dimensions.get('window').height;
 const AvailabilityScreen = ({ navigation, route }) => {
 
   const hideTabCtx = useContext(HideTabContext)
-  useEffect(() => {
-    hideTabCtx.hideTab(true)
-    Alert.alert(i18n.t('avail_alert_title'), i18n.t('avail_alert_note'))
-  }, [])
+  const authCtx = useContext(AuthContext)
 
   const currentDate = new Date();
 
@@ -49,6 +47,8 @@ const AvailabilityScreen = ({ navigation, route }) => {
     { value: i18n.t('individual'), key: 2 },
   ]
 
+
+  const [doctorId, setDoctorId] = useState(route.params)
   const [selectedDay, setSelectedDay] = useState(`${year}-${month}-${day}`);
   const [selectedSlot, setSelectedSlot] = useState({});
   const [showPicker, setShowPicker] = useState(false);
@@ -75,7 +75,7 @@ const AvailabilityScreen = ({ navigation, route }) => {
           entry.endTime = formatRecievedTime(entry.endTime);
         });
       }
-      console.log(data.data)
+
       setSelectedSlot(data.data)
     }).catch((err) => console.log(err))
   }
@@ -358,19 +358,22 @@ const AvailabilityScreen = ({ navigation, route }) => {
   };
 
   const postAvailability = () => {
-    // console.log(selectedSlot)
-    axios.patch(API.availability, selectedSlot
+    const route = authCtx.isAuthenticated ? API.availability : API.newAvailability.replace('{doctorId}', doctorId)
+    axios.patch(route, { ...selectedSlot }
     ).then(({ data }) => {
       console.log(data)
+      hideTabCtx.hideTab(false)
+      navigation.goBack()
     }).catch((err) => console.log(err))
   }
 
   const handleSave = () => {
     postAvailability()
-    hideTabCtx.hideTab(false)
-    navigation.goBack()
+
   }
   useEffect(() => {
+    hideTabCtx.hideTab(true)
+    Alert.alert(i18n.t('avail_alert_title'), i18n.t('avail_alert_note'))
     fetchAvailability()
   }, [])
   return (

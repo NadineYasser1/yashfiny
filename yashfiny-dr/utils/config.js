@@ -1,18 +1,19 @@
 export const API = {
-    login: '/login',
-    register: '/register',
+    login: '/login', //done
+    register: '/register', //done
     patients: '/patients',
     profile: '/profile',
-    requests: '/requests?type={method}',
-    postReq: '/requests',
-    specialities: '/specialities',
-    incomeDashboard: '/income',
-    income: '/incomeScreen',
+    requests: '/requests?type={method}', //done
+    postReq: '/requests', //done
+    specialities: '/specialities', //done
+    incomeDashboard: '/income', //done
+    income: '/incomeScreen', //done
     appointments: '/appointments',
     patient: '/patient/{patientId}',
-    calls: '/upcomingVideo',
-    availability: '/availability',
+    calls: '/upcomingVideo', //done
+    availability: '/availability', //done
     forgetPassword: '/forgetPassword',
-    upload: '/uploadfiles'
+    upload: '/uploadDocument/{doctorId}',
+    newAvailability: '/availability/{doctorId}'
 
 }

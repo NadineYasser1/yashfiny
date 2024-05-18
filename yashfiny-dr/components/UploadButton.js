@@ -5,7 +5,7 @@ import { Colors } from "../constants/colors";
 import * as DocumentPicker from 'expo-document-picker';
 import { documentUploader } from "../utils/documentUploader";
 
-const UploadButton = ({ label, buttonText, handleSelection, fnKey }) => {
+const UploadButton = ({ label, buttonText, handleSelection, fnKey, doctorId }) => {
 
     const [selectedDocuments, setSelectedDocuments] = useState([]);
     const data = new FormData()
@@ -38,7 +38,7 @@ const UploadButton = ({ label, buttonText, handleSelection, fnKey }) => {
             });
             if (result.canceled == false) {
                 result.assets.map((res) => {
-                    data.append('file', {
+                    data.append(fnKey, {
                         name: res.name,
                         type: res.mimeType,
                         size: res.size,
@@ -46,7 +46,7 @@ const UploadButton = ({ label, buttonText, handleSelection, fnKey }) => {
 
                     })
                 });
-                documentUploader(data, result, handleSuccess)
+                documentUploader(data, result, handleSuccess, doctorId)
             }
         } catch (error) {
             Alert.alert(

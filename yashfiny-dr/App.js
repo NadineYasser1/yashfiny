@@ -633,7 +633,7 @@ const Navigation = () => {
 const Root = () => {
   const [isTryingLogin, setIsTryingLogin] = useState(false)
   const authCtx = useContext(AuthContext)
-  setupInterceptor(authCtx)
+  setupInterceptor()
   const fetchToken = async () => {
     try {
       setIsTryingLogin(true)

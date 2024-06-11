@@ -13,15 +13,14 @@ const { width, height } = Dimensions.get('window');
 
 const VisitResults = ({ navigation }) => {
     const [results, setResults] = useState({ diagnosis: [] });
-    const [diagnosis, setDiagnosis] = useState();
-    const [showDiag, setShowDiag] = useState(false);
+    const [diagnosis, setDiagnosis] = useState({ name: '', type: '', show: false });
     const { patientData } = useContext(PatientsContext)
     const hideTabCtx = useContext(HideTabContext);
     const dropdownOpts = [
         { key: 1, value: i18n.t('preliminary') },
         { key: 2, value: i18n.t('final') },
     ];
-
+console.log(results)
     const handleChange = (key, val) => {
         setResults((prev) => ({
             ...prev,
@@ -32,17 +31,21 @@ const VisitResults = ({ navigation }) => {
     const findOptById = (id) => {
         return dropdownOpts.find((opt) => opt.key == id).value;
     };
+
     const handleDiagnosisChange = (key, val) => {
         setDiagnosis((prev) => ({
             ...prev,
             [key]: val,
         }));
-        if (val?.type && val?.name) {
+    };
+
+    const handleAddDiagnosis = () => {
+        if (diagnosis.name && diagnosis.type) {
             setResults((prev) => ({
                 ...prev,
-                diagnosis: [...prev.diagnosis, val],
+                diagnosis: [...prev.diagnosis, diagnosis],
             }));
-            setDiagnosis({});
+            setDiagnosis({ name: '', type: '', show: false });
         }
     };
 
@@ -54,11 +57,13 @@ const VisitResults = ({ navigation }) => {
             diagnosis: updatedDiagnosis,
         }));
     };
+
     const handleSave = () => {
-        navigation.navigate("PatientDetails", patientData.id)
+        navigation.navigate('PatientDetails', { screen: 'PatientDetails', params: { patientId: patientData.id } });
     }
+
     const diagPatch = useMemo(() => {
-        if (showDiag && results.diagnosis.length > 0) {
+        if (results.diagnosis) {
             return results.diagnosis.map((d, index) => (
                 <View style={styles.diagnosisContainer} key={index}>
                     <Text style={styles.diagnosisText}>{d.name} {d.type}</Text>
@@ -68,7 +73,7 @@ const VisitResults = ({ navigation }) => {
                 </View>
             ));
         }
-    }, [showDiag, results.diagnosis]);
+    }, [results.diagnosis]);
 
     useEffect(() => {
         hideTabCtx.hideTab(true);
@@ -84,24 +89,24 @@ const VisitResults = ({ navigation }) => {
                 </View>
                 <InputField label={i18n.t('ix')} showLabel inputKey={'ix'} handleChange={handleChange} />
 
-                {diagPatch}
-
                 <View style={styles.inputRow}>
-                    <InputField label={i18n.t('diagnosis')} showLabel inputKey={'name'} handleChange={handleDiagnosisChange} style={{ width: '40%', marginEnd: 10 }} />
+                    <InputField label={i18n.t('diagnosis')} showLabel inputKey={'name'} handleChange={(key, val) => handleDiagnosisChange(key, val)} value={diagnosis.name} style={{ width: '40%', marginEnd: 10 }} />
                     <CustomDropdown
                         options={dropdownOpts}
                         onSelect={(opt) => handleDiagnosisChange('type', findOptById(opt))}
+                        selectedValue={diagnosis.type}
                         style={{ height: 41, borderRadius: 5, marginTop: 3 }}
                     />
                     <View style={{ alignItems: 'center', justifyContent: 'center' }}>
                         <Pressable
                             style={styles.addButton}
-                            onPress={() => setShowDiag(true)}
+                            onPress={handleAddDiagnosis}
                         >
                             <MaterialCommunityIcons name="plus" color={Colors.primary800} size={22} />
                         </Pressable>
                     </View>
                 </View>
+                {diagPatch}
                 <InputField label={i18n.t('advices')} showLabel inputKey={'advices'} handleChange={handleChange} multiline />
                 <InputField label={i18n.t('summary')} showLabel inputKey={'summary'} handleChange={handleChange} multiline />
             </ScrollView>
@@ -127,7 +132,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'space-between',
         padding: 10,
-        marginBottom: 10,
+        margin: 10,
     },
     diagnosisText: {
         color: Colors.primary800,

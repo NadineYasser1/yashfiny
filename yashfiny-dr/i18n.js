@@ -200,7 +200,17 @@ const translations = {
     summary: 'Summary',
     preliminary: 'Preliminary',
     final: 'Final',
-    search_reqs: 'Search By Patient Name'
+    search_reqs: 'Search By Patient Name',
+    name: 'Name',
+    instructions: 'Instructions',
+    dosage: 'Dosage',
+    time: 'Time',
+    days: 'Days',
+    weeks: 'Weeks',
+    months: 'Months',
+    years: 'Years',
+    drug_name: 'Drug Name',
+    duration: 'Duration'
   },
   ar: {
     login_assistant: 'تسجيل الدخول كمساعد ',

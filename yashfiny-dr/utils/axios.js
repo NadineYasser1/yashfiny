@@ -2,29 +2,21 @@ import originalAxios from 'axios'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 
 export const axios = originalAxios.create({
-    baseURL: process.env.EXPO_PUBLIC_ROUTE
+    baseURL: process.env.EXPO_PUBLIC_BASE_URL
 })
 
-export const setupInterceptor = (store) => {
-    axios.interceptors.response.use(
-        (response) => response,
-        (error) => {
-            if (error?.response?.status === 401) {
-                store.logout()
+export const setupInterceptor = () => {
+
+    axios.interceptors.request.use(
+        async config => {
+            const token = await AsyncStorage.getItem('token')
+            if (token) {
+                config.headers.Authorization = "Bearer " + token
             }
-            return Promise.reject(error);
-        }
-    )
-    axios.interceptors.response.use(
-        (config) => {
-            if (store.isAuthenticated)
-                config.headers['Authorization'] = `Bearer ${store.token
-                    }`
-            return config;
+            return config
         },
-        (error) => {
+        error => {
             return Promise.reject(error)
         }
-    )
+    );
 }
-

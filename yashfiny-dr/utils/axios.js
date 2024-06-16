@@ -2,7 +2,7 @@ import originalAxios from 'axios'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 
 export const axios = originalAxios.create({
-    baseURL: process.env.EXPO_PUBLIC_BASE_URL
+    baseURL: process.env.EXPO_PUBLIC_ROUTE
 })
 
 export const setupInterceptor = () => {

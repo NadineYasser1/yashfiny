@@ -12,14 +12,22 @@ import Collapsible from 'react-native-collapsible';
 import dayjs from "dayjs"
 import Card from "../../components/Card"
 import PdfView from "../../components/PdfView"
+import { axios } from "../../utils/axios"
+import { API } from "../../utils/config"
 
 const windowHeight = Dimensions.get('window').height
 const windowWidth = Dimensions.get('window').width
 
 const PatientDetails = ({ route }) => {
     const patientCtx = useContext(PatientsContext)
+    const fetchPatientData = () => {
+        axios.get(API.patient.replace('{patientId}', route.params)).then(({ data }) => {
+            patientCtx.addPatient(data.data)
+        }).catch((err) => console.log(err))
+    }
     useEffect(() => {
-        patientCtx.addPatient(patient)
+        fetchPatientData()
+        // patientCtx.addPatient(patient)
     }, [])
     console.log(route.params)
     const avatarComponent = useMemo(() => {
@@ -326,7 +334,7 @@ const Rx = ({ navigation }) => {
                             <View style={{ flexDirection: 'row' }}>
                                 <Text style={{ fontSize: 18, fontWeight: "600" }}>{section.title}</Text>
                                 <View style={{ backgroundColor: Colors.primary800, borderRadius: 30, height: 23, width: 23, justifyContent: 'center', alignItems: 'center', marginStart: 10 }}>
-                                    <Text style={{ color: 'white', fontWeight: "600" }}>{section.content.length.toString()}</Text>
+                                    <Text style={{ color: 'white', fontWeight: "600" }}>{section.content?.length.toString()}</Text>
                                 </View>
                             </View>
                             <MaterialCommunityIcons name={timing.toLowerCase() == section.title.toLowerCase() ? "chevron-up" : "chevron-down"} color={Colors.grey300} size={18} />

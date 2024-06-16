@@ -3,22 +3,27 @@ import i18n from "../../i18n";
 import { Colors } from "../../constants/colors";
 import { useContext, useEffect, useState } from "react";
 import { FlatList, Image, View, Text, StyleSheet, Pressable, Alert } from "react-native";
-import { DummyPatients } from "../../constants/DummyPatientsData";
 import filter from "lodash.filter";
 import { HideTabContext } from "../../store/HideTabContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { axios } from "../../utils/axios";
+import { API } from "../../utils/config";
 
 const SearchScreen = ({ navigation }) => {
     const [search, setSearch] = useState('');
-    const [data, setData] = useState(DummyPatients);
+    const [patientsData, setPatientsData] = useState();
+    const [filteringData, setFilteringData] = useState()
     const [recentId, setrecentId] = useState();
     const hideTabCtx = useContext(HideTabContext);
 
-    useEffect(() => {
-        hideTabCtx.hideTab(true);
-        getrecentId();
-    }, [recentId]);
+    const fetchData = () => {
+        axios.get(API.patients).then(({ data }) => {
+            console.log(data.data)
+            setFilteringData(data.data)
+            setPatientsData(data.data)
+        }).catch((err) => console.log(err))
+    }
 
     const getrecentId = async () => {
         try {
@@ -47,10 +52,10 @@ const SearchScreen = ({ navigation }) => {
 
     const handleSearch = (query) => {
         setSearch(query);
-        const filteredData = filter(DummyPatients, (patient) => {
+        const filteredData = filter(filteringData, (patient) => {
             return contains(patient, query.toLowerCase());
         });
-        setData(filteredData);
+        setPatientsData(filteredData);
     };
 
     const contains = ({ fname, lname, id }, query) => {
@@ -61,7 +66,7 @@ const SearchScreen = ({ navigation }) => {
     };
 
     const renderRecentItem = () => {
-        const patient = DummyPatients.find(patient => patient.id == recentId);
+        const patient = filteringData.find(patient => patient.id == recentId);
         if (patient) {
             return (
                 <View style={styles.recentsContainer}>
@@ -73,8 +78,14 @@ const SearchScreen = ({ navigation }) => {
         return null;
     };
 
+    useEffect(() => {
+        hideTabCtx.hideTab(true);
+        fetchData()
+        getrecentId();
+    }, [recentId]);
+
     return (
-        <View style={styles.container}>
+        patientsData && <View style={styles.container}>
             <SearchBar
                 placeholder={i18n.t('search_home')}
                 lightTheme
@@ -97,7 +108,7 @@ const SearchScreen = ({ navigation }) => {
                 {renderRecentItem()}
             </View>
             <FlatList
-                data={data}
+                data={patientsData}
                 keyExtractor={(item) => item.id}
                 renderItem={({ item }) => (
                     <Pressable style={styles.itemContainer} onPress={() => handlePatientChoice(item.id)}>

@@ -8,7 +8,8 @@ import { documentUploader } from "../utils/documentUploader";
 const UploadButton = ({ label, buttonText, handleSelection, fnKey, doctorId }) => {
 
     const [selectedDocuments, setSelectedDocuments] = useState([]);
-    const data = new FormData()
+    const data = new FormData();
+    // console.log(data.get('pic'))
 
     useEffect(() => {
         handleSelection(fnKey, selectedDocuments);
@@ -29,24 +30,27 @@ const UploadButton = ({ label, buttonText, handleSelection, fnKey, doctorId }) =
         });
 
     }
-
+    // console.log(data.get('pic'))
     const onPress = async () => {
         try {
             const result = await DocumentPicker.getDocumentAsync({
                 type: "*/*",
-                multiple: true,
+                multiple: false,
             });
             if (result.canceled == false) {
                 result.assets.map((res) => {
-                    data.append(fnKey, {
-                        name: res.name,
-                        type: res.mimeType,
+                    data.append('pic', {
+                        fieldName: 'pic',
+                        encoding: "7bit",
+                        destination: "./public/doctor",
+                        originalname: res.name,
+                        mimetype: res.mimeType,
                         size: res.size,
                         uri: Platform.OS == 'ios' ? res.uri.replace('file://', '') : res.uri
 
                     })
                 });
-                documentUploader(data, result, handleSuccess, doctorId)
+                documentUploader(data, result, handleSuccess, doctorId, fnKey)
             }
         } catch (error) {
             Alert.alert(

@@ -11,25 +11,34 @@ import filter from "lodash.filter";
 import ListItem from "../../components/ListItem";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import FilterModal from "../../components/FilterModal";
+import { axios } from "../../utils/axios";
+import { API } from "../../utils/config";
 
 const windowHeight = Dimensions.get('window').height
 
 const AppointmentsScreen = ({ route }) => {
     const [selectedDay, setSelectedDay] = useState(dayjs(new Date()).format('YYYY-MM-DD'))
-    const [appointments, setAppointments] = useState(DummyAppointments)
+    const [appointments, setAppointments] = useState()
     const [search, setSearch] = useState('');
-    const [data, setData] = useState(appointments[selectedDay])
+    const [data, setData] = useState()
     const [showFilterModal, setShowFilterModal] = useState(false)
     const [filters, setFilters] = useState(route?.params?.statusFilter ? { statusFilter: 'upcoming' } : null)
 
-
+    const fetchData = () => {
+        axios.get(API.appointments).then(({ data }) => {
+            setAppointments(data.data)
+            console.log(data.data)
+            setData(data.data[selectedDay])
+        }).catch((err) => console.log(err))
+    }
     const handleFilterChange = (filteringObj) => {
         setFilters(filteringObj)
     }
+    // console.log(data)
     const filterData = () => {
-        const filteredData = filter(appointments[selectedDay], (appointment) => {
+        const filteredData = appointments && appointments[selectedDay] ? filter(appointments[selectedDay], (appointment) => {
             return handleFiltering(appointment)
-        })
+        }) : []
         setData(filteredData)
     }
     const handleFiltering = (appointment) => {
@@ -50,13 +59,13 @@ const AppointmentsScreen = ({ route }) => {
     }
 
     const markedDatesArray = useMemo(() => {
-        const markedDates = Object.keys(appointments).map(date => {
+        const markedDates = appointments && Object.keys(appointments).map(date => {
             if (appointments[date].length > 0) {
                 return {
                     date: new Date(date),
                     dots: [
                         {
-                            color: selectedDay == date ? Colors.primary800 : 'grey'
+                            color: dayjs(selectedDay).format('YY-MM-DD') == dayjs(date).format('YY-MM-DD') ? Colors.primary800 : 'grey'
                         }
                     ]
                 };
@@ -105,10 +114,14 @@ const AppointmentsScreen = ({ route }) => {
     }, [filters]);
 
     useEffect(() => {
-        if (!filters) {
+        if (!filters && appointments && appointments[selectedDay]) {
             setData(appointments[selectedDay])
         }
     }, [selectedDay, appointments])
+
+    useEffect(() => {
+        fetchData()
+    }, [])
 
     return (
         <View style={{ flex: 1 }}>
@@ -164,7 +177,7 @@ const AppointmentsScreen = ({ route }) => {
                 </View>
             </View>
 
-            <FlatList
+            {data && <FlatList
                 data={data}
                 keyExtractor={(item, index) => index}
                 renderItem={({ item }) => <ListItem
@@ -186,7 +199,7 @@ const AppointmentsScreen = ({ route }) => {
 
                 />
                 }
-            />
+            />}
         </View>
     )
 }

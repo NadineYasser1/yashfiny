@@ -48,7 +48,7 @@ const AvailabilityScreen = ({ navigation, route }) => {
   ]
 
 
-  const [doctorId, setDoctorId] = useState(route.params)
+  const doctorId = route.params
   const [selectedDay, setSelectedDay] = useState(`${year}-${month}-${day}`);
   const [selectedSlot, setSelectedSlot] = useState({});
   const [showPicker, setShowPicker] = useState(false);

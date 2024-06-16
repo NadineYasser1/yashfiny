@@ -25,7 +25,7 @@ const HomeScreen = ({ navigation }) => {
     axios.get(API.profile).then(({ data }) => {
       data.data.title = 'Dr'
       doctorCtx.setNewData(data.data)
-      doctorCtx.updateAvatar(data.data.avatarUri)
+      if (!doctorCtx.avatarUri) { doctorCtx.updateAvatar(data.data.avatarUri) }
     }).catch((err) => console.log(err)
     ).finally(() => setLoading(false))
   }

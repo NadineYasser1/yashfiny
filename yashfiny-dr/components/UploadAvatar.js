@@ -28,7 +28,7 @@ const UploadAvatar = ({ handleChange, editDoctor }) => {
                 multiple: false,
             });
             if (result.canceled == false) {
-                data.append('file', {
+                data.append('avatar', {
                     name: result.assets[0].name,
                     type: result.assets[0].mimeType,
                     size: result.assets[0].size,

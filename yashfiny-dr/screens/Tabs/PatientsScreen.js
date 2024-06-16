@@ -1,23 +1,34 @@
 import { Text, View } from "react-native"
 import { SearchBar } from "react-native-elements";
 import i18n from "../../i18n";
-import { DummyPatients } from "../../constants/DummyPatientsData";
 import filter from "lodash.filter";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Colors } from "../../constants/colors";
 import { FlatList } from "react-native-gesture-handler";
 import ListItem from "../../components/ListItem";
+import { axios } from "../../utils/axios";
+import { API } from "../../utils/config";
 
 const PatientsScreen = ({ navigation }) => {
     const [search, setSearch] = useState('')
-    const [data, setData] = useState(DummyPatients)
+    const [patientsData, setPatientsData] = useState()
+    const [filteringData, setFilteringData] = useState()
 
+    const fetchData = () => {
+        axios.get(API.patients).then(({ data }) => {
+            console.log(data.data)
+            setFilteringData(data.data)
+            setPatientsData(data.data)
+        }).catch((err) => console.log(err))
+    }
+
+    console.log(patientsData)
     const handleSearch = (query) => {
         setSearch(query);
-        const filteredData = filter(DummyPatients, (patient) => {
+        const filteredData = filter(filteringData, (patient) => {
             return contains(patient, query.toLowerCase());
         });
-        setData(filteredData);
+        setPatientsData(filteredData);
     };
 
     const contains = ({ fname, lname, id }, query) => {
@@ -29,8 +40,12 @@ const PatientsScreen = ({ navigation }) => {
     const handlePatientChoice = (patientId) => {
         navigation.navigate("PatientDetails", patientId)
     }
+
+    useEffect(() => {
+        fetchData()
+    }, [])
     return (
-        <View style={{ flex: 1, padding: 10 }}>
+        patientsData && <View style={{ flex: 1, padding: 10 }}>
             <SearchBar
                 placeholder={i18n.t('search_home')}
                 lightTheme
@@ -51,7 +66,7 @@ const PatientsScreen = ({ navigation }) => {
                 inputStyle={{ color: 'black', fontSize: 13 }}
             />
             <FlatList
-                data={data}
+                data={patientsData}
                 keyExtractor={(item) => item.id}
                 renderItem={({ item }) => (
                     <ListItem

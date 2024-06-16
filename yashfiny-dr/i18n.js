@@ -210,7 +210,9 @@ const translations = {
     months: 'Months',
     years: 'Years',
     drug_name: 'Drug Name',
-    duration: 'Duration'
+    duration: 'Duration',
+    success: 'Success',
+    data_updated_successfully: 'Data updated successfully!',
   },
   ar: {
     login_assistant: 'تسجيل الدخول كمساعد ',

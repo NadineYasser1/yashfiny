@@ -14,7 +14,7 @@ import LoadingScreen from "../../components/LoadingScreen";
 
 const UploadScreen = ({ route, navigation }) => {
 
-    const [doctorId, setDoctorId] = useState(route.params)
+    const doctorId = route.params
     const [documents, setDocuments] = useState([])
     const [Success, setSuccess] = useState(false)
     const [loading, setLoading] = useState(false)

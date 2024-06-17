@@ -23,7 +23,8 @@ export const patient =
             date: new Date('2024-05-01'),
             status: 'upcoming', //upcoming or visited or cancelled
             diagnosis: [{ name: 'disease', type: 'final' }, { name: 'newDisease', type: 'preliminary' }],
-            prescription: [{ name: 'drugX', dosage: '2mg' }, { name: 'drugY', dosage: '3mg' }]
+            prescription: [{ name: 'drugX', dosage: '2mg' }, { name: 'drugY', dosage: '3mg' }],
+            id: 1
         },
         {
             date: new Date('2023-05-01'),

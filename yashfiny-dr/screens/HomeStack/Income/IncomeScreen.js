@@ -9,17 +9,19 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { axios } from "../../../utils/axios";
 import { API } from "../../../utils/config";
 import LoadingScreen from "../../../components/LoadingScreen";
+import useLoading from "../../../hooks/useLoading";
+import Layout from "../../../components/Layout";
 
 const IncomeScreen = () => {
-    const [loading, setLoading] = useState(false)
+    const { setIsLoading, loading } = useLoading()
     const [dummyIncome, setDummyIncome] = useState({})
 
     const fetchIncome = () => {
-        setLoading(true)
+        setIsLoading(true)
         axios.get(API.income).then(({ data }) => {
             setDummyIncome(data.data)
         }).catch((err) => console.log(err)
-        ).finally(() => setLoading(false))
+        ).finally(() => setIsLoading(false))
     }
 
     const calculateSumOfPayments = (appointments) => {
@@ -66,70 +68,72 @@ const IncomeScreen = () => {
         fetchIncome()
     }, [])
     return (
-        loading ? <LoadingScreen notFromNav={true} /> : <View style={styles.container}>
-            <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 40, paddingTop: 10 }}>
-                <Pressable
-                    onPress={() => setFilterOpt('all')}
-                    style={[styles.buttonContainer, filterOpt == 'all' && styles.buttonContainerChosen]}
-                >
-                    <Text
-                        style={[styles.button, filterOpt == 'all' && styles.buttonChosen]}
-                    >{i18n.t('all')}</Text>
-                </Pressable>
-                <Pressable
-                    onPress={() => setFilterOpt('video')}
-                    style={[styles.buttonContainer, filterOpt == 'video' && styles.buttonContainerChosen]}
-                >
-                    <Text
-                        style={[styles.button, filterOpt == 'video' && styles.buttonChosen]}
-                    >{i18n.t('video')}</Text>
-                </Pressable>
-                <Pressable
-                    onPress={() => setFilterOpt('clinic')}
-                    style={[styles.buttonContainer, filterOpt == 'clinic' && styles.buttonContainerChosen]}
-                >
-                    <Text
-                        style={[styles.button, filterOpt == 'clinic' && styles.buttonChosen]}
-                    >{i18n.t('clinic')}</Text>
-                </Pressable>
-            </View>
-            <View style={styles.dropdownContainer}>
-                <CustomDropdown
-                    options={options}
-                    onSelect={onSelect}
-                    defaultOption={options[0]}
-                    style={{ borderRadius: 10, borderColor: Colors.grey300, height: 30, width: 140, alignItems: 'center', justifyContent: 'center', marginTop: 0, marginStart: 30, marginBottom: 20 }}
-                    inputStyles={{ height: 20, fontSize: 12, padding: 3 }}
-                    dropdownTextStyles={{ fontSize: 12 }}
-                />
-            </View>
-            {listData?.length > 0 ? <View>
-                <FlatList
-                    data={listData}
-                    renderItem={({ item }) => <IncomeListItem
-                        fname={item.fname}
-                        lname={item.lname}
-                        aptDate={item.date}
-                        id={item.patientId}
-                        payment={parseFloat(item.payment, 2)}
-                        status={item.status}
-                        currency={item.cur}
-                    />}
+        <Layout loading={loading}>
+            <View style={styles.container}>
+                <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 40, paddingTop: 10 }}>
+                    <Pressable
+                        onPress={() => setFilterOpt('all')}
+                        style={[styles.buttonContainer, filterOpt == 'all' && styles.buttonContainerChosen]}
+                    >
+                        <Text
+                            style={[styles.button, filterOpt == 'all' && styles.buttonChosen]}
+                        >{i18n.t('all')}</Text>
+                    </Pressable>
+                    <Pressable
+                        onPress={() => setFilterOpt('video')}
+                        style={[styles.buttonContainer, filterOpt == 'video' && styles.buttonContainerChosen]}
+                    >
+                        <Text
+                            style={[styles.button, filterOpt == 'video' && styles.buttonChosen]}
+                        >{i18n.t('video')}</Text>
+                    </Pressable>
+                    <Pressable
+                        onPress={() => setFilterOpt('clinic')}
+                        style={[styles.buttonContainer, filterOpt == 'clinic' && styles.buttonContainerChosen]}
+                    >
+                        <Text
+                            style={[styles.button, filterOpt == 'clinic' && styles.buttonChosen]}
+                        >{i18n.t('clinic')}</Text>
+                    </Pressable>
+                </View>
+                <View style={styles.dropdownContainer}>
+                    <CustomDropdown
+                        options={options}
+                        onSelect={onSelect}
+                        defaultOption={options[0]}
+                        style={{ borderRadius: 10, borderColor: Colors.grey300, height: 30, width: 140, alignItems: 'center', justifyContent: 'center', marginTop: 0, marginStart: 30, marginBottom: 20 }}
+                        inputStyles={{ height: 20, fontSize: 12, padding: 3 }}
+                        dropdownTextStyles={{ fontSize: 12 }}
+                    />
+                </View>
+                {listData?.length > 0 ? <View>
+                    <FlatList
+                        data={listData}
+                        renderItem={({ item }) => <IncomeListItem
+                            fname={item.fname}
+                            lname={item.lname}
+                            aptDate={item.date}
+                            id={item.patientId}
+                            payment={parseFloat(item.payment, 2)}
+                            status={item.status}
+                            currency={item.cur}
+                        />}
 
-                />
-                <View style={{ alignItems: 'center', flexDirection: 'row', justifyContent: 'flex-end' }}>
-                    <Text style={{ color: Colors.primary800, marginVertical: 20, marginHorizontal: 5, fontSize: 15, fontWeight: "500" }}>{i18n.t('total')}</Text>
-                    <View style={styles.incomePatch}>
-                        <Text style={styles.totalIncome}>{totalIncome} {listData[0].cur}</Text>
+                    />
+                    <View style={{ alignItems: 'center', flexDirection: 'row', justifyContent: 'flex-end' }}>
+                        <Text style={{ color: Colors.primary800, marginVertical: 20, marginHorizontal: 5, fontSize: 15, fontWeight: "500" }}>{i18n.t('total')}</Text>
+                        <View style={styles.incomePatch}>
+                            <Text style={styles.totalIncome}>{totalIncome} {listData[0].cur}</Text>
+                        </View>
                     </View>
-                </View>
-            </View> :
-                <View style={{ justifyContent: 'center', alignItems: 'center', marginTop: 70 }}>
-                    <MaterialCommunityIcons name="currency-usd-off" color={Colors.grey300} size={150} style={{ marginBottom: 40 }} />
-                    <Text style={{ color: Colors.grey300, fontSize: 16, fontWeight: "600" }}>{i18n.t('no_income_for_chosen_filters')}</Text>
-                </View>
-            }
-        </View>
+                </View> :
+                    <View style={{ justifyContent: 'center', alignItems: 'center', marginTop: 70 }}>
+                        <MaterialCommunityIcons name="currency-usd-off" color={Colors.grey300} size={150} style={{ marginBottom: 40 }} />
+                        <Text style={{ color: Colors.grey300, fontSize: 16, fontWeight: "600" }}>{i18n.t('no_income_for_chosen_filters')}</Text>
+                    </View>
+                }
+            </View>
+        </Layout>
     )
 }
 export default IncomeScreen;

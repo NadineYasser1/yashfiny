@@ -1,17 +1,20 @@
 import { useEffect, useState } from "react";
-import { Text, FlatList, View, Pressable, Image, StyleSheet } from "react-native"
-import { upcomingCalls } from "../../constants/DummyUpcomingCalls";
+import { Text, FlatList, View, Pressable, Image, StyleSheet, Alert } from "react-native"
 import { Colors } from "../../constants/colors";
 import i18n from "../../i18n";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { axios } from "../../utils/axios";
 import { API } from "../../utils/config";
 import dayjs from "dayjs";
+import useLoading from "../../hooks/useLoading";
+import Layout from "../../components/Layout";
 
 const CallsScreen = () => {
     const [data, setData] = useState();
+    const { loading, setIsLoading } = useLoading()
 
     const fetchData = () => {
+        setIsLoading(true)
         axios.get(API.calls).then(({ data }) => {
             console.log(data.data)
             setData(data?.data?.sort((a, b) => {
@@ -19,7 +22,7 @@ const CallsScreen = () => {
                 const timeB = b.timeLeft.hours * 3600 + b.timeLeft.minutes * 60 + b.timeLeft.seconds;
                 return timeA - timeB;
             }))
-        }).catch((err) => console.log(err))
+        }).catch((err) => console.log(err)).finally(() => setIsLoading(false))
     }
 
     useEffect(() => {
@@ -30,44 +33,46 @@ const CallsScreen = () => {
     }, [])
 
     return (
-        data && <View style={{ flex: 1, backgroundColor: 'white', paddingTop: 10 }}>
-            <FlatList
-                data={data}
-                keyExtractor={(item) => item.aptId}
-                renderItem={({ item }) => (
-                    <Pressable style={styles.itemContainer} onPress={() => console.log(item.aptId)}>
-                        <Image source={{ uri: item.avatar }} style={styles.image} />
-                        <View style={{ flex: 1 }}>
-                            <Text style={styles.textName}>{item.fname} {item.lname}</Text>
-                            <Text style={styles.timeText}>{i18n.t('time_left_till_apt')}</Text>
-                            <Text style={[styles.timeText, { color: item.timeLeft.hours == 0 && item.timeLeft.minutes == 0 && item.timeLeft.seconds == 0 ? Colors.primary800 : 'grey', fontWeight: "500" }]}>{item.timeLeft.hours} {i18n.t('hours')} {item.timeLeft.minutes} {i18n.t('mins')}</Text>
-                        </View>
-                        {item.timeLeft.hours <= 0 && item.timeLeft.minutes <= 0 && item.timeLeft.seconds <= 0 &&
-                            <View style={styles.iconContainer}>
-                                <View style={{
-                                    borderRadius: 30,
-                                    backgroundColor: Colors.green,
-                                    elevation: 4, //shadow for android
-                                    //shadow for ios:
-                                    shadowColor: Colors.green,
-                                    shadowOffset: { width: 0, height: 2 },
-                                    shadowRadius: 6,
-                                    shadowOpacity: 0.3,
-                                    marginBottom: 15
-                                }}>
-                                    <MaterialCommunityIcons
-                                        name="video-wireless"
-                                        color={'white'}
-                                        size={25}
-                                        style={styles.icon}
-                                        onPress={() => console.log('start call')} />
-                                </View>
+        <Layout loading={loading}>
+            {data && <View style={{ flex: 1, backgroundColor: 'white', paddingTop: 10 }}>
+                <FlatList
+                    data={data}
+                    keyExtractor={(item) => item.aptId}
+                    renderItem={({ item }) => (
+                        <Pressable style={styles.itemContainer} onPress={() => Alert.alert(i18n.t('coming_soon'), i18n.t('coming_soon_alert_text'))}>
+                            <Image source={{ uri: item.avatar }} style={styles.image} />
+                            <View style={{ flex: 1 }}>
+                                <Text style={styles.textName}>{item.fname} {item.lname}</Text>
+                                <Text style={styles.timeText}>{i18n.t('time_left_till_apt')}</Text>
+                                <Text style={[styles.timeText, { color: item.timeLeft.hours == 0 && item.timeLeft.minutes == 0 && item.timeLeft.seconds == 0 ? Colors.primary800 : 'grey', fontWeight: "500" }]}>{item.timeLeft.hours} {i18n.t('hours')} {item.timeLeft.minutes} {i18n.t('mins')}</Text>
                             </View>
-                        }
-                    </Pressable>
-                )}
-            />
-        </View >
+                            {item.timeLeft.hours <= 0 && item.timeLeft.minutes <= 0 && item.timeLeft.seconds <= 0 &&
+                                <View style={styles.iconContainer}>
+                                    <View style={{
+                                        borderRadius: 30,
+                                        backgroundColor: Colors.green,
+                                        elevation: 4, //shadow for android
+                                        //shadow for ios:
+                                        shadowColor: Colors.green,
+                                        shadowOffset: { width: 0, height: 2 },
+                                        shadowRadius: 6,
+                                        shadowOpacity: 0.3,
+                                        marginBottom: 15
+                                    }}>
+                                        <MaterialCommunityIcons
+                                            name="video-wireless"
+                                            color={'white'}
+                                            size={25}
+                                            style={styles.icon}
+                                            onPress={() => console.log('start call')} />
+                                    </View>
+                                </View>
+                            }
+                        </Pressable>
+                    )}
+                />
+            </View >}
+        </Layout>
     );
 }
 
@@ -82,7 +87,7 @@ const styles = StyleSheet.create({
         borderBottomColor: Colors.grey200,
         borderBottomWidth: 2,
         paddingBottom: 20,
-        position: 'relative', // Make the parent container relative
+        position: 'relative',
     },
     image: {
         width: 45,

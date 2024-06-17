@@ -13,6 +13,8 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import FilterModal from "../../components/FilterModal";
 import { axios } from "../../utils/axios";
 import { API } from "../../utils/config";
+import useLoading from "../../hooks/useLoading";
+import Layout from "../../components/Layout";
 
 const windowHeight = Dimensions.get('window').height
 
@@ -22,14 +24,16 @@ const AppointmentsScreen = ({ route }) => {
     const [search, setSearch] = useState('');
     const [data, setData] = useState()
     const [showFilterModal, setShowFilterModal] = useState(false)
+    const { loading, setIsLoading } = useLoading()
     const [filters, setFilters] = useState(route?.params?.statusFilter ? { statusFilter: 'upcoming' } : null)
 
     const fetchData = () => {
+        setIsLoading(true)
         axios.get(API.appointments).then(({ data }) => {
             setAppointments(data.data)
             console.log(data.data)
             setData(data.data[selectedDay])
-        }).catch((err) => console.log(err))
+        }).catch((err) => console.log(err)).finally(() => setIsLoading(false))
     }
     const handleFilterChange = (filteringObj) => {
         setFilters(filteringObj)
@@ -124,7 +128,7 @@ const AppointmentsScreen = ({ route }) => {
     }, [])
 
     return (
-        <View style={{ flex: 1 }}>
+        <Layout loading={loading} style={{ flex: 1 }}>
             <View style={styles.topContainer}>
                 <CalendarStrip
                     style={{ height: windowHeight * 0.13, marginHorizontal: 10 }}
@@ -200,7 +204,7 @@ const AppointmentsScreen = ({ route }) => {
                 />
                 }
             />}
-        </View>
+        </Layout>
     )
 }
 export default AppointmentsScreen;

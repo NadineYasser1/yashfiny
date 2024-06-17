@@ -213,6 +213,8 @@ const translations = {
     duration: 'Duration',
     success: 'Success',
     data_updated_successfully: 'Data updated successfully!',
+    saved: "Saved!",
+    drug_saved: 'Drug added successfully!'
   },
   ar: {
     login_assistant: 'تسجيل الدخول كمساعد ',

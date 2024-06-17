@@ -8,19 +8,26 @@ import { Colors } from "../../constants/colors";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { ScrollView } from "react-native-gesture-handler";
 import { PatientsContext } from "../../store/PatientsContext";
+import { axios } from "../../utils/axios";
+import { API } from "../../utils/config";
+import useLoading from "../../hooks/useLoading";
+import Layout from "../../components/Layout";
 
 const { width, height } = Dimensions.get('window');
 
-const VisitResults = ({ navigation }) => {
+const VisitResults = ({ navigation, route }) => {
+    const appointmentId = route.params
+    console.log("appointmentId " + appointmentId)
     const [results, setResults] = useState({ diagnosis: [] });
     const [diagnosis, setDiagnosis] = useState({ name: '', type: '', show: false });
     const { patientData } = useContext(PatientsContext)
+    const { setIsLoading, loading } = useLoading()
     const hideTabCtx = useContext(HideTabContext);
     const dropdownOpts = [
         { key: 1, value: i18n.t('preliminary') },
         { key: 2, value: i18n.t('final') },
     ];
-console.log(results)
+    console.log(results)
     const handleChange = (key, val) => {
         setResults((prev) => ({
             ...prev,
@@ -59,7 +66,15 @@ console.log(results)
     };
 
     const handleSave = () => {
-        navigation.navigate('PatientDetails', { screen: 'PatientDetails', params: { patientId: patientData.id } });
+        const body = {
+            ...results,
+            appointmentId: appointmentId
+        }
+        setIsLoading(true)
+        axios.post(API.addVisitResults, body).then(({ data }) => {
+            navigation.navigate('PatientDetails', { screen: 'PatientDetails', params: { patientId: patientData.id } });
+        }).catch((err) => console.log(err)).finally(() => setIsLoading(false))
+
     }
 
     const diagPatch = useMemo(() => {
@@ -75,47 +90,59 @@ console.log(results)
         }
     }, [results.diagnosis]);
 
+    const handleAddDrug = () => {
+        navigation.navigate('AddDrug', appointmentId);
+    }
+
     useEffect(() => {
         hideTabCtx.hideTab(true);
     }, []);
 
     return (
-        <KeyboardAvoidingView style={styles.container} behavior={Platform.OS == 'ios' ? 'padding' : 'height'}>
-            <ScrollView>
-                <View style={{ justifyContent: 'center', alignItems: 'center' }}>
-                    <View style={styles.imageContainer}>
-                        <Image source={require('../../assets/visitResults.png')} style={{ width: width / 3, height: height / 6 }} />
+        <Layout loading={loading} style={styles.container}>
+            <KeyboardAvoidingView behavior={Platform.OS == 'ios' ? 'padding' : 'height'}>
+                <ScrollView>
+                    <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+                        <View style={styles.imageContainer}>
+                            <Image source={require('../../assets/visitResults.png')} style={{ width: width / 3, height: height / 6 }} />
+                        </View>
                     </View>
-                </View>
-                <InputField label={i18n.t('ix')} showLabel inputKey={'ix'} handleChange={handleChange} />
+                    <InputField label={i18n.t('ix')} showLabel inputKey={'ix'} handleChange={handleChange} />
 
-                <View style={styles.inputRow}>
-                    <InputField label={i18n.t('diagnosis')} showLabel inputKey={'name'} handleChange={(key, val) => handleDiagnosisChange(key, val)} value={diagnosis.name} style={{ width: '40%', marginEnd: 10 }} />
-                    <CustomDropdown
-                        options={dropdownOpts}
-                        onSelect={(opt) => handleDiagnosisChange('type', findOptById(opt))}
-                        selectedValue={diagnosis.type}
-                        style={{ height: 41, borderRadius: 5, marginTop: 3 }}
-                    />
-                    <View style={{ alignItems: 'center', justifyContent: 'center' }}>
-                        <Pressable
-                            style={styles.addButton}
-                            onPress={handleAddDiagnosis}
-                        >
-                            <MaterialCommunityIcons name="plus" color={Colors.primary800} size={22} />
-                        </Pressable>
+                    <View style={styles.inputRow}>
+                        <InputField label={i18n.t('diagnosis')} showLabel inputKey={'name'} handleChange={(key, val) => handleDiagnosisChange(key, val)} value={diagnosis.name} style={{ width: '40%', marginEnd: 10 }} />
+                        <CustomDropdown
+                            options={dropdownOpts}
+                            onSelect={(opt) => handleDiagnosisChange('type', findOptById(opt))}
+                            selectedValue={diagnosis.type}
+                            style={{ height: 41, borderRadius: 5, marginTop: 3 }}
+                        />
+                        <View style={{ alignItems: 'center', justifyContent: 'center' }}>
+                            <Pressable
+                                style={styles.addButton}
+                                onPress={handleAddDiagnosis}
+                            >
+                                <MaterialCommunityIcons name="plus" color={Colors.primary800} size={22} />
+                            </Pressable>
+                        </View>
                     </View>
+                    {diagPatch}
+                    <InputField label={i18n.t('advices')} showLabel inputKey={'advices'} handleChange={handleChange} multiline />
+                    <InputField label={i18n.t('summary')} showLabel inputKey={'summary'} handleChange={handleChange} multiline />
+                    <View style={[styles.saveButton, { alignItems: 'flex-start', marginTop: 5, marginBottom: 0, marginStart: 10 }]}>
+                        <TouchableOpacity style={styles.drugBtn} onPress={handleAddDrug}>
+                            <MaterialCommunityIcons name="pill" color={Colors.accent800} size={24} />
+                            <Text style={{ color: Colors.accent800, fontWeight: "600", marginHorizontal: 10 }}>{i18n.t("add_drug")}</Text>
+                        </TouchableOpacity>
+                    </View>
+                </ScrollView>
+                <View style={styles.saveButton}>
+                    <TouchableOpacity style={styles.button} onPress={handleSave}>
+                        <Text style={styles.saveButtonText}>{i18n.t("save")}</Text>
+                    </TouchableOpacity>
                 </View>
-                {diagPatch}
-                <InputField label={i18n.t('advices')} showLabel inputKey={'advices'} handleChange={handleChange} multiline />
-                <InputField label={i18n.t('summary')} showLabel inputKey={'summary'} handleChange={handleChange} multiline />
-            </ScrollView>
-            <View style={styles.saveButton}>
-                <TouchableOpacity style={styles.button} onPress={handleSave}>
-                    <Text style={styles.saveButtonText}>{i18n.t("save")}</Text>
-                </TouchableOpacity>
-            </View>
-        </KeyboardAvoidingView>
+            </KeyboardAvoidingView>
+        </Layout>
     );
 };
 
@@ -183,6 +210,26 @@ const styles = StyleSheet.create({
         paddingHorizontal: 20,
         paddingVertical: 5,
         fontSize: 17,
+    },
+    drugBtn: {
+        width: "50%",
+        height: 40,
+        backgroundColor: Colors.white100,
+        borderRadius: 20,
+        marginTop: 12,
+        flexDirection: 'row',
+        alignItems: 'center',
+        paddingStart: 5,
+        paddingHorizontal: 10,
+        fontSize: 15,
+        borderColor: Colors.primary800,
+        marginEnd: 20,
+        elevation: 3, //shadow for android
+        //shadow for ios:
+        shadowColor: "black",
+        shadowOffset: { width: 0, height: 2 },
+        shadowRadius: 3,
+        shadowOpacity: 0.3,
     },
 });
 

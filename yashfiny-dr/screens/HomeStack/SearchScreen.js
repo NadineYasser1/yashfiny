@@ -9,20 +9,24 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { axios } from "../../utils/axios";
 import { API } from "../../utils/config";
+import useLoading from "../../hooks/useLoading";
+import Layout from "../../components/Layout";
 
 const SearchScreen = ({ navigation }) => {
     const [search, setSearch] = useState('');
     const [patientsData, setPatientsData] = useState();
     const [filteringData, setFilteringData] = useState()
     const [recentId, setrecentId] = useState();
+    const { setIsLoading, loading } = useLoading()
     const hideTabCtx = useContext(HideTabContext);
 
     const fetchData = () => {
+        setIsLoading(true)
         axios.get(API.patients).then(({ data }) => {
             console.log(data.data)
             setFilteringData(data.data)
             setPatientsData(data.data)
-        }).catch((err) => console.log(err))
+        }).catch((err) => console.log(err)).finally(() => setIsLoading(false))
     }
 
     const getrecentId = async () => {
@@ -85,42 +89,45 @@ const SearchScreen = ({ navigation }) => {
     }, [recentId]);
 
     return (
-        patientsData && <View style={styles.container}>
-            <SearchBar
-                placeholder={i18n.t('search_home')}
-                lightTheme
-                round
-                value={search}
-                onChangeText={handleSearch}
-                containerStyle={{
-                    backgroundColor: 'white',
-                    width: '100%',
-                    borderTopWidth: 0,
-                    borderBottomWidth: 0,
-                }}
-                inputContainerStyle={{
-                    borderColor: 'white',
-                    backgroundColor: Colors.white100,
-                }}
-                inputStyle={{ color: 'black', fontSize: 13 }}
-            />
-            <View style={styles.recentContainer}>
-                {renderRecentItem()}
-            </View>
-            <FlatList
-                data={patientsData}
-                keyExtractor={(item) => item.id}
-                renderItem={({ item }) => (
-                    <Pressable style={styles.itemContainer} onPress={() => handlePatientChoice(item.id)}>
-                        <Image source={{ uri: item.avatar }} style={styles.image} />
-                        <View>
-                            <Text style={styles.textName}>{item.fname} {item.lname}</Text>
-                            <Text style={styles.textId}>{item.id}</Text>
-                        </View>
-                    </Pressable>
-                )}
-            />
-        </View>
+        <Layout loading={loading}>
+
+            {patientsData && <View style={styles.container}>
+                <SearchBar
+                    placeholder={i18n.t('search_home')}
+                    lightTheme
+                    round
+                    value={search}
+                    onChangeText={handleSearch}
+                    containerStyle={{
+                        backgroundColor: 'white',
+                        width: '100%',
+                        borderTopWidth: 0,
+                        borderBottomWidth: 0,
+                    }}
+                    inputContainerStyle={{
+                        borderColor: 'white',
+                        backgroundColor: Colors.white100,
+                    }}
+                    inputStyle={{ color: 'black', fontSize: 13 }}
+                />
+                <View style={styles.recentContainer}>
+                    {renderRecentItem()}
+                </View>
+                <FlatList
+                    data={patientsData}
+                    keyExtractor={(item) => item.id}
+                    renderItem={({ item }) => (
+                        <Pressable style={styles.itemContainer} onPress={() => handlePatientChoice(item.id)}>
+                            <Image source={{ uri: item.avatar }} style={styles.image} />
+                            <View>
+                                <Text style={styles.textName}>{item.fname} {item.lname}</Text>
+                                <Text style={styles.textId}>{item.id}</Text>
+                            </View>
+                        </Pressable>
+                    )}
+                />
+            </View>}
+        </Layout>
     );
 };
 

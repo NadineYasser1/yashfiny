@@ -10,6 +10,8 @@ import SuccessModal from "../../components/SucessModal";
 import { axios } from "../../utils/axios";
 import { API } from "../../utils/config";
 import LoadingScreen from "../../components/LoadingScreen";
+import useLoading from "../../hooks/useLoading";
+import Layout from "../../components/Layout";
 
 
 const UploadScreen = ({ route, navigation }) => {
@@ -17,7 +19,7 @@ const UploadScreen = ({ route, navigation }) => {
     const doctorId = route.params
     const [documents, setDocuments] = useState([])
     const [Success, setSuccess] = useState(false)
-    const [loading, setLoading] = useState(false)
+    const { loading, setIsLoading } = useLoading()
 
 
     const handleAddDoc = (key, doc) => {
@@ -33,7 +35,7 @@ const UploadScreen = ({ route, navigation }) => {
 
     useEffect(() => {
         navigation.setOptions({
-            headerShown: !loading
+            headerShown: !Success
         });
     }, [Success]);
 
@@ -42,47 +44,46 @@ const UploadScreen = ({ route, navigation }) => {
             return (
                 <SuccessModal title={i18n.t('account_created')} text={i18n.t('awaiting_approval_signup_text')} screenName='Login' />
             )
-        } else if (loading) {
-            return <LoadingScreen />
-
         } else {
             return (
-                <LinearGradient
-                    colors={[Colors.primary800, 'white']}
-                    locations={[0.6, 1]}
-                    style={{ flex: 1 }}
-                >
-                    <KeyboardAvoidingView
+                <Layout loading={loading}>
+                    <LinearGradient
+                        colors={[Colors.primary800, 'white']}
+                        locations={[0.6, 1]}
                         style={{ flex: 1 }}
-                        behavior={Platform.OS == "ios" ? "padding" : "height"}
-                        keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : -500}
                     >
-                        <ScrollView style={styles.container}>
-                            <View style={styles.textContainer}>
-                                <Text style={styles.fpText}>{i18n.t('one_last_step')}</Text>
-                            </View>
-                            <UploadButton label={i18n.t('medical_license')} buttonText={i18n.t('upload_medical_license')} handleSelection={handleAddDoc} fnKey={'medical_license'} doctorId={doctorId} />
-                            <UploadButton label={i18n.t('academic_deg')} buttonText={i18n.t('upload_academic_deg')} handleSelection={handleAddDoc} fnKey={'academic_degree'} doctorId={doctorId} />
-                            <UploadButton label={i18n.t('certificates')} buttonText={i18n.t('upload_certificates')} handleSelection={handleAddDoc} fnKey={'certificates'} doctorId={doctorId} />
-                            <View style={styles.workinghrsContainer}>
-                                <Text style={styles.label}>{i18n.t('working_hours')}</Text>
-                                <Pressable style={styles.hoursButton} onPress={() => navigation.navigate('Availability', doctorId)}>
-                                    <IconButton icon='calendar-clock' iconColor={Colors.primary800} size={25} />
-                                    <Text style={{ color: Colors.primary800 }}>{i18n.t('add_working_hours')}</Text>
-                                </Pressable>
-                                <Text style={styles.text}>{i18n.t('you_can_edit_workinghrs_txt')}</Text>
-                            </View>
+                        <KeyboardAvoidingView
+                            style={{ flex: 1 }}
+                            behavior={Platform.OS == "ios" ? "padding" : "height"}
+                            keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : -500}
+                        >
+                            <ScrollView style={styles.container}>
+                                <View style={styles.textContainer}>
+                                    <Text style={styles.fpText}>{i18n.t('one_last_step')}</Text>
+                                </View>
+                                <UploadButton label={i18n.t('medical_license')} buttonText={i18n.t('upload_medical_license')} handleSelection={handleAddDoc} fnKey={'medical_license'} doctorId={doctorId} />
+                                <UploadButton label={i18n.t('academic_deg')} buttonText={i18n.t('upload_academic_deg')} handleSelection={handleAddDoc} fnKey={'academic_degree'} doctorId={doctorId} />
+                                <UploadButton label={i18n.t('certificates')} buttonText={i18n.t('upload_certificates')} handleSelection={handleAddDoc} fnKey={'certificates'} doctorId={doctorId} />
+                                <View style={styles.workinghrsContainer}>
+                                    <Text style={styles.label}>{i18n.t('working_hours')}</Text>
+                                    <Pressable style={styles.hoursButton} onPress={() => navigation.navigate('Availability', doctorId)}>
+                                        <IconButton icon='calendar-clock' iconColor={Colors.primary800} size={25} />
+                                        <Text style={{ color: Colors.primary800 }}>{i18n.t('add_working_hours')}</Text>
+                                    </Pressable>
+                                    <Text style={styles.text}>{i18n.t('you_can_edit_workinghrs_txt')}</Text>
+                                </View>
 
-                            <TouchableOpacity
-                                style={styles.continueButton}
-                                onPress={handleContinue}
-                            >
-                                <Text style={styles.continueButtonText}>{i18n.t("done")}</Text>
-                            </TouchableOpacity>
+                                <TouchableOpacity
+                                    style={styles.continueButton}
+                                    onPress={handleContinue}
+                                >
+                                    <Text style={styles.continueButtonText}>{i18n.t("done")}</Text>
+                                </TouchableOpacity>
 
-                        </ScrollView>
-                    </KeyboardAvoidingView>
-                </LinearGradient>
+                            </ScrollView>
+                        </KeyboardAvoidingView>
+                    </LinearGradient>
+                </Layout>
             )
         }
     }

@@ -15,6 +15,7 @@ import { axios } from "../../utils/axios";
 import { API } from "../../utils/config";
 import useLoading from "../../hooks/useLoading";
 import Layout from "../../components/Layout";
+import { err } from "react-native-svg";
 
 const windowHeight = Dimensions.get('window').height
 
@@ -93,7 +94,13 @@ const AppointmentsScreen = ({ route }) => {
             id?.toString().includes(query) ||
             `${fname?.toLowerCase()} ${lname.toLowerCase()}`.includes(query);
     };
-
+    const handleCancelApt = (aptId) => {
+        setIsLoading(true)
+        axios.delete(API.deleteApt.replace('{aptId}', aptId)).then(({ data }) => {
+            console.log(data)
+            fetchData()
+        }).catch((err) => Alert.alert(i18n.t('error'), err.message)).finally(() => setIsLoading(false))
+    }
     const handleCancel = (aptId) => {
         Alert.alert(
             i18n.t('cancel_alert_title'),
@@ -106,7 +113,7 @@ const AppointmentsScreen = ({ route }) => {
                 {
                     text: i18n.t('confirm'),
                     onPress: () => {
-                        console.log("Canceled appointment with ID: " + aptId);
+                        handleCancelApt(aptId)
                     }
                 }
             ],

@@ -33,7 +33,9 @@ const RegistrationForm = ({ editDoctor }) => {
     const [opts, setOpts] = useState()
     const { loading, setIsLoading } = useLoading()
     const hideTabCtx = useContext(HideTabContext)
-
+    const getSubspecialityByKey = (key) => {
+        return opts.find((opt) => opt.key == key)
+    }
     const fetchData = () => {
         setIsLoading(true)
         axios.get(API.specialities).then(({ data }) => {
@@ -43,8 +45,9 @@ const RegistrationForm = ({ editDoctor }) => {
 
     const handleSave = () => {
         if (editDoctor) {
-            handleChange('price', pricing)
-            console.log(doctorData)
+            // handleChange('price', pricing)
+            console.log(pricing)
+            console.log(doctorData.price)
             setIsLoading(true)
             axios.patch(API.profile, doctorData).then(({ data }) => {
                 doctorCtx.updateData(doctorData)
@@ -266,6 +269,10 @@ const RegistrationForm = ({ editDoctor }) => {
         hideTabCtx.hideTab(true)
     }, [])
 
+    useEffect(() => {
+        handleChange('price', pricing)
+    }, [pricing])
+
     return (
         <Layout loading={loading} style={styles.container}>
             <ScrollView>
@@ -374,7 +381,7 @@ const RegistrationForm = ({ editDoctor }) => {
                                 options={opts}
                                 selectedOpt={getsubspecialityByValue(doctorData.subspeciality)}
                                 onSelect={(opt) => handleChange('subspeciality', opt)}
-                                defaultOption={getsubspecialityByValue(doctorData.subspeciality)}
+                                defaultOption={getSubspecialityByKey(doctorData.subspeciality)}
 
                             />}
                         </View>

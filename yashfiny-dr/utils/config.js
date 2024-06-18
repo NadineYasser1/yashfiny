@@ -16,7 +16,7 @@ export const API = {
     upload: '/document?id={doctorId}&type={documentType}',
     newAvailability: '/availabilityid?id={doctorId}',
     uploadAvatar: '/avatar',
-    addVisitResults: '/visitresults',
-    addDrug: '/drug'
+    addVisitResults: '/visitResults',
+    addDrug: '/drugs'
 
 }

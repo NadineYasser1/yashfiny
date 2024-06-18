@@ -373,10 +373,10 @@ const Visits = ({ navigation }) => {
     const timelineData = useMemo(() => {
         if (patientCtx.patientData?.visits) {
             return patientCtx.patientData.visits.sort((a, b) => b.date - a.date).map(visit => ({
-                id: '1234',
+                id: visit.id,
                 date: dayjs(visit.date).format('DD MMM, YYYY hh:mm A'),
                 color: visit.status === 'cancelled' ? '#ff3131' : visit.status === 'upcoming' ? '#ffdb15' : visit.status === 'visited' ? '#26f7b2' : 'grey',
-                diagnosis: visit.diagnosis.map(diagnosis => diagnosis.name).join(', '),
+                diagnosis: visit.diagnosis.map(diagnosis => diagnosis.name || '').join(', '),
                 prescription: visit.prescription.map(prescription => prescription.name + ' (' + prescription.dosage + ')').join(', '),
                 status: visit.status,
                 icon: visit.status == 'upcoming' ? 'clock-fast' : visit.status == 'cancelled' ? 'close' : 'check-bold'
@@ -420,8 +420,9 @@ const Visits = ({ navigation }) => {
                                     <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
                                         <View style={styles.content}>
                                             <Text style={styles.yearText}>{item.date}</Text>
-                                            <Text style={{ color: 'black', fontSize: 13 }}>{item.diagnosis}</Text>
-                                            <Text style={{ color: 'black', fontSize: 13 }}>{item.prescription}</Text>
+                                            {console.log(item.prescription)}
+                                            {item.diagnosis != null && <Text style={{ color: 'black', fontSize: 13 }}>{item.diagnosis}</Text>}
+                                            {item.prescription != 'null (null)' && <Text style={{ color: 'black', fontSize: 13 }}>{item.prescription}</Text>}
                                         </View>
                                         {item.status == 'upcoming' &&
                                             <Pressable

@@ -360,7 +360,8 @@ const AvailabilityScreen = ({ navigation, route }) => {
       <Text style={{ textAlign: 'center', color: Colors.grey100, marginTop: 20 }}>{i18n.t('no_time_slots_selected')}</Text>
     </View>;
   };
-
+  console.log(authCtx.isAuthenticated)
+  console.log(doctorId)
   const postAvailability = () => {
     const route = authCtx.isAuthenticated ? API.availability : API.newAvailability.replace('{doctorId}', doctorId)
     console.log({

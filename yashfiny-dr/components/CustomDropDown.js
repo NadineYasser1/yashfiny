@@ -5,7 +5,6 @@ import i18n from '../i18n';
 
 const CustomDropdown = ({ options, onSelect, dropdownStyles, dropdownTextStyles, inputStyles, defaultOption, selectedOpt, style, ...otherProps }) => {
   const [selectedOption, setSelectedOption] = useState(selectedOpt || null);
-  console.log(defaultOption)
   const handleSelectOption = (option) => {
     setSelectedOption(option);
     onSelect(option);

@@ -17,6 +17,7 @@ export const API = {
     newAvailability: '/availabilityid?id={doctorId}',
     uploadAvatar: '/avatar',
     addVisitResults: '/visitResults',
-    addDrug: '/drugs'
+    addDrug: '/drugs',
+    deleteApt: '/appointment?id={aptId}'
 
 }

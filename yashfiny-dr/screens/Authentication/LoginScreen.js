@@ -21,12 +21,14 @@ import { axios } from "../../utils/axios";
 import { API } from "../../utils/config";
 import { ActivityIndicator } from "react-native-paper";
 import { DoctorContext } from "../../store/DoctorContext";
+import useLoading from "../../hooks/useLoading";
+import Layout from "../../components/Layout";
 
 const LoginScreen = ({ navigation }) => {
   const langCtx = useContext(LanguageContext);
   const authCtx = useContext(AuthContext);
   const [loginData, setLoginData] = useState()
-  const [loading, setLoading] = useState(false)
+  const { loading, setIsLoading } = useLoading()
 
   const handleInputChange = (key, val) => {
     setLoginData((prev) => ({
@@ -38,7 +40,7 @@ const LoginScreen = ({ navigation }) => {
 
 
   const handleLogin = () => {
-    setLoading(true)
+    setIsLoading(true)
     axios.post(API.login, loginData
     ).then(({ data }) => {
       console.log(data)
@@ -53,99 +55,95 @@ const LoginScreen = ({ navigation }) => {
         { cancelable: true }
       );
     }).finally(() => {
-      setLoading(false)
+      setIsLoading(false)
     })
 
   }
 
   return (
-    <LinearGradient
-      colors={[Colors.primary800, "white"]}
-      locations={[0.4, 1]}
-      style={{ flex: 1 }}
-    >
-      <KeyboardAvoidingView
-        behavior={Platform.OS == "ios" ? "padding" : "height"}
-        style={styles.container}
+    <Layout loading={loading}>
+      <LinearGradient
+        colors={[Colors.primary800, "white"]}
+        locations={[0.4, 1]}
+        style={{ flex: 1 }}
       >
-        <View style={styles.logoContainer}>
-          <Image
-            source={require("../../assets/logo1.png")}
-            style={styles.logo}
-            resizeMode="contain"
-          />
-          {langCtx.locale == "en" ? (
+        <KeyboardAvoidingView
+          behavior={Platform.OS == "ios" ? "padding" : "height"}
+          style={styles.container}
+        >
+          <View style={styles.logoContainer}>
             <Image
-              source={require("../../assets/brandName_en.png")}
-              style={styles.brandName}
+              source={require("../../assets/logo1.png")}
+              style={styles.logo}
               resizeMode="contain"
             />
-          ) : (
-            <Image
-              source={require("../../assets/brandName_ar.png")}
-              style={styles.brandName}
-              resizeMode="contain"
+            {langCtx.locale == "en" ? (
+              <Image
+                source={require("../../assets/brandName_en.png")}
+                style={styles.brandName}
+                resizeMode="contain"
+              />
+            ) : (
+              <Image
+                source={require("../../assets/brandName_ar.png")}
+                style={styles.brandName}
+                resizeMode="contain"
+              />
+            )}
+          </View>
+          <View>
+
+          </View>
+          <View style={styles.loginContainer}>
+            <TextInput
+              placeholder={i18n.t("phone_numb_or_email")}
+              style={styles.input}
+              placeholderTextColor="#aaa"
+              autoCompleteType="email"
+              keyboardType="email-address"
+              textContentType="emailAddress"
+              onChangeText={(val) => handleInputChange('email', val)}
             />
-          )}
-        </View>
-        <View>
 
-        </View>
-        <View style={styles.loginContainer}>
-          <TextInput
-            placeholder={i18n.t("phone_numb_or_email")}
-            style={styles.input}
-            placeholderTextColor="#aaa"
-            autoCompleteType="email"
-            keyboardType="email-address"
-            textContentType="emailAddress"
-            onChangeText={(val) => handleInputChange('email', val)}
-          />
-
-          <TextInput
-            placeholder={i18n.t("password")}
-            style={styles.input}
-            placeholderTextColor="#aaa"
-            textContentType="password"
-            secureTextEntry={true}
-            onChangeText={(val) => handleInputChange('password', val)}
-          />
-          <TouchableOpacity
-            style={styles.loginButton}
-            onPress={handleLogin}
-          >
-            <Text style={styles.loginButtonText}>{i18n.t("login")}</Text>
-          </TouchableOpacity>
-          <TouchableOpacity>
-            <Text
-              style={styles.fpText}
-              onPress={() => navigation.navigate("ForgotPassword")}
+            <TextInput
+              placeholder={i18n.t("password")}
+              style={styles.input}
+              placeholderTextColor="#aaa"
+              textContentType="password"
+              secureTextEntry={true}
+              onChangeText={(val) => handleInputChange('password', val)}
+            />
+            <TouchableOpacity
+              style={styles.loginButton}
+              onPress={handleLogin}
             >
-              {i18n.t("forgot_pass_ques")}
+              <Text style={styles.loginButtonText}>{i18n.t("login")}</Text>
+            </TouchableOpacity>
+            <TouchableOpacity>
+              <Text
+                style={styles.fpText}
+                onPress={() => navigation.navigate("ForgotPassword")}
+              >
+                {i18n.t("forgot_pass_ques")}
+              </Text>
+            </TouchableOpacity>
+          </View>
+          <View style={styles.signupTextContainer}>
+            <Text style={styles.signupText}>
+              {i18n.t("dont_have_account_ques")}
             </Text>
-          </TouchableOpacity>
-        </View>
-        <View style={{ marginTop: 3 }}>
-          <ActivityIndicator
-            animating={loading}
-            size='large'
-            color={Colors.primary800} />
-        </View>
-        <View style={styles.signupTextContainer}>
-          <Text style={styles.signupText}>
-            {i18n.t("dont_have_account_ques")}
-          </Text>
-          <TouchableOpacity>
-            <Text
-              style={[styles.signupText, { fontWeight: "700", fontSize: 18 }]}
-              onPress={() => navigation.navigate("Signup")}
-            >
-              {i18n.t("signup")}
-            </Text>
-          </TouchableOpacity>
-        </View>
-      </KeyboardAvoidingView>
-    </LinearGradient>
+            <TouchableOpacity>
+              <Text
+                style={[styles.signupText, { fontWeight: "700", fontSize: 18 }]}
+                onPress={() => navigation.navigate("Signup")}
+              >
+                {i18n.t("signup")}
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </KeyboardAvoidingView>
+      </LinearGradient>
+    </Layout>
 
   );
 };

@@ -18,6 +18,8 @@ import { OPTIONS } from "../constants/options"
 import { MaterialCommunityIcons } from "@expo/vector-icons"
 import { axios } from "../utils/axios"
 import { API } from "../utils/config"
+import useLoading from "../hooks/useLoading"
+import Layout from "./Layout"
 
 
 const RegistrationForm = ({ editDoctor }) => {
@@ -29,24 +31,30 @@ const RegistrationForm = ({ editDoctor }) => {
     const [showMore, setShowMore] = useState(false)
     const [newPrice, setNewPrice] = useState({})
     const [opts, setOpts] = useState()
+    const { loading, setIsLoading } = useLoading()
     const hideTabCtx = useContext(HideTabContext)
-
+    const getSubspecialityByKey = (key) => {
+        return opts.find((opt) => opt.key == key)
+    }
     const fetchData = () => {
+        setIsLoading(true)
         axios.get(API.specialities).then(({ data }) => {
             setOpts(data.data)
-        }).catch((err) => console.log(err))
+        }).catch((err) => console.log(err)).finally(() => setIsLoading(false))
     }
 
     const handleSave = () => {
         if (editDoctor) {
-            handleChange('price', pricing)
-            console.log(doctorData)
+            // handleChange('price', pricing)
+            console.log(pricing)
+            console.log(doctorData.price)
+            setIsLoading(true)
             axios.patch(API.profile, doctorData).then(({ data }) => {
                 doctorCtx.updateData(doctorData)
-                Alert.alert(i18n.t('success'), i18n.t('data_updated_successfully!'))
+                Alert.alert(i18n.t('success'), i18n.t('data_updated_successfully'))
                 hideTabCtx.hideTab(false)
                 navigation.goBack()
-            }).catch((err) => console.log(err))
+            }).catch((err) => console.log(err)).finally(() => setIsLoading(false))
 
             console.log(doctorData)
         } else if (!editDoctor) {
@@ -261,8 +269,12 @@ const RegistrationForm = ({ editDoctor }) => {
         hideTabCtx.hideTab(true)
     }, [])
 
+    useEffect(() => {
+        handleChange('price', pricing)
+    }, [pricing])
+
     return (
-        <View style={styles.container}>
+        <Layout loading={loading} style={styles.container}>
             <ScrollView>
                 <UploadAvatar handleChange={handleChange} editDoctor={editDoctor} />
                 <View style={styles.nameInput}>
@@ -369,7 +381,7 @@ const RegistrationForm = ({ editDoctor }) => {
                                 options={opts}
                                 selectedOpt={getsubspecialityByValue(doctorData.subspeciality)}
                                 onSelect={(opt) => handleChange('subspeciality', opt)}
-                                defaultOption={getsubspecialityByValue(doctorData.subspeciality)}
+                                defaultOption={getSubspecialityByKey(doctorData.subspeciality)}
 
                             />}
                         </View>
@@ -394,7 +406,7 @@ const RegistrationForm = ({ editDoctor }) => {
                     <Text style={styles.saveButtonText}>{i18n.t("save")}</Text>
                 </TouchableOpacity>
             </View>
-        </View >
+        </Layout>
     )
 
 }

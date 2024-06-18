@@ -13,15 +13,15 @@ const getParam = (key) => {
 export function documentUploader(doc, result, func, doctorId, fnKey) {
     func(result)
     const route = doctorId ? API.upload.replace('{doctorId}', doctorId).replace('{documentType}', getParam(fnKey)) : API.uploadAvatar
-    axios.post(route, doc, {
-        headers: {
-            "Content-Type": "multipart/form-data",
-        }
-    }).then(({ data }) => {
-        if (data.message == 'success') {
+    // axios.post(route, doc, {
+    //     headers: {
+    //         "Content-Type": "multipart/form-data",
+    //     }
+    // }).then(({ data }) => {
+    //     if (data.message == 'success') {
 
-        }
-    }).catch((err) => console.log(err)
-    )
+    //     }
+    // }).catch((err) => console.log(err)
+    // )
 
 }

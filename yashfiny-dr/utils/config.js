@@ -15,6 +15,8 @@ export const API = {
     forgetPassword: '/forgetPassword',
     upload: '/document?id={doctorId}&type={documentType}',
     newAvailability: '/availabilityid?id={doctorId}',
-    uploadAvatar: '/avatar'
+    uploadAvatar: '/avatar',
+    addVisitResults: '/visitResults',
+    addDrug: '/drugs'
 
 }

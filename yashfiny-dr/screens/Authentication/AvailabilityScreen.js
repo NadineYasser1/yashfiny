@@ -24,6 +24,8 @@ import AddAvailabilityModal from '../../components/AddAvailabilityModal';
 import { axios } from '../../utils/axios';
 import { API } from '../../utils/config';
 import { AuthContext } from '../../store/AuthContext'
+import useLoading from '../../hooks/useLoading';
+import Layout from '../../components/Layout';
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
@@ -32,6 +34,7 @@ const AvailabilityScreen = ({ navigation, route }) => {
 
   const hideTabCtx = useContext(HideTabContext)
   const authCtx = useContext(AuthContext)
+  const { setIsLoading, loading } = useLoading()
 
   const currentDate = new Date();
 
@@ -64,6 +67,7 @@ const AvailabilityScreen = ({ navigation, route }) => {
   const [slotType, setSlotType] = useState()
 
   const fetchAvailability = () => {
+    setIsLoading(true)
     axios.get(API.availability).then(({ data }) => {
       for (let date in data.data) {
         const formattedDate = formatDateString(date);
@@ -77,7 +81,7 @@ const AvailabilityScreen = ({ navigation, route }) => {
       }
 
       setSelectedSlot(data.data)
-    }).catch((err) => console.log(err))
+    }).catch((err) => console.log(err)).finally(() => setIsLoading(false))
   }
 
   function formatDateString(dateString) {
@@ -356,18 +360,20 @@ const AvailabilityScreen = ({ navigation, route }) => {
       <Text style={{ textAlign: 'center', color: Colors.grey100, marginTop: 20 }}>{i18n.t('no_time_slots_selected')}</Text>
     </View>;
   };
-
+  console.log(authCtx.isAuthenticated)
+  console.log(doctorId)
   const postAvailability = () => {
     const route = authCtx.isAuthenticated ? API.availability : API.newAvailability.replace('{doctorId}', doctorId)
     console.log({
       ...selectedSlot
     })
+    setIsLoading(true)
     axios.patch(route, { availability: selectedSlot }
     ).then(({ data }) => {
       console.log(data)
       hideTabCtx.hideTab(false)
       navigation.goBack()
-    }).catch((err) => console.log(err))
+    }).catch((err) => console.log(err)).finally(() => setIsLoading(false))
   }
 
   const handleSave = () => {
@@ -380,7 +386,7 @@ const AvailabilityScreen = ({ navigation, route }) => {
     fetchAvailability()
   }, [])
   return (
-    <View style={styles.container}>
+    <Layout loading={loading} style={styles.container}>
       <Modal
         visible={isEditingModalVisible}
         animationType="slide"
@@ -537,7 +543,7 @@ const AvailabilityScreen = ({ navigation, route }) => {
           </TouchableOpacity>
         </View>}
       </View>
-    </View>
+    </Layout>
   );
 };
 

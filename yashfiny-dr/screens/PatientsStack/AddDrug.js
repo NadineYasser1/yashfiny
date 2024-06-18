@@ -6,12 +6,22 @@ import i18n from "../../i18n";
 import CustomDropdown from "../../components/CustomDropDown";
 import { Colors } from "../../constants/colors";
 import { ScrollView } from "react-native-gesture-handler";
+import { PatientsContext } from "../../store/PatientsContext";
+import { axios } from "../../utils/axios";
+import { API } from "../../utils/config";
+import useLoading from "../../hooks/useLoading";
 
 const { width, height } = Dimensions.get('window');
 
 const AddDrug = ({ navigation, route }) => {
+
     const hideTabCtx = useContext(HideTabContext);
+    const patientCtx = useContext(PatientsContext)
+    const { setIsLoading, loading } = useLoading()
     const [drug, setDrug] = useState({ name: '', duration: { time: '', type: '' }, instructions: '', time: '', dosage: '' });
+    const patientId = patientCtx.patientData.id;
+    const appointmentId = route.params
+    console.log(appointmentId)
 
     const opts = [
         { key: 1, value: i18n.t('morning') },
@@ -32,13 +42,28 @@ const AddDrug = ({ navigation, route }) => {
     };
 
     const handleSave = () => {
-        const updatedDrug = {
-            ...drug,
-            duration: `${drug.duration.time} ${drug.duration.type}`,
-        };
-        console.log(updatedDrug);
-        Alert.alert(i18n.t('saved'), i18n.t('drug_saved'));
-        setDrug({ name: '', duration: { time: '', type: '' }, instructions: '', time: '', dosage: '' });
+        let updatedDrug
+        if (appointmentId) {
+            updatedDrug = {
+                ...drug,
+                duration: `${drug.duration.time} ${drug.duration.type}`,
+                appointmentId: appointmentId
+            }
+        } else {
+            updatedDrug = {
+                ...drug,
+                duration: `${drug.duration.time} ${drug.duration.type}`,
+                patientId: patientId
+            }
+        }
+        setIsLoading(true)
+        axios.post(API.addDrug, updatedDrug).then(({ data }) => {
+            Alert.alert(i18n.t('saved'), i18n.t('drug_saved'));
+        }).catch((err) => console.log(err)).finally(() => {
+            setIsLoading(false)
+            setDrug({ name: '', duration: { time: '', type: '' }, instructions: '', time: '', dosage: '' });
+        })
+
     };
 
     useEffect(() => {
@@ -64,7 +89,7 @@ const AddDrug = ({ navigation, route }) => {
     };
 
     console.log(drug)
-    
+
     return (
         <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
             <ScrollView>
@@ -101,7 +126,7 @@ const AddDrug = ({ navigation, route }) => {
                         <Text style={{ fontSize: 15, color: "black", fontWeight: "600", paddingHorizontal: 5 }}>{i18n.t('time')}</Text>
                         <CustomDropdown
                             options={opts}
-                            onSelect={(key) => handleChange('time', findOptById(opts,key))}
+                            onSelect={(key) => handleChange('time', findOptById(opts, key))}
                             selectedOpt={drug.time}
                         />
                     </View>

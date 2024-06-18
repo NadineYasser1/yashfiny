@@ -5,8 +5,6 @@ import i18n from "../i18n"
 import filter from "lodash.filter"
 import RequestItem from "./RequestItem"
 import MessagesModal from "./MessagesModal"
-import { axios } from "../utils/axios"
-import { API } from "../utils/config"
 
 const RequestsList = ({ data, handleCancelApt, handleAccept }) => {
 

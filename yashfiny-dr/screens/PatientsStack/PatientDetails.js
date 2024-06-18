@@ -14,16 +14,20 @@ import Card from "../../components/Card"
 import PdfView from "../../components/PdfView"
 import { axios } from "../../utils/axios"
 import { API } from "../../utils/config"
+import useLoading from "../../hooks/useLoading"
+import Layout from "../../components/Layout"
 
 const windowHeight = Dimensions.get('window').height
 const windowWidth = Dimensions.get('window').width
 
 const PatientDetails = ({ route }) => {
     const patientCtx = useContext(PatientsContext)
+    const { setIsLoading, loading } = useLoading()
     const fetchPatientData = () => {
+        setIsLoading(true)
         axios.get(API.patient.replace('{patientId}', route.params)).then(({ data }) => {
             patientCtx.addPatient(data.data)
-        }).catch((err) => console.log(err))
+        }).catch((err) => console.log(err)).finally(() => setIsLoading(false))
     }
     useEffect(() => {
         fetchPatientData()
@@ -50,7 +54,7 @@ const PatientDetails = ({ route }) => {
     }, [patientCtx.patientData])
     const TopTabs = createMaterialTopTabNavigator()
     return (
-        <View style={{ flex: 1, padding: 20 }}>
+        <Layout loading={loading} style={{ flex: 1, padding: 20 }}>
             <View style={{ paddingBottom: 20, paddingHorizontal: 10 }}>
                 <View style={{ flexDirection: 'row' }}>
                     {avatarComponent}
@@ -106,7 +110,7 @@ const PatientDetails = ({ route }) => {
                     }} />
                 </TopTabs.Navigator>
             </View>
-        </View>
+        </Layout>
     )
 }
 export default PatientDetails
@@ -310,7 +314,7 @@ const Rx = ({ navigation }) => {
                     paddingVertical: 20,
                     alignItems: 'center'
                 }}
-                onPress={() => navigation.navigate('AddDrug', patientCtx.patientData.id)}>
+                onPress={() => navigation.navigate('AddDrug')}>
                 <View style={{ borderRadius: 15, backgroundColor: Colors.grey200, width: 30, height: 30, justifyContent: 'center', alignItems: 'center' }}>
                     <Text style={{ color: Colors.primary800, fontWeight: "600", fontSize: 22, marginBottom: 3 }}>+</Text>
                 </View>
@@ -369,9 +373,10 @@ const Visits = ({ navigation }) => {
     const timelineData = useMemo(() => {
         if (patientCtx.patientData?.visits) {
             return patientCtx.patientData.visits.sort((a, b) => b.date - a.date).map(visit => ({
+                id: visit.id,
                 date: dayjs(visit.date).format('DD MMM, YYYY hh:mm A'),
                 color: visit.status === 'cancelled' ? '#ff3131' : visit.status === 'upcoming' ? '#ffdb15' : visit.status === 'visited' ? '#26f7b2' : 'grey',
-                diagnosis: visit.diagnosis.map(diagnosis => diagnosis.name).join(', '),
+                diagnosis: visit.diagnosis.map(diagnosis => diagnosis.name || '').join(', '),
                 prescription: visit.prescription.map(prescription => prescription.name + ' (' + prescription.dosage + ')').join(', '),
                 status: visit.status,
                 icon: visit.status == 'upcoming' ? 'clock-fast' : visit.status == 'cancelled' ? 'close' : 'check-bold'
@@ -415,8 +420,9 @@ const Visits = ({ navigation }) => {
                                     <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
                                         <View style={styles.content}>
                                             <Text style={styles.yearText}>{item.date}</Text>
-                                            <Text style={{ color: 'black', fontSize: 13 }}>{item.diagnosis}</Text>
-                                            <Text style={{ color: 'black', fontSize: 13 }}>{item.prescription}</Text>
+                                            {console.log(item.prescription)}
+                                            {item.diagnosis != null && <Text style={{ color: 'black', fontSize: 13 }}>{item.diagnosis}</Text>}
+                                            {item.prescription != 'null (null)' && <Text style={{ color: 'black', fontSize: 13 }}>{item.prescription}</Text>}
                                         </View>
                                         {item.status == 'upcoming' &&
                                             <Pressable
@@ -431,7 +437,7 @@ const Visits = ({ navigation }) => {
                                                     paddingHorizontal: 5,
                                                     paddingVertical: 2
                                                 }}
-                                                onPress={() => navigation.navigate('VisitResults', patientCtx.patientData.id)}>
+                                                onPress={() => navigation.navigate('VisitResults', item.id)}>
                                                 <MaterialCommunityIcons name="plus-thick" size={12} color={Colors.primary800} />
                                                 <Text style={{ color: Colors.primary800, fontWeight: "600", paddingHorizontal: 3 }}>Results</Text>
                                             </Pressable>}

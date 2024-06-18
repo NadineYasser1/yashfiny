@@ -1,10 +1,9 @@
 import React, { useEffect } from 'react';
-import { View, Image, StyleSheet } from 'react-native';
-import { ProgressBar } from 'react-native-paper';
-import { Colors } from '../constants/colors';
+import { View, StyleSheet, Modal, Animated } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
 const LoadingScreen = ({ notFromNav }) => {
+    const bounceValue = new Animated.Value(0);
     const navigation = !notFromNav ? useNavigation() : null
     useEffect(() => {
         if (!notFromNav) {
@@ -13,38 +12,45 @@ const LoadingScreen = ({ notFromNav }) => {
             })
         }
     }, [notFromNav])
+
+    useEffect(() => {
+        Animated.loop(
+            Animated.spring(bounceValue, {
+                toValue: 1,
+                friction: 1,
+                tension: 180,
+                useNativeDriver: true,
+            })
+        ).start();
+    }, [bounceValue]);
+
+    const bounce = bounceValue.interpolate({
+        inputRange: [0, 1],
+        outputRange: [0, 10],
+    });
+
     return (
-        <View style={styles.container}>
-            <Image
-                source={require('../assets/fullLogo.png')}
-                style={styles.image}
-                resizeMode="contain"
-            />
-            <View style={styles.progressBarContainer}>
-                <ProgressBar
-                    indeterminate
-                    color={Colors.accent800}
-                    styleAttr="Horizontal"
+        <Modal transparent={true}>
+            <View style={styles.backdrop}>
+                <Animated.Image
+                    source={require('../assets/logo1.png')}
+                    style={[styles.logo, { transform: [{ translateY: bounce }] }]}
                 />
             </View>
-        </View>
+        </Modal>
     );
 };
 
 const styles = StyleSheet.create({
-    container: {
+    backdrop: {
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: 'white'
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
     },
-    image: {
-        width: '60%',
-        height: '60%',
-        marginBottom: 100
-    },
-    progressBarContainer: {
-        width: '80%',
+    logo: {
+        width: 100,
+        height: 120,
     },
 });
 

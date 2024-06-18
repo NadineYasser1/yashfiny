@@ -213,6 +213,8 @@ const translations = {
     duration: 'Duration',
     success: 'Success',
     data_updated_successfully: 'Data updated successfully!',
+    saved: "Saved!",
+    drug_saved: 'Drug added successfully!'
   },
   ar: {
     login_assistant: 'تسجيل الدخول كمساعد ',
@@ -279,11 +281,11 @@ const translations = {
     you_can_edit_workinghrs_txt: "يمكنك تحرير توافرك في أي وقت",
     done: "تم",
     cancel: "إلغاء",
-    no_time_slots_selected: "لم يتم تحديد فتحات زمنية اليوم.",
-    time_slot_alert: "يرجى إضافة وقت بداية ونهاية للفتحة الزمنية.",
+    no_time_slots_selected: "لم يتم تحديد فترات زمنية اليوم.",
+    time_slot_alert: "يرجى إضافة وقت بداية ونهاية للفترة الزمنية.",
     from: "من",
     to: "إلى",
-    edit_slot: "تحرير الفتحة",
+    edit_slot: "تعديل الفترة",
     update: "تحديث",
     save: "حفظ",
     day: "يوم",
@@ -333,12 +335,12 @@ const translations = {
     see_less: "عرض أقل",
     contact_us_text: "اكتب رسالتك وسيتواصل معك فريق يشفيني.",
     send: "إرسال",
-    slot_type: "نوع الفتحة",
-    slot_location: "موقع الفتحة",
+    slot_type: "نوع الفترة",
+    slot_location: "موقع الفترة",
     individual: "فردي",
     select_location: "اختر الموقع",
-    modal_slot_alert: "يرجى اختيار نوع وموقع الفتحة.",
-    avail_alert_note: "يرجى إضافة وتحديث وحذف فتحاتك المتاحة لأيام الأسبوع الحالي فقط، وسيتم تكرار الفتحات التي تضيفها للشهر بأكمله!",
+    modal_slot_alert: "يرجى اختيار نوع وموقع الفترة.",
+    avail_alert_note: "يرجى إضافة وتحديث وحذف فتراتك المتاحة لأيام الأسبوع الحالي فقط، وسيتم تكرار الفترات التي تضيفها للشهر بأكمله!",
     avail_alert_title: "ملاحظة منا",
     coming_soon: "قريباً!",
     coming_soon_alert_text: "مطورو النظام يعملون على هذه الميزة، يرجى التحقق مرة أخرى لاحقاً!",
@@ -413,12 +415,27 @@ const translations = {
     preliminary: "تمهيدي",
     final: "نهائي",
     search_reqs: "بحث حسب اسم المريض",
-    promotion: "عرض"
+    promotion: "عرض",
+    name: 'الاسم',
+    instructions: 'التعليمات',
+    dosage: 'الجرعة',
+    time: 'الوقت',
+    days: 'أيام',
+    weeks: 'أسابيع',
+    months: 'شهور',
+    years: 'سنوات',
+    drug_name: 'اسم الدواء',
+    duration: 'المدة',
+    success: 'نجاح',
+    data_updated_successfully: 'تم تحديث البيانات بنجاح!',
+    saved: "تم الحفظ!",
+    drug_saved: 'تمت إضافة الدواء بنجاح!'
 
   }
 }
 const i18n = new I18n(translations);
 i18n.locale = Localization.getLocales()[0].languageCode;
+//i18n.locale = 'ar'
 i18n.enableFallback = true;
 
 

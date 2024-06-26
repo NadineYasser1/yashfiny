@@ -81,7 +81,7 @@ const AvailabilityScreen = ({ navigation, route }) => {
       }
 
       setSelectedSlot(data.data)
-    }).catch((err) => console.log(err)).finally(() => setIsLoading(false))
+    }).catch((err) => console.log(err.response)).finally(() => setIsLoading(false))
   }
 
   function formatDateString(dateString) {
@@ -373,7 +373,7 @@ const AvailabilityScreen = ({ navigation, route }) => {
       console.log(data)
       hideTabCtx.hideTab(false)
       navigation.goBack()
-    }).catch((err) => console.log(err)).finally(() => setIsLoading(false))
+    }).catch((err) => Alert.alert(err.response.data.message)).finally(() => setIsLoading(false))
   }
 
   const handleSave = () => {

@@ -14,7 +14,7 @@ const CallsScreen = () => {
     const { loading, setIsLoading } = useLoading()
 
     const fetchData = () => {
-        setIsLoading(true)
+        // setIsLoading(true)
         axios.get(API.calls).then(({ data }) => {
             console.log(data.data)
             setData(data?.data?.sort((a, b) => {
@@ -22,9 +22,11 @@ const CallsScreen = () => {
                 const timeB = b.timeLeft.hours * 3600 + b.timeLeft.minutes * 60 + b.timeLeft.seconds;
                 return timeA - timeB;
             }))
-        }).catch((err) => console.log(err)).finally(() => setIsLoading(false))
+        }).catch((err) => Alert.alert(err.response.data.message)).finally(() => setIsLoading(false))
     }
-
+    const getExp = (item) => {
+        return item.timeLeft.hours <= 0 || (item.timeLeft.hours == 0 && item.timeLeft.minutes == 0 && item.timeLeft.seconds == 0)
+    }
     useEffect(() => {
         fetchData()
         const intervalId = setInterval(fetchData, 5000);
@@ -46,7 +48,7 @@ const CallsScreen = () => {
                                 <Text style={styles.timeText}>{i18n.t('time_left_till_apt')}</Text>
                                 <Text style={[styles.timeText, { color: item.timeLeft.hours == 0 && item.timeLeft.minutes == 0 && item.timeLeft.seconds == 0 ? Colors.primary800 : 'grey', fontWeight: "500" }]}>{item.timeLeft.hours} {i18n.t('hours')} {item.timeLeft.minutes} {i18n.t('mins')}</Text>
                             </View>
-                            {item.timeLeft.hours <= 0 && item.timeLeft.minutes <= 0 && item.timeLeft.seconds <= 0 &&
+                            {getExp(item) &&
                                 <View style={styles.iconContainer}>
                                     <View style={{
                                         borderRadius: 30,

@@ -1,4 +1,4 @@
-import { Text } from "react-native"
+import { Alert } from "react-native"
 import RequestsList from "../../components/RequestsList";
 import { specialReqs } from "../../constants/DummyRequests";
 import { axios } from "../../utils/axios";
@@ -13,7 +13,7 @@ const SpecialRequestsScreen = () => {
         setLoading(true)
         axios.get(API.requests.replace('{method}', 'special')).then(({ data }) =>
             console.log(data.data[0])
-        ).catch((err) => console.log(err)
+        ).catch((err) => Alert.alert(err.response.data.message)
         ).finally(() => setLoading(false))
     }
     useEffect(() => {

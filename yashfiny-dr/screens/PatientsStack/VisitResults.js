@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState, useMemo } from "react";
-import { Text, View, Image, Pressable, StyleSheet, Dimensions, TouchableOpacity, KeyboardAvoidingView, Platform } from "react-native";
+import { Text, View, Image, Pressable, StyleSheet, Dimensions, TouchableOpacity, KeyboardAvoidingView, Platform, Alert } from "react-native";
 import { HideTabContext } from "../../store/HideTabContext";
 import InputField from "../../components/InputField";
 import i18n from "../../i18n";
@@ -73,7 +73,7 @@ const VisitResults = ({ navigation, route }) => {
         setIsLoading(true)
         axios.post(API.addVisitResults, body).then(({ data }) => {
             navigation.navigate('PatientDetails', { screen: 'PatientDetails', params: { patientId: patientData.id } });
-        }).catch((err) => console.log(err)).finally(() => setIsLoading(false))
+        }).catch((err) => Alert.alert(err.response.data.message)).finally(() => setIsLoading(false))
 
     }
 
@@ -115,7 +115,7 @@ const VisitResults = ({ navigation, route }) => {
                             options={dropdownOpts}
                             onSelect={(opt) => handleDiagnosisChange('type', findOptById(opt))}
                             selectedValue={diagnosis.type}
-                            style={{ height: 41, borderRadius: 5, marginTop: 3 }}
+                            style={{ height: 44, width: 130, borderRadius: 5, marginTop: 0, padding: 0 }}
                         />
                         <View style={{ alignItems: 'center', justifyContent: 'center' }}>
                             <Pressable
@@ -135,12 +135,13 @@ const VisitResults = ({ navigation, route }) => {
                             <Text style={{ color: Colors.accent800, fontWeight: "600", marginHorizontal: 10 }}>{i18n.t("add_drug")}</Text>
                         </TouchableOpacity>
                     </View>
+                    <View style={styles.saveButton}>
+                        <TouchableOpacity style={styles.button} onPress={handleSave}>
+                            <Text style={styles.saveButtonText}>{i18n.t("save")}</Text>
+                        </TouchableOpacity>
+                    </View>
                 </ScrollView>
-                <View style={styles.saveButton}>
-                    <TouchableOpacity style={styles.button} onPress={handleSave}>
-                        <Text style={styles.saveButtonText}>{i18n.t("save")}</Text>
-                    </TouchableOpacity>
-                </View>
+
             </KeyboardAvoidingView>
         </Layout>
     );
@@ -196,7 +197,7 @@ const styles = StyleSheet.create({
         borderRadius: 20,
         alignItems: 'center',
         justifyContent: 'center',
-        marginTop: 50,
+        marginTop: 10,
         paddingBottom: 50
     },
     button: {

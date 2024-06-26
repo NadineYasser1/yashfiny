@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, Pressable, FlatList } from "react-native"
+import { View, Text, StyleSheet, Pressable, FlatList, Alert } from "react-native"
 import i18n from "../../../i18n";
 import { useEffect, useMemo, useState } from "react";
 import { Colors } from "../../../constants/colors";
@@ -20,7 +20,7 @@ const IncomeScreen = () => {
         setIsLoading(true)
         axios.get(API.income).then(({ data }) => {
             setDummyIncome(data.data)
-        }).catch((err) => console.log(err)
+        }).catch((err) => Alert.alert(err.response.data.message)
         ).finally(() => setIsLoading(false))
     }
 

@@ -34,7 +34,7 @@ const AppointmentsScreen = ({ route }) => {
             setAppointments(data.data)
             console.log(data.data)
             setData(data.data[selectedDay])
-        }).catch((err) => console.log(err)).finally(() => setIsLoading(false))
+        }).catch((err) => Alert.alert(err.response.data.message)).finally(() => setIsLoading(false))
     }
     const handleFilterChange = (filteringObj) => {
         setFilters(filteringObj)

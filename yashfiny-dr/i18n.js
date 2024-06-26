@@ -304,7 +304,7 @@ const translations = {
     messages: "الرسائل",
     appointments: "المواعيد",
     patients: "المرضى",
-    requests: "الطلبات",
+    requests: " طلبات المواعيد",
     calls: "المكالمات",
     signout: "تسجيل الخروج",
     yashfiny: "يشفيني",
@@ -435,7 +435,7 @@ const translations = {
 }
 const i18n = new I18n(translations);
 i18n.locale = Localization.getLocales()[0].languageCode;
-//i18n.locale = 'ar'
+// i18n.locale = 'ar'
 i18n.enableFallback = true;
 
 

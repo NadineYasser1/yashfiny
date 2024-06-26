@@ -1,4 +1,4 @@
-import { Text } from "react-native"
+import { Alert } from "react-native"
 import RequestsList from "../../components/RequestsList";
 import { videoReqs } from "../../constants/DummyRequests";
 import { axios } from "../../utils/axios";
@@ -15,7 +15,7 @@ const VideoRequestsScreen = () => {
         setIsLoading(true)
         axios.get(API.requests.replace('{method}', 'video')).then(({ data }) =>
             setReqs(data.data)
-        ).catch((err) => console.log(err)
+        ).catch((err) => Alert.alert(err.response.data.message)
         ).finally(() => setIsLoading(false))
     }
     const handleAccept = (reqId) => {
@@ -26,7 +26,7 @@ const VideoRequestsScreen = () => {
         setIsLoading(true)
         axios.post(API.postReq, req).then(({ data }) => {
             fetchData()
-        }).catch((err) => console.log(err)).finally(() => setIsLoading(false))
+        }).catch((err) => Alert.alert(err.response.data.message)).finally(() => setIsLoading(false))
     }
     const handleCancelApt = (reqId, message) => {
         const req = {
@@ -37,7 +37,7 @@ const VideoRequestsScreen = () => {
         setIsLoading(true)
         axios.post(API.postReq, req).then(({ data }) => {
             fetchData()
-        }).catch((err) => console.log(err)).finally(() => setIsLoading(false))
+        }).catch((err) => Alert.alert(err.response.data.message)).finally(() => setIsLoading(false))
 
     }
     useEffect(() => {

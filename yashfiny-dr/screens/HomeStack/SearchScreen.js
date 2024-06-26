@@ -26,7 +26,7 @@ const SearchScreen = ({ navigation }) => {
             console.log(data.data)
             setFilteringData(data.data)
             setPatientsData(data.data)
-        }).catch((err) => console.log(err)).finally(() => setIsLoading(false))
+        }).catch((err) => Alert.alert(err.response.data.message)).finally(() => setIsLoading(false))
     }
 
     const getrecentId = async () => {

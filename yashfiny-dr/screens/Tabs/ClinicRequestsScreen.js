@@ -1,4 +1,4 @@
-import { Text } from "react-native"
+import { Alert } from "react-native"
 import RequestsList from "../../components/RequestsList";
 import { clinicReqs } from "../../constants/DummyRequests";
 import { axios } from "../../utils/axios";
@@ -13,9 +13,11 @@ const ClinicRequestsScreen = () => {
     const [reqs, setReqs] = useState()
     const fetchData = () => {
         setIsLoading(true)
-        axios.get(API.requests.replace('{method}', 'clinic')).then(({ data }) =>
+        axios.get(API.requests.replace('{method}', 'clinic')).then(({ data }) => {
             setReqs(data.data)
-        ).catch((err) => console.log(err)
+        }
+
+        ).catch((err) => Alert.alert(err.response.data.message)
         ).finally(() => setIsLoading(false))
     }
     const handleAccept = (reqId) => {
@@ -26,7 +28,7 @@ const ClinicRequestsScreen = () => {
         setIsLoading(true)
         axios.post(API.postReq, req).then(({ data }) => {
             fetchData()
-        }).catch((err) => console.log(err)).finally(() => setIsLoading(false))
+        }).catch((err) => Alert.alert(err.response.data.message)).finally(() => setIsLoading(false))
     }
     const handleCancelApt = (reqId, message) => {
         const req = {
@@ -34,10 +36,11 @@ const ClinicRequestsScreen = () => {
             message,
             status: 'decline'
         }
+        console.log(req)
         setIsLoading(true)
         axios.post(API.postReq, req).then(({ data }) => {
             fetchData()
-        }).catch((err) => console.log(err)).finally(() => setIsLoading(false))
+        }).catch((err) => Alert.alert(err.response.data.message)).finally(() => setIsLoading(false))
 
     }
     useEffect(() => {
@@ -46,7 +49,7 @@ const ClinicRequestsScreen = () => {
     return (
         <Layout loading={loading}>
             {reqs &&
-                <RequestsList data={reqs} handleAccept={handleAccept} handleCancelApt={handleCancelApt} />}
+                <RequestsList data={reqs} handleAccept={handleAccept} handleCancelApt={handleCancelApt} fetchData={fetchData} />}
         </Layout>
     )
 }

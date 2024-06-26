@@ -79,7 +79,7 @@ const styles = StyleSheet.create({
         backgroundColor: Colors.white100,
         borderRadius: 20,
         marginTop: 10,
-        marginEnd: 150,
+        marginEnd: 130,
     },
     statusText: {
         paddingHorizontal: 12,

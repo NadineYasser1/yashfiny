@@ -42,6 +42,7 @@ const MessagesModal = ({ modalVisible, setModalVisible, handleSelectMessage, req
                                 onPress={() => {
                                     handleSelectMessage(reqId, selectedMessage)
                                     setSelectedMessage(null)
+                                    setModalVisible(false)
                                 }}
                                 disabled={!selectedMessage}
                             />

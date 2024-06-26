@@ -56,10 +56,11 @@ const AddDrug = ({ navigation, route }) => {
                 patientId: patientId
             }
         }
+        console.log(updatedDrug)
         setIsLoading(true)
         axios.post(API.addDrug, updatedDrug).then(({ data }) => {
             Alert.alert(i18n.t('saved'), i18n.t('drug_saved'));
-        }).catch((err) => console.log(err)).finally(() => {
+        }).catch((err) => Alert.alert(err.response.data.message)).finally(() => {
             setIsLoading(false)
             setDrug({ name: '', duration: { time: '', type: '' }, instructions: '', time: '', dosage: '' });
         })
@@ -88,7 +89,7 @@ const AddDrug = ({ navigation, route }) => {
         }
     };
 
-    console.log(drug)
+    // console.log(drug)
 
     return (
         <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>

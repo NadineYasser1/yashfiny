@@ -34,13 +34,13 @@ const RegistrationForm = ({ editDoctor }) => {
     const { loading, setIsLoading } = useLoading()
     const hideTabCtx = useContext(HideTabContext)
     const getSubspecialityByKey = (key) => {
-        return opts.find((opt) => opt.key == key)
+        return opts.find((opt) => opt.key == key)?.value
     }
     const fetchData = () => {
         setIsLoading(true)
         axios.get(API.specialities).then(({ data }) => {
             setOpts(data.data)
-        }).catch((err) => console.log(err)).finally(() => setIsLoading(false))
+        }).catch((err) => Alert.alert(err.response.data.message)).finally(() => setIsLoading(false))
     }
 
     const handleSave = () => {
@@ -54,7 +54,7 @@ const RegistrationForm = ({ editDoctor }) => {
                 Alert.alert(i18n.t('success'), i18n.t('data_updated_successfully'))
                 hideTabCtx.hideTab(false)
                 navigation.goBack()
-            }).catch((err) => console.log(err)).finally(() => setIsLoading(false))
+            }).catch((err) => Alert.alert(err.response.data.message)).finally(() => setIsLoading(false))
 
             console.log(doctorData)
         } else if (!editDoctor) {
@@ -90,7 +90,7 @@ const RegistrationForm = ({ editDoctor }) => {
     const getPaymentMethodByKey = (key) => {
         return PAYMENT_METHODS.find((method) => method.key == key)
     }
-    const getsubspecialityByValue = (val) => {
+    const getSubspecialityByValue = (val) => {
         return opts?.find((dis) => dis.value == val)
     }
     const getOptByKey = (key, val) => {
@@ -379,9 +379,9 @@ const RegistrationForm = ({ editDoctor }) => {
                             <Text style={styles.label}>{i18n.t('subspeciality')}</Text>
                             {opts && <CustomDropdown
                                 options={opts}
-                                selectedOpt={getsubspecialityByValue(doctorData.subspeciality)}
-                                onSelect={(opt) => handleChange('subspeciality', opt)}
-                                defaultOption={getSubspecialityByKey(doctorData.subspeciality)}
+                                selectedOpt={getSubspecialityByValue(doctorData.subspeciality)}
+                                onSelect={(opt) => handleChange('subspeciality', getSubspecialityByKey(opt))}
+                                defaultOption={getSubspecialityByValue(doctorData.subspeciality)}
 
                             />}
                         </View>

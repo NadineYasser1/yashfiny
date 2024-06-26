@@ -2,18 +2,18 @@ import dayjs from "dayjs";
 
 export const patient =
 {
-    id: '123456',
-    avatarUri: 'https://www.gravatar.com/avatar/2c7d99fe281ecd3bcd65ab915bac6dd5?s=250',
+    id: '1',
+    avatarUri: 'https://img.freepik.com/free-photo/colorful-design-with-spiral-design_188544-9588.jpg',
     age: {
         years: 14,
         months: 2,
         days: 12
     },
-    gender: 'female',
-    fname: 'Nadine',
-    lname: 'Yasser',
+    gender: 'maler',
+    fname: 'Ali',
+    lname: 'Shaaban',
     complaint: 'string kebir',
-    symptoms: 'String akbar awyyyyyyyyyyyyyy',
+    symptoms: 'String akbar',
     history: {
         chronicDis: ['disease1', 'disease2'],
         allergies: ['allergy1', 'allergy2']

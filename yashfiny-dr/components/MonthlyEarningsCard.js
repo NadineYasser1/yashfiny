@@ -8,14 +8,16 @@ import { Colors } from '../constants/colors';
 const windowHeight = Dimensions.get('window').height
 const MonthlyEarningsCard = ({ incomes }) => {
   const curr = 'EGP'
-  const perThanLastMonth = useMemo(() => {
-    if (incomes) {
-      inc = (((parseFloat(incomes[0].inc, 0) - parseFloat(incomes[1].inc, 0)) / parseFloat(incomes[1].inc, 0)) * 100)
-      console.log(inc)
-      return inc == NaN || inc == 0 ? '0' : inc.toString()
-    }
-    return '0'
-  }, [incomes])
+  // const perThanLastMonth = useMemo(() => {
+  //   if (incomes) {
+  //     inc = (((parseFloat(incomes[0].inc, 0) - parseFloat(incomes[1].inc, 0)) / parseFloat(incomes[1].inc, 0)) * 100)
+  //     console.log(inc)
+  //     return inc == NaN || inc == 0 ? '0' : inc.toString()
+  //   }
+  //   return '0'
+  // }, [incomes])
+
+  const perThanLastMonth = 90
 
 
   return (
@@ -34,7 +36,7 @@ const MonthlyEarningsCard = ({ incomes }) => {
           ))}
         </View>
         <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-          <Text style={styles.currentIncome}>{`${incomes[0].inc} ${curr}`}</Text>
+          <Text style={styles.currentIncome}>{`${parseFloat(incomes[incomes.length - 1].inc, 2)} ${curr}`}</Text>
           <View style={{ borderRadius: 3, backgroundColor: perThanLastMonth >= 0 ? 'green' : Colors.red, marginLeft: 10, marginTop: 10 }}>
             <Text style={{ fontSize: 10, padding: 3, color: 'white' }}>{`${perThanLastMonth > 0 ? '+' : ''} ${perThanLastMonth}%`}</Text>
           </View>

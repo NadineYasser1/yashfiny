@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { StyleSheet, View, Text, Pressable, Dimensions, FlatList } from 'react-native';
+import { StyleSheet, View, Text, Pressable, Dimensions, FlatList, Alert } from 'react-native';
 import { Colors } from '../../constants/colors';
 import Card from '../../components/Card';
 import { SearchBar } from 'react-native-elements';
@@ -28,7 +28,7 @@ const HomeScreen = ({ navigation }) => {
       data.data.title = 'Dr'
       doctorCtx.setNewData(data.data)
       if (!doctorCtx.avatarUri) { doctorCtx.updateAvatar(data.data.avatarUri) }
-    }).catch((err) => console.log(err)
+    }).catch((err) => Alert.alert(err.response.data.message)
     ).finally(() => setIsLoading(false))
   }
 
@@ -38,14 +38,14 @@ const HomeScreen = ({ navigation }) => {
       console.log(data.data)
       setpatientsData(data.data)
     }
-    ).catch((err) => console.log(err)
+    ).catch((err) => Alert.alert(err.response.data.message)
     ).finally(() => setIsLoading(false))
   }
   const fetchIncomeData = () => {
     setIsLoading(true)
     axios.get(API.incomeDashboard).then(({ data }) => {
       setIncomeData(data.data)
-    }).catch((err) => console.log(err)
+    }).catch((err) => Alert.alert(err.response.data.message)
     ).finally(() => setIsLoading(false))
   }
   const handleSearchClick = (data) => {

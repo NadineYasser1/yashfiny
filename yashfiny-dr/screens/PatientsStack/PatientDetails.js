@@ -1,4 +1,4 @@
-import { Dimensions, Text, View, StyleSheet, TouchableOpacity, Pressable, FlatList } from "react-native"
+import { Dimensions, Text, View, StyleSheet, Alert, Pressable, FlatList } from "react-native"
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs'
 import { Colors } from '../../constants/colors'
 import { ScrollView } from "react-native-gesture-handler"
@@ -26,8 +26,16 @@ const PatientDetails = ({ route }) => {
     const fetchPatientData = () => {
         setIsLoading(true)
         axios.get(API.patient.replace('{patientId}', route.params)).then(({ data }) => {
+            if (data.data?.history?.chronicDis) {
+                data.data.history.chronicDis = data.data.history.chronicDis.map(item => item.disease);
+            }
+            console.log(data.data.history.allergies)
+            if (data.data?.history?.allergies) {
+                data.data.history.allergies = data.data.history.allergies.map(item => item.allergy);
+            }
             patientCtx.addPatient(data.data)
-        }).catch((err) => console.log(err)).finally(() => setIsLoading(false))
+        }).catch((err) => Alert.alert(err.response.data.message)).finally(() => setIsLoading(false))
+        // patientCtx.addPatient(patient)
     }
     useEffect(() => {
         fetchPatientData()
@@ -176,6 +184,7 @@ const styles = StyleSheet.create({
 
 const Co = () => {
     const patientCtx = useContext(PatientsContext)
+    console.log(patientCtx?.patientData?.history?.allergies)
     return (
         <ScrollView style={{ flex: 1, backgroundColor: 'white', padding: 10 }}>
             {patientCtx.patientData?.complaint && <View style={{ backgroundColor: Colors.grey200, borderRadius: 20, width: 300, padding: 10, overflow: 'hidden', marginTop: 10, justifyContent: 'center', alignItems: 'flex-start', paddingVertical: 13 }}>
@@ -266,9 +275,10 @@ const Ix = () => {
 const Rx = ({ navigation }) => {
     const patientCtx = useContext(PatientsContext)
     const [timing, setTiming] = useState('')
+    console.log(patientCtx.patientData?.drugs)
     const contentArr = useMemo(() => {
         const mappedDrugs = {}
-        patientCtx.patientData?.drugs.forEach(drug => {
+        patientCtx?.patientData?.drugs?.forEach(drug => {
             const { name, duration, instructions, time, dosage } = drug;
             if (!mappedDrugs[time.toLowerCase()]) {
                 mappedDrugs[time.toLowerCase()] = [];

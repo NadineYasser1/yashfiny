@@ -1,4 +1,4 @@
-import { Text, View } from "react-native"
+import { Alert, View } from "react-native"
 import { SearchBar } from "react-native-elements";
 import i18n from "../../i18n";
 import filter from "lodash.filter";
@@ -23,7 +23,7 @@ const PatientsScreen = ({ navigation }) => {
             console.log(data.data)
             setFilteringData(data.data)
             setPatientsData(data.data)
-        }).catch((err) => console.log(err)).finally(() => setIsLoading(false))
+        }).catch((err) => Alert.alert(err.response.data.message)).finally(() => setIsLoading(false))
     }
 
     console.log(patientsData)

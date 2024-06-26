@@ -44,7 +44,7 @@ const RegistrationScreen = ({ route, navigation }) => {
     setIsLoading(true)
     axios.get(API.specialities).then(({ data }) => {
       setOpts(data.data)
-    }).catch((err) => console.log(err)
+    }).catch((err) => Alert.alert(err.response.data.message)
     ).finally(() => setIsLoading(false))
   }
 
@@ -113,6 +113,9 @@ const RegistrationScreen = ({ route, navigation }) => {
     setChoices(updatedChoices);
   };
 
+  const getOptByKey = (opts, key) => {
+    return opts.find(opt => opt.key == key).value
+  }
   const toggleDatePicker = () => {
     setShowPicker(!showPicker)
   }
@@ -131,10 +134,12 @@ const RegistrationScreen = ({ route, navigation }) => {
     setIsLoading(true)
     axios.post(API.register, data
     ).then(({ data }) => {
-      console.log(data.data.id)
       navigation.navigate("UploadForm", data.data.id)
     }
-    ).catch((err) => Alert.alert(err.data.message)
+    ).catch((err) => {
+      console.log(err)
+      Alert.alert(i18n.t('error'), err.response.data.message)
+    }
     ).finally(() =>
       setIsLoading(false)
     )
@@ -273,7 +278,7 @@ const RegistrationScreen = ({ route, navigation }) => {
                   {opts && <View style={{ width: 160 }}>
                     <CustomDropdown
                       options={opts}
-                      onSelect={(opt) => handleDataChange('specialization', opt)}
+                      onSelect={(opt) => handleDataChange('specialization', getOptByKey(opts, opt))}
                       label={i18n.t('specialization')}
                       style={{ width: 160, height: 60 }}
                     />
@@ -284,7 +289,7 @@ const RegistrationScreen = ({ route, navigation }) => {
                   {opts && <View style={{ width: 160 }}>
                     <CustomDropdown
                       options={opts}
-                      onSelect={(opt) => handleDataChange('subspeciality', opt)}
+                      onSelect={(opt) => handleDataChange('subspeciality', getOptByKey(opts, opt))}
                       label={i18n.t('subspeciality')}
                       style={{ width: 160, height: 60 }}
                     />

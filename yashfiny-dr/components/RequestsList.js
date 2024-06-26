@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { View, FlatList, Alert } from "react-native"
 import { SearchBar } from "react-native-elements"
 import i18n from "../i18n"
@@ -12,7 +12,7 @@ const RequestsList = ({ data, handleCancelApt, handleAccept }) => {
     const [search, setSearch] = useState('')
     const [messagesModal, setMessagesModal] = useState(false)
     const [messagesModalData, setMessagesModalData] = useState()
-
+    console.log(data)
     const handleSearch = (query) => {
         setSearch(query);
 

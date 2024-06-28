@@ -27,6 +27,7 @@ import { API } from "../../utils/config";
 import LoadingScreen from "../../components/LoadingScreen";
 import useLoading from "../../hooks/useLoading";
 import Layout from "../../components/Layout";
+import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry";
 
 const RegistrationScreen = ({ route, navigation }) => {
   const [date, setDate] = useState(new Date())
@@ -48,6 +49,19 @@ const RegistrationScreen = ({ route, navigation }) => {
     ).finally(() => setIsLoading(false))
   }
 
+  const getPaymentMethodByKey = (key) => {
+    switch (key) {
+      case 1:
+        return i18n.t('bank_account')
+      case 2:
+        return i18n.t('instapay')
+      case 3:
+        return i18n.t('phone_number')
+      default:
+        return i18n.t('bank_account')
+
+    }
+  }
   const data = useMemo(() => {
     return {
       ...route.params,
@@ -62,6 +76,9 @@ const RegistrationScreen = ({ route, navigation }) => {
   const paymentPlaceHolder = useMemo(() => {
     if (newData?.payment_method) {
       switch (newData.payment_method) {
+        case 1: {
+          return i18n.t('bank_acc_no')
+        }
         case 2: {
           return i18n.t('instapay_mail')
         }
@@ -70,6 +87,7 @@ const RegistrationScreen = ({ route, navigation }) => {
         }
         default: {
           return i18n.t('bank_acc_no')
+          // return newData.payment_method
         }
       }
     } else {
@@ -346,7 +364,7 @@ const RegistrationScreen = ({ route, navigation }) => {
                 <View style={{ flexDirection: 'row', alignContent: 'center', justifyContent: 'flex-start' }}>
                   <CustomDropdown
                     options={PAYMENT_METHODS}
-                    onSelect={(opt) => handleDataChange('payment_method', opt)}
+                    onSelect={(opt) => handleDataChange('payment_method', getPaymentMethodByKey(opt))}
                     style={{ width: 150 }}
                   />
                   <TextInput

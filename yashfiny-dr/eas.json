@@ -7,7 +7,7 @@
       "developmentClient": true,
       "distribution": "internal",
       "env": {
-        "EXPO_PUBLIC_ROUTE": "http://192.168.1.6:3000/doctor"
+        "EXPO_PUBLIC_ROUTE": ""
       }
     },
     "preview": {
